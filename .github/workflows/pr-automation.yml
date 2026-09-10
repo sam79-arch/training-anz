@@ -1,0 +1,146 @@
+name: PR Automation
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, edited, synchronize]
+
+jobs:
+  automation:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+      repository-projects: write
+
+    steps:
+      # 1. TỰ ĐỘNG GÁN ASSIGNEE
+      - name: Auto Assignee
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              assignees: [context.actor]
+            });
+
+      # 2. TỰ ĐỘNG ĐỌC MÔ TẢ & COMMIT ĐỂ GẮN MILESTONE KHỚP TÊN
+      - name: Auto Milestone from PR Body and Commits
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let targetMilestoneName = null;
+            const milestoneRegex = /milestones?\s*[:\-=]\s*(.+)/i;
+
+            // 1. Kiểm tra trong mô tả PR
+            const prBody = context.payload.pull_request.body || "";
+            const prMatch = prBody.match(milestoneRegex);
+            
+            if (prMatch) {
+              targetMilestoneName = prMatch[1].trim().toLowerCase();
+              console.log(`Tìm thấy từ khóa Milestone trong mô tả PR: ${targetMilestoneName}`);
+            }
+
+            // 2. Nếu không có trong mô tả PR, quét qua các thông điệp commit của PR
+            if (!targetMilestoneName) {
+              console.log("Không tìm thấy từ khóa Milestone trong mô tả PR. Đang quét các commit...");
+              try {
+                const commits = await github.rest.pulls.listCommits({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.payload.pull_request.number
+                });
+
+                for (const commitObj of commits.data) {
+                  const commitMessage = commitObj.commit.message || "";
+                  const commitMatch = commitMessage.match(milestoneRegex);
+                  if (commitMatch) {
+                    targetMilestoneName = commitMatch[1].trim().toLowerCase();
+                    console.log(`Tìm thấy từ khóa Milestone trong thông điệp commit: ${targetMilestoneName}`);
+                    break;
+                  }
+                }
+              } catch (err) {
+                console.error("Lỗi khi truy xuất danh sách commit:", err);
+              }
+            }
+
+            // 3. Tiến hành gán Milestone nếu tìm thấy tên
+            if (targetMilestoneName) {
+              const milestones = await github.rest.issues.listMilestones({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open'
+              });
+
+              const foundMilestone = milestones.data.find(m => {
+                const title = m.title.toLowerCase();
+                return title === targetMilestoneName || title.includes(targetMilestoneName) || targetMilestoneName.includes(title);
+              });
+
+              if (foundMilestone) {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  milestone: foundMilestone.number
+                });
+                console.log(`Đã gắn thành công vào Milestone: ${foundMilestone.title}`);
+              } else {
+                console.log(`Không tìm thấy Milestone nào có tên là: ${targetMilestoneName}`);
+              }
+            } else {
+              console.log("Không tìm thấy từ khóa Milestone trong mô tả PR hoặc các thông điệp commit.");
+            }
+
+      # 3. TỰ ĐỘNG GẮN LABEL THEO TÊN BRANCH
+      - name: Auto Label based on Branch Name
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branchName = context.payload.pull_request.head.ref.toLowerCase();
+            let labelsToAdd = [];
+
+            if (branchName.includes('feat') || branchName.includes('feature')) {
+              labelsToAdd.push('enhancement');
+            }
+            if (branchName.includes('fix') || branchName.includes('bug')) {
+              labelsToAdd.push('bug');
+            }
+            if (branchName.includes('docs')) {
+              labelsToAdd.push('documentation');
+            }
+            if (branchName.includes('refactor')) {
+              labelsToAdd.push('refactor');
+            }
+            if (branchName.includes('test')) {
+              labelsToAdd.push('test');
+            }
+            if (branchName.includes('coding') || branchName.includes('dsa')) {
+              labelsToAdd.push('coding');
+            }
+            if (branchName.includes('sys') || branchName.includes('arch')) {
+              labelsToAdd.push('system-design');
+            }
+            if (branchName.includes('star') || branchName.includes('behave')) {
+              labelsToAdd.push('behavioral');
+            }
+            if (branchName.includes('pilot')) {
+              labelsToAdd.push('pilot');
+            }
+
+            if (labelsToAdd.length > 0) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  labels: labelsToAdd
+                });
+                console.log(`Đã gắn các nhãn: ${labelsToAdd.join(', ')}`);
+              } catch (labelErr) {
+                console.log("Gắn nhãn cảnh báo (nhãn có thể chưa được tạo sẵn trên repo):", labelErr.message);
+              }
+            }
+
