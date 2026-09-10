@@ -131,6 +131,50 @@ jobs:
             }
 
             if (labelsToAdd.length > 0) {
+              const labelDefinitions = {
+                'coding': { color: '0E8A16', description: 'DSA & Live Coding in JavaScript' },
+                'system-design': { color: '7057FF', description: 'Distributed Architecture, Kafka, Redis, Node.js' },
+                'behavioral': { color: 'FBCA04', description: 'STAR Stories for Behavioral Round' },
+                'refactor': { color: '5319E7', description: 'Complexity optimization (e.g. O(n^2) to O(n))' },
+                'test': { color: 'D4C5F9', description: 'Test cases & Edge case validation' },
+                'pilot': { color: 'E99695', description: 'Pilot week workflow validation' },
+                'enhancement': { color: 'A2EEEF', description: 'New feature or request' },
+                'bug': { color: 'D73A4A', description: 'Something isn\'t working' },
+                'documentation': { color: '0075CA', description: 'Improvements or additions to documentation' }
+              };
+
+              async function ensureLabelExists(name) {
+                try {
+                  await github.rest.issues.getLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: name
+                  });
+                } catch (err) {
+                  if (err.status === 404) {
+                    const meta = labelDefinitions[name] || { color: 'EDEDED', description: '' };
+                    try {
+                      await github.rest.issues.createLabel({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        name: name,
+                        color: meta.color,
+                        description: meta.description
+                      });
+                      console.log(`Đã tự động tạo mới nhãn [${name}] trên GitHub repo.`);
+                    } catch (createErr) {
+                      console.error(`Không thể tạo nhãn [${name}]:`, createErr.message);
+                    }
+                  } else {
+                    console.error(`Lỗi kiểm tra nhãn [${name}]:`, err.message);
+                  }
+                }
+              }
+
+              for (const label of labelsToAdd) {
+                await ensureLabelExists(label);
+              }
+
               try {
                 await github.rest.issues.addLabels({
                   owner: context.repo.owner,
@@ -140,7 +184,7 @@ jobs:
                 });
                 console.log(`Đã gắn các nhãn: ${labelsToAdd.join(', ')}`);
               } catch (labelErr) {
-                console.log("Gắn nhãn cảnh báo (nhãn có thể chưa được tạo sẵn trên repo):", labelErr.message);
+                console.log("Lỗi khi gắn nhãn:", labelErr.message);
               }
             }
 
