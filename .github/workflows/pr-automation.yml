@@ -25,26 +25,26 @@ jobs:
               assignees: [context.actor]
             });
 
-      # 2. TỰ ĐỘNG ĐỌC MÔ TẢ & COMMIT ĐỂ GẮN MILESTONE KHỚP TÊN
-      - name: Auto Milestone from PR Body and Commits
+      # 2. TỰ ĐỘNG BẮT HOẶC TẠO MỚI MILESTONE
+      - name: Auto Milestone with Auto-Creation
         uses: actions/github-script@v7
         with:
           script: |
-            let targetMilestoneName = null;
+            const prBody = context.payload.pull_request.body || "";
+            const prTitle = context.payload.pull_request.title || "";
+            const branchName = context.payload.pull_request.head.ref.toLowerCase();
             const milestoneRegex = /milestones?\s*[:\-=]\s*(.+)/i;
 
-            // 1. Kiểm tra trong mô tả PR
-            const prBody = context.payload.pull_request.body || "";
-            const prMatch = prBody.match(milestoneRegex);
-            
-            if (prMatch) {
-              targetMilestoneName = prMatch[1].trim().toLowerCase();
-              console.log(`Tìm thấy từ khóa Milestone trong mô tả PR: ${targetMilestoneName}`);
+            let targetMilestoneTitle = null;
+
+            // 1. Quét từ PR body
+            const bodyMatch = prBody.match(milestoneRegex);
+            if (bodyMatch) {
+              targetMilestoneTitle = bodyMatch[1].trim();
             }
 
-            // 2. Nếu không có trong mô tả PR, quét qua các thông điệp commit của PR
-            if (!targetMilestoneName) {
-              console.log("Không tìm thấy từ khóa Milestone trong mô tả PR. Đang quét các commit...");
+            // 2. Nếu không có trong body, quét commit message
+            if (!targetMilestoneTitle) {
               try {
                 const commits = await github.rest.pulls.listCommits({
                   owner: context.repo.owner,
@@ -56,122 +56,147 @@ jobs:
                   const commitMessage = commitObj.commit.message || "";
                   const commitMatch = commitMessage.match(milestoneRegex);
                   if (commitMatch) {
-                    targetMilestoneName = commitMatch[1].trim().toLowerCase();
-                    console.log(`Tìm thấy từ khóa Milestone trong thông điệp commit: ${targetMilestoneName}`);
+                    targetMilestoneTitle = commitMatch[1].trim();
                     break;
                   }
                 }
               } catch (err) {
-                console.error("Lỗi khi truy xuất danh sách commit:", err);
+                console.error("Lỗi khi đọc danh sách commit:", err.message);
               }
             }
 
-            // 3. Tiến hành gán Milestone nếu tìm thấy tên
-            if (targetMilestoneName) {
-              const milestones = await github.rest.issues.listMilestones({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                state: 'open'
-              });
+            // 3. Fallback thông minh: Nếu là PR khởi tạo / pilot, tự động gán vào "Pilot: Workflow & Setup"
+            if (!targetMilestoneTitle) {
+              if (branchName.includes('init') || branchName.includes('pilot') || prTitle.toLowerCase().includes('initialize') || prTitle.toLowerCase().includes('pilot')) {
+                targetMilestoneTitle = "Pilot: Workflow & Setup";
+                console.log(`Tự động nhận diện PR khởi tạo, chọn Milestone: ${targetMilestoneTitle}`);
+              }
+            }
 
-              const foundMilestone = milestones.data.find(m => {
-                const title = m.title.toLowerCase();
-                return title === targetMilestoneName || title.includes(targetMilestoneName) || targetMilestoneName.includes(title);
-              });
+            if (targetMilestoneTitle) {
+              try {
+                const milestones = await github.rest.issues.listMilestones({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'open'
+                });
 
-              if (foundMilestone) {
+                let foundMilestone = milestones.data.find(m => {
+                  const t = m.title.toLowerCase();
+                  const target = targetMilestoneTitle.toLowerCase();
+                  return t === target || t.includes(target) || target.includes(t);
+                });
+
+                // Nếu chưa có trên GitHub -> TỰ ĐỘNG TẠO MỚI MILESTONE
+                if (!foundMilestone) {
+                  console.log(`Milestone [${targetMilestoneTitle}] chưa tồn tại. Đang tự động tạo mới trên repo...`);
+                  const created = await github.rest.issues.createMilestone({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    title: targetMilestoneTitle,
+                    description: "Tự động quản lý tiến độ ôn thi HCLTech x ANZ"
+                  });
+                  foundMilestone = created.data;
+                  console.log(`Đã tạo thành công Milestone: ${foundMilestone.title} (#${foundMilestone.number})`);
+                }
+
+                // Gán Milestone vào PR
                 await github.rest.issues.update({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.payload.pull_request.number,
                   milestone: foundMilestone.number
                 });
-                console.log(`Đã gắn thành công vào Milestone: ${foundMilestone.title}`);
-              } else {
-                console.log(`Không tìm thấy Milestone nào có tên là: ${targetMilestoneName}`);
+                console.log(`Đã liên kết PR vào Milestone: ${foundMilestone.title}`);
+              } catch (mErr) {
+                console.error("Lỗi khi xử lý Milestone:", mErr.message);
               }
-            } else {
-              console.log("Không tìm thấy từ khóa Milestone trong mô tả PR hoặc các thông điệp commit.");
             }
 
-      # 3. TỰ ĐỘNG GẮN LABEL THEO TÊN BRANCH
-      - name: Auto Label based on Branch Name
+      # 3. TỰ ĐỘNG QUÉT NHÃN ĐA NGUỒN & TẠO NHÃN NẾU THIẾU
+      - name: Auto Label with Auto-Creation
         uses: actions/github-script@v7
         with:
           script: |
             const branchName = context.payload.pull_request.head.ref.toLowerCase();
-            let labelsToAdd = [];
+            const prTitle = (context.payload.pull_request.title || "").toLowerCase();
+            const prBody = (context.payload.pull_request.body || "").toLowerCase();
+            const fullText = `${branchName} ${prTitle} ${prBody}`;
 
-            if (branchName.includes('feat') || branchName.includes('feature')) {
-              labelsToAdd.push('enhancement');
+            let labelsToAdd = new Set();
+
+            // Quy tắc nhận diện nhãn đa nguồn
+            if (branchName.includes('feat') || fullText.includes('feature') || fullText.includes('initialize') || fullText.includes('starter')) {
+              labelsToAdd.add('enhancement');
             }
-            if (branchName.includes('fix') || branchName.includes('bug')) {
-              labelsToAdd.push('bug');
+            if (fullText.includes('pilot') || fullText.includes('init-project')) {
+              labelsToAdd.add('pilot');
             }
-            if (branchName.includes('docs')) {
-              labelsToAdd.push('documentation');
+            if (fullText.includes('coding') || fullText.includes('dsa') || fullText.includes('move-zeroes') || fullText.includes('two pointers')) {
+              labelsToAdd.add('coding');
             }
-            if (branchName.includes('refactor')) {
-              labelsToAdd.push('refactor');
+            if (fullText.includes('sys') || fullText.includes('arch') || fullText.includes('system-design') || fullText.includes('kafka') || fullText.includes('redis')) {
+              labelsToAdd.add('system-design');
             }
-            if (branchName.includes('test')) {
-              labelsToAdd.push('test');
+            if (fullText.includes('star') || fullText.includes('behave') || fullText.includes('behavioral')) {
+              labelsToAdd.add('behavioral');
             }
-            if (branchName.includes('coding') || branchName.includes('dsa')) {
-              labelsToAdd.push('coding');
+            if (fullText.includes('refactor')) {
+              labelsToAdd.add('refactor');
             }
-            if (branchName.includes('sys') || branchName.includes('arch')) {
-              labelsToAdd.push('system-design');
+            if (fullText.includes('test') || fullText.includes('unit test')) {
+              labelsToAdd.add('test');
             }
-            if (branchName.includes('star') || branchName.includes('behave')) {
-              labelsToAdd.push('behavioral');
+            if (branchName.includes('fix') || fullText.includes('bug')) {
+              labelsToAdd.add('bug');
             }
-            if (branchName.includes('pilot')) {
-              labelsToAdd.push('pilot');
+            if (branchName.includes('docs') || fullText.includes('documentation') || fullText.includes('readme') || fullText.includes('roadmap')) {
+              labelsToAdd.add('documentation');
             }
 
-            if (labelsToAdd.length > 0) {
-              const labelDefinitions = {
-                'coding': { color: '0E8A16', description: 'DSA & Live Coding in JavaScript' },
-                'system-design': { color: '7057FF', description: 'Distributed Architecture, Kafka, Redis, Node.js' },
-                'behavioral': { color: 'FBCA04', description: 'STAR Stories for Behavioral Round' },
-                'refactor': { color: '5319E7', description: 'Complexity optimization (e.g. O(n^2) to O(n))' },
-                'test': { color: 'D4C5F9', description: 'Test cases & Edge case validation' },
-                'pilot': { color: 'E99695', description: 'Pilot week workflow validation' },
-                'enhancement': { color: 'A2EEEF', description: 'New feature or request' },
-                'bug': { color: 'D73A4A', description: 'Something isn\'t working' },
-                'documentation': { color: '0075CA', description: 'Improvements or additions to documentation' }
-              };
+            const labelDefinitions = {
+              'coding': { color: '0E8A16', description: 'DSA & Live Coding in JavaScript' },
+              'system-design': { color: '7057FF', description: 'Distributed Architecture, Kafka, Redis, Node.js' },
+              'behavioral': { color: 'FBCA04', description: 'STAR Stories for Behavioral Round' },
+              'refactor': { color: '5319E7', description: 'Complexity optimization (e.g. O(n^2) to O(n))' },
+              'test': { color: 'D4C5F9', description: 'Test cases & Edge case validation' },
+              'pilot': { color: 'E99695', description: 'Pilot week workflow validation' },
+              'enhancement': { color: 'A2EEEF', description: 'New feature or request' },
+              'bug': { color: 'D73A4A', description: 'Something isn\'t working' },
+              'documentation': { color: '0075CA', description: 'Improvements or additions to documentation' }
+            };
 
-              async function ensureLabelExists(name) {
-                try {
-                  await github.rest.issues.getLabel({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    name: name
-                  });
-                } catch (err) {
-                  if (err.status === 404) {
-                    const meta = labelDefinitions[name] || { color: 'EDEDED', description: '' };
-                    try {
-                      await github.rest.issues.createLabel({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        name: name,
-                        color: meta.color,
-                        description: meta.description
-                      });
-                      console.log(`Đã tự động tạo mới nhãn [${name}] trên GitHub repo.`);
-                    } catch (createErr) {
-                      console.error(`Không thể tạo nhãn [${name}]:`, createErr.message);
-                    }
-                  } else {
-                    console.error(`Lỗi kiểm tra nhãn [${name}]:`, err.message);
+            async function ensureLabelExists(name) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: name
+                });
+              } catch (err) {
+                if (err.status === 404) {
+                  const meta = labelDefinitions[name] || { color: 'EDEDED', description: '' };
+                  try {
+                    await github.rest.issues.createLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      name: name,
+                      color: meta.color,
+                      description: meta.description
+                    });
+                    console.log(`Đã tự động tạo mới nhãn [${name}] trên GitHub repo.`);
+                  } catch (createErr) {
+                    console.error(`Không thể tạo nhãn [${name}]:`, createErr.message);
                   }
+                } else {
+                  console.error(`Lỗi kiểm tra nhãn [${name}]:`, err.message);
                 }
               }
+            }
 
-              for (const label of labelsToAdd) {
+            const labelsArray = Array.from(labelsToAdd);
+            if (labelsArray.length > 0) {
+              for (const label of labelsArray) {
                 await ensureLabelExists(label);
               }
 
@@ -180,11 +205,10 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: context.payload.pull_request.number,
-                  labels: labelsToAdd
+                  labels: labelsArray
                 });
-                console.log(`Đã gắn các nhãn: ${labelsToAdd.join(', ')}`);
+                console.log(`Đã gắn các nhãn: ${labelsArray.join(', ')}`);
               } catch (labelErr) {
                 console.log("Lỗi khi gắn nhãn:", labelErr.message);
               }
             }
-
