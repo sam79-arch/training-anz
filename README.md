@@ -69,7 +69,7 @@
 ## 📊 Bảng Theo Dõi Tiến Độ (Progress Dashboard)
 
 ### Pilot Week (Tuần này - Thử nghiệm Workflow & Tooling)
-- [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner & [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md)
+- [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner, [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md) & [Cẩm nang ôn tập Ngày 1](file:///home/samnguyen/projects/training-anz/notes/day-01-core-concepts-and-two-pointers.md)
 - [ ] Day 2 (Thứ 3): Review System Design Template & Redis Cache-Aside concept
 - [ ] Day 3 (Thứ 4): Practice Two Pointers In-place variation
 - [ ] Day 4 (Thứ 5): Review Node.js Event Loop 6 phases
