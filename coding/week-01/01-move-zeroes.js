@@ -18,18 +18,18 @@ function moveZeroes(nums) {
   }
 
   // 2. Kỹ thuật Two Pointers:
-  // - writeIndex: vị trí con trỏ sẵn sàng ghi phần tử khác 0 tiếp theo
-  // - readIndex: con trỏ duyệt qua từng phần tử của mảng
-  let writeIndex = 0;
+  // - nextIndex: vị trí con trỏ sẵn sàng ghi phần tử khác 0 tiếp theo
+  // - currentIndex: con trỏ duyệt qua từng phần tử của mảng
+  let nextIndex = 0;
 
-  for (let readIndex = 0; readIndex < nums.length; readIndex++) {
-    if (nums[readIndex] !== 0) {
+  for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
+    if (nums[currentIndex] !== 0) {
       // Chỉ hoán đổi/ghi đè khi 2 con trỏ ở 2 vị trí khác nhau
-      if (readIndex !== writeIndex) {
-        nums[writeIndex] = nums[readIndex];
-        nums[readIndex] = 0;
+      if (currentIndex !== nextIndex) {
+        nums[nextIndex] = nums[currentIndex];
+        nums[currentIndex] = 0;
       }
-      writeIndex++;
+      nextIndex++;
     }
   }
 

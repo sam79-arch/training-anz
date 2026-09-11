@@ -45,28 +45,28 @@ for (let i = 0; i < nums.length; i++) {
 ## 3. Discovery & Coding (Giải pháp Hai Con Trỏ $O(n)$ Time, $O(1)$ Space)
 
 Sử dụng hai con trỏ:
-1. `writeIndex`: Đại diện cho vị trí trống tiếp theo cần ghi giá trị khác 0 (bắt đầu từ 0).
-2. `readIndex`: Duyệt từ đầu đến cuối mảng để tìm các phần tử khác 0.
+1. `nextIndex`: Đại diện cho vị trí trống tiếp theo cần ghi giá trị khác 0 (bắt đầu từ 0).
+2. `currentIndex`: Duyệt từ đầu đến cuối mảng để tìm các phần tử khác 0.
 
-Khi `nums[readIndex] !== 0`:
-- Ghi giá trị vào `nums[writeIndex]`.
-- Nếu `readIndex !== writeIndex`, đặt `nums[readIndex] = 0`.
-- Tăng `writeIndex++`.
+Khi `nums[currentIndex] !== 0`:
+- Ghi giá trị vào `nums[nextIndex]`.
+- Nếu `currentIndex !== nextIndex`, đặt `nums[currentIndex] = 0`.
+- Tăng `nextIndex++`.
 
 ```javascript
 function moveZeroes(nums) {
   // Guard clause
   if (!nums || !Array.isArray(nums) || nums.length <= 1) return nums;
 
-  let writeIndex = 0;
+  let nextIndex = 0;
 
-  for (let readIndex = 0; readIndex < nums.length; readIndex++) {
-    if (nums[readIndex] !== 0) {
-      if (readIndex !== writeIndex) {
-        nums[writeIndex] = nums[readIndex];
-        nums[readIndex] = 0;
+  for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
+    if (nums[currentIndex] !== 0) {
+      if (currentIndex !== nextIndex) {
+        nums[nextIndex] = nums[currentIndex];
+        nums[currentIndex] = 0;
       }
-      writeIndex++;
+      nextIndex++;
     }
   }
 
@@ -76,45 +76,48 @@ function moveZeroes(nums) {
 
 ---
 
-## 4. Open Dialogue & English Scripting (Kịch bản nói to 6 bước)
+## 4. Open Dialogue & English Scripting (Kịch bản nói to 6 bước - Thân thiện & Tự nhiên)
 
-Luyện đọc to thành tiếng kịch bản này trong 15 phút mỗi sáng:
+Luyện đọc to thành tiếng kịch bản này trong 15 phút mỗi sáng (phong cách đối thoại tự nhiên, câu ngắn, dễ nhớ):
 
-### Bước 1: Clarify (Hỏi làm rõ đề)
-> *"Before jumping into the implementation, I'd like to clarify a few requirements:*
-> *Can the input array be empty or null?*
-> *Are the non-zero elements guaranteed to maintain their relative order?*
-> *And is it strictly required to perform this in-place with O(1) auxiliary space?"*
+### Bước 1: Clarify (Hỏi nhanh vài ý trước khi gõ)
+> *"Before I start, let me confirm a few quick things:*  
+> *Can the input be empty or null?*  
+> *And should we keep the same order for the other numbers?*  
+> *Got it! And I will modify the array directly without creating a new one, right?"*
 
-### Bước 2: Brute-Force & Bottleneck (Nêu cách thô & chỉ ra điểm nghẽn)
-> *"A naive approach would be creating a new array, filtering all non-zero elements, and appending zeroes at the end. However, that consumes O(n) auxiliary memory.*
-> *Another naive approach in JavaScript is using `array.splice()` inside a loop, but `splice()` takes O(n) time per deletion, resulting in an O(n^2) overall time complexity, which is not scalable for large datasets."*
+### Bước 2: Brute-Force (Nêu cách đơn giản và điểm nghẽn)
+> *"The simplest way is just creating a new array and filtering out the zeros. But that takes extra memory.*  
+> *Another way is using `splice()`, but it's way too slow for large data because it shifts elements every time.*  
+> *So neither is good for production."*
 
-### Bước 3: Optimize (Đề xuất tối ưu)
-> *"To achieve both O(n) time and O(1) space, I will use the Two Pointers technique: a Read Pointer and a Write Pointer."*
+### Bước 3: Optimize (Chốt giải pháp ngắn gọn)
+> *"So to make it fast and save memory, I'll use two pointers: `currentIndex` to scan the array, and `nextIndex` to place the non-zero numbers."*
 
-### Bước 4: Think Out Loud (Vừa gõ vừa thuyết minh)
-> *"First, I add a guard clause to handle null, undefined, or arrays with 1 element.*
-> *Next, I initialize `writeIndex` at 0. Then, I iterate through the array using `readIndex`.*
-> *Whenever `nums[readIndex]` is non-zero, if `readIndex` is different from `writeIndex`, I assign the non-zero value to `nums[writeIndex]` and set `nums[readIndex]` to 0.*
-> *Then, I advance `writeIndex`."*
+### Bước 4: Think Out Loud (Vừa gõ vừa thuyết minh câu ngắn)
+> *"First, let's add a quick check for empty or invalid input.*  
+> *Now, I initialize `nextIndex` at 0.*  
+> *Let's loop through the array with `currentIndex`.*  
+> *Whenever we see a non-zero number, we move it to `nextIndex`, put 0 in the old spot, and advance `nextIndex`.*  
+> *And finally, return the array."*
 
-### Bước 5: Dry Run (Chạy thử bằng miệng với ví dụ cụ thể)
-> *"Let's trace this logic with an example: `[0, 1, 0, 3, 12]`.*
-> - *At index 0: value is 0. We skip.*
-> - *At index 1: value is 1. `readIndex` is 1, `writeIndex` is 0. We write 1 to index 0 and 0 to index 1. The array becomes `[1, 0, 0, 3, 12]`, and `writeIndex` moves to 1.*
-> - *At index 2: value is 0. We skip.*
-> - *At index 3: value is 3. We move 3 to index 1 and put 0 at index 3. The array is `[1, 3, 0, 0, 12]`, `writeIndex` is 2.*
-> - *At index 4: value is 12. We move 12 to index 2 and put 0 at index 4. The final array is `[1, 3, 12, 0, 0]`."*
+### Bước 5: Dry Run (Chạy thử bằng miệng với ví dụ ngắn)
+> *"Let's test with `[0, 1, 0, 3]` to make sure it works:*  
+> *- At index 0: it's 0, so skip.*  
+> *- At index 1: it's 1. We move 1 to index 0, and put 0 back. The array is now `[1, 0, 0, 3]`.*  
+> *- At index 2: it's 0, skip.*  
+> *- At index 3: it's 3. Put 3 into index 1. Now we get `[1, 3, 0, 0]`.*  
+> *Looks good and clean!"*
 
-### Bước 6: Conclusion (Chốt độ phức tạp)
-> *"In conclusion, the time complexity is O(n) because we iterate through the array once in a single pass.*
-> *The space complexity is O(1) because all modifications are done strictly in-place without allocating additional memory."*
+### Bước 6: Conclusion (Chốt độ phức tạp súc tích)
+> *"To wrap up:*  
+> *Time complexity is O(n) because we only scan the array once.*  
+> *Space complexity is O(1) because everything is done in-place."*
 
 ---
 
 ## 5. Pattern Synthesis (Đúc kết quy luật)
 > 💡 **Core Rule:**  
-> **"Khi cần tái sắp xếp hoặc lọc phần tử trong mảng tại chỗ (in-place) mà vẫn phải bảo toàn thứ tự ban đầu, luôn dùng một con trỏ ĐỌC (`readIndex`) và một con trỏ GHI (`writeIndex`)."**  
+> **"Khi cần tái sắp xếp hoặc lọc phần tử trong mảng tại chỗ (in-place) mà vẫn phải bảo toàn thứ tự ban đầu, luôn dùng một con trỏ ĐỌC (`currentIndex`) và một con trỏ GHI (`nextIndex`)."**  
 > *(Quy luật này là tiền đề trực tiếp để giải các bài Medium: Remove Duplicates from Sorted Array II, Container With Most Water, và 3Sum).*
 
