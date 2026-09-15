@@ -44,29 +44,29 @@ for (let i = 0; i < nums.length; i++) {
 
 ## 3. Discovery & Coding (Giải pháp Hai Con Trỏ $O(n)$ Time, $O(1)$ Space)
 
-Sử dụng hai con trỏ:
-1. `nextIndex`: Đại diện cho vị trí trống tiếp theo cần ghi giá trị khác 0 (bắt đầu từ 0).
-2. `currentIndex`: Duyệt từ đầu đến cuối mảng để tìm các phần tử khác 0.
+Sử dụng hai con trỏ theo tư duy "Chuyển chỗ ngồi":
+1. `writeIndex` (Con trỏ GHI): Vị trí ghế trống ở ĐẦU mảng, sẵn sàng đón phần tử khác 0 tiếp theo (bắt đầu từ 0).
+2. `readIndex` (Con trỏ ĐỌC): Quét qua từng phần tử của mảng để tìm các phần tử khác 0.
 
-Khi `nums[currentIndex] !== 0`:
-- Ghi giá trị vào `nums[nextIndex]`.
-- Nếu `currentIndex !== nextIndex`, đặt `nums[currentIndex] = 0`.
-- Tăng `nextIndex++`.
+Khi `nums[readIndex] !== 0`:
+- Chuyển giá trị vào ghế đầu: `nums[writeIndex] = nums[readIndex]`.
+- Nếu `readIndex !== writeIndex`, dọn chỗ cũ thành số 0: `nums[readIndex] = 0`.
+- Tăng con trỏ ghi lên 1 nấc: `writeIndex++`.
 
 ```javascript
 function moveZeroes(nums) {
   // Guard clause
   if (!nums || !Array.isArray(nums) || nums.length <= 1) return nums;
 
-  let nextIndex = 0;
+  let writeIndex = 0;
 
-  for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
-    if (nums[currentIndex] !== 0) {
-      if (currentIndex !== nextIndex) {
-        nums[nextIndex] = nums[currentIndex];
-        nums[currentIndex] = 0;
+  for (let readIndex = 0; readIndex < nums.length; readIndex++) {
+    if (nums[readIndex] !== 0) {
+      if (readIndex !== writeIndex) {
+        nums[writeIndex] = nums[readIndex];
+        nums[readIndex] = 0;
       }
-      nextIndex++;
+      writeIndex++;
     }
   }
 
@@ -92,21 +92,21 @@ Luyện đọc to thành tiếng kịch bản này trong 15 phút mỗi sáng (p
 > *So neither is good for production."*
 
 ### Bước 3: Optimize (Chốt giải pháp ngắn gọn)
-> *"So to make it fast and save memory, I'll use two pointers: `currentIndex` to scan the array, and `nextIndex` to place the non-zero numbers."*
+> *"So to make it fast and save memory, I'll use two pointers: `readIndex` to scan the array for non-zero numbers, and `writeIndex` to place them at the front."*
 
 ### Bước 4: Think Out Loud (Vừa gõ vừa thuyết minh câu ngắn)
-> *"First, let's add a quick check for empty or invalid input.*  
-> *Now, I initialize `nextIndex` at 0.*  
-> *Let's loop through the array with `currentIndex`.*  
-> *Whenever we see a non-zero number, we move it to `nextIndex`, put 0 in the old spot, and advance `nextIndex`.*  
-> *And finally, return the array."*
+> *"First, let's add a quick guard clause for invalid or small inputs.*  
+> *Now, I initialize `writeIndex` at 0.*  
+> *Let's loop through the array with `readIndex`.*  
+> *Whenever we see a non-zero number, we write it to `nums[writeIndex]`, clear the old spot to 0, and advance `writeIndex`.*  
+> *And finally, return the modified array."*
 
 ### Bước 5: Dry Run (Chạy thử bằng miệng với ví dụ ngắn)
-> *"Let's test with `[0, 1, 0, 3]` to make sure it works:*  
+> *"Let's trace with `[0, 1, 0, 3]` to make sure it works:*  
 > *- At index 0: it's 0, so skip.*  
-> *- At index 1: it's 1. We move 1 to index 0, and put 0 back. The array is now `[1, 0, 0, 3]`.*  
+> *- At index 1: it's 1. We move 1 to writeIndex 0, and put 0 back. The array is now `[1, 0, 0, 3]`.*  
 > *- At index 2: it's 0, skip.*  
-> *- At index 3: it's 3. Put 3 into index 1. Now we get `[1, 3, 0, 0]`.*  
+> *- At index 3: it's 3. Move 3 into writeIndex 1. Now we get `[1, 3, 0, 0]`.*  
 > *Looks good and clean!"*
 
 ### Bước 6: Conclusion (Chốt độ phức tạp súc tích)
@@ -118,6 +118,6 @@ Luyện đọc to thành tiếng kịch bản này trong 15 phút mỗi sáng (p
 
 ## 5. Pattern Synthesis (Đúc kết quy luật)
 > 💡 **Core Rule:**  
-> **"Khi cần tái sắp xếp hoặc lọc phần tử trong mảng tại chỗ (in-place) mà vẫn phải bảo toàn thứ tự ban đầu, luôn dùng một con trỏ ĐỌC (`currentIndex`) và một con trỏ GHI (`nextIndex`)."**  
+> **"Khi cần tái sắp xếp hoặc lọc phần tử trong mảng tại chỗ (in-place) mà vẫn phải bảo toàn thứ tự ban đầu, luôn dùng một con trỏ ĐỌC (`readIndex`) và một con trỏ GHI (`writeIndex`)."**  
 > *(Quy luật này là tiền đề trực tiếp để giải các bài Medium: Remove Duplicates from Sorted Array II, Container With Most Water, và 3Sum).*
 
