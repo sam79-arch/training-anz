@@ -95,24 +95,25 @@ Là đoạn kiểm tra điều kiện ngay tại **dòng đầu tiên** của h�
 
 ---
 
-## 🎯 Mục 5: Kỹ Thuật Clean Two Pointers (`currentIndex` & `nextIndex`)
+## 🎯 Mục 5: Kỹ Thuật Clean Two Pointers (`writeIndex` & `readIndex`) — Tư Duy "Chuyển Chỗ Ngồi"
 
-Thay vì dùng thuật ngữ trừu tượng trong sách giáo khoa (`writeIndex` / `readIndex`), việc đặt tên biến thành **`currentIndex`** và **`nextIndex`** mang lại sự trong sáng tuyệt đối cho mã nguồn:
+Trong các bài toán dồn mảng tại chỗ (In-place Compaction), cặp tên biến chuẩn mực nhất trong hệ thống Backend là **`writeIndex`** và **`readIndex`**:
 
-* **`currentIndex` (Người dò tìm):** Duyệt tuần tự từ đầu đến cuối mảng để tìm các phần tử hợp lệ (khác 0).
-* **`nextIndex` (Người giữ chỗ):** Đứng canh tại vị trí trống đầu tiên để đón phần tử hợp lệ tiếp theo dời lên.
+* **`readIndex` (Người đi tìm):** Quét qua từng ô trong mảng để tìm các phần tử hợp lệ (khác 0).
+* **`writeIndex` (Ghế trống ở đầu):** Đứng canh tại vị trí ghế đầu tiên sẵn sàng đón người tiếp theo dời về.
 
 ```javascript
-let nextIndex = 0;
+let writeIndex = 0;
 
-for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
-  // Khi tìm thấy phần tử hợp lệ
-  if (nums[currentIndex] !== 0) {
-    if (currentIndex !== nextIndex) {
-      nums[nextIndex] = nums[currentIndex]; // Đưa phần tử lên vị trí giữ chỗ
-      nums[currentIndex] = 0;                // Trả số 0 về vị trí cũ
+for (let readIndex = 0; readIndex < nums.length; readIndex++) {
+  // Khi tìm thấy đứa KHÁC 0:
+  if (nums[readIndex] !== 0) {
+    // Chỉ chuyển khi chưa ngồi đúng chỗ (tránh redundant write):
+    if (readIndex !== writeIndex) {
+      nums[writeIndex] = nums[readIndex]; // Chuyển đứa khác 0 về ghế đầu
+      nums[readIndex] = 0;               // Ghế cũ bỏ lại biến thành số 0
     }
-    nextIndex++; // Vị trí này đã có số, người giữ chỗ tiến lên 1 bước
+    writeIndex++; // Ghế đầu đã có người ngồi, tiến lên 1 ghế tiếp theo
   }
 }
 ```
@@ -138,22 +139,102 @@ for (let currentIndex = 0; currentIndex < nums.length; currentIndex++) {
 > *"So to make it fast and save memory, I'll use two pointers: `currentIndex` to scan the array, and `nextIndex` to place the non-zero numbers."*
 
 ### Bước 4: Think Out Loud (Vừa gõ vừa thuyết minh câu ngắn)
-> *"First, let's add a quick check for empty or invalid input.*  
-> *Now, I initialize `nextIndex` at 0.*  
-> *Let's loop through the array with `currentIndex`.*  
-> *Whenever we see a non-zero number, we move it to `nextIndex`, put 0 in the old spot, and advance `nextIndex`.*  
-> *And finally, return the array."*
+> *"First, let's add a quick guard clause for invalid or small inputs.*  
+> *Now, I initialize `writeIndex` at 0.*  
+> *Let's loop through the array with `readIndex`.*  
+> *Whenever we see a non-zero number, we write it to `writeIndex`, clear the old spot, and advance `writeIndex`.*  
+> *And finally, return the modified array."*
 
 ### Bước 5: Dry Run (Chạy thử bằng miệng với ví dụ ngắn gọn)
 > *"Let's test with `[0, 1, 0, 3]` to make sure it works:*  
 > *- At index 0: it's 0, so skip.*  
-> *- At index 1: it's 1. We move 1 to index 0, and put 0 back. The array is now `[1, 0, 0, 3]`.*  
+> *- At index 1: it's 1. We move 1 to writeIndex 0, and put 0 back. The array is now `[1, 0, 0, 3]`.*  
 > *- At index 2: it's 0, skip.*  
-> *- At index 3: it's 3. Put 3 into index 1. Now we get `[1, 3, 0, 0]`.*  
+> *- At index 3: it's 3. Put 3 into writeIndex 1. Now we get `[1, 3, 0, 0]`.*  
 > *Looks good and clean!"*
 
 ### Bước 6: Conclusion (Chốt độ phức tạp súc tích)
 > *"To wrap up:*  
 > *Time complexity is **O(n)** because we only scan the array once.*  
 > *Space complexity is **O(1)** because everything is done in-place."*
+
+---
+
+## 🧭 Mục 7: Giải Mã "Mật Mã" Ràng Buộc (Constraints) Trong Đề Phỏng Vấn
+
+Khi đọc đề bài trên LeetCode/HackerRank, các dòng ký hiệu toán học thực chất là "tín hiệu ngầm" báo trước những gì bạn cần làm trong code:
+
+| Ký hiệu trong đề | Ý nghĩa đời thường | Bạn cần làm gì trong code? |
+|---|---|---|
+| `nums.length >= 0` | Mảng có thể rỗng `[]` hoặc `null` | Viết **Guard Clause** ở dòng 1 để không bị lỗi crash server (`TypeError: Cannot read properties of null`). |
+| `nums.length <= 10^5` | Mảng có thể dài tới **100,000 phần tử** | **Tín hiệu hiệu năng**: Bắt buộc giải bằng $O(n)$, cấm dùng $O(n^2)$ (như vòng lặp lồng nhau hoặc `splice` trong loop) kẻo bị Time Limit Exceeded (TLE). |
+| `-2^31 <= nums[i]` | Giá trị phần tử có thể là **số âm** | Khi lọc số khác 0, bắt buộc viết `nums[i] !== 0`, **không được viết `nums[i] > 0`** kẻo bỏ sót số âm. |
+| `nums[i] <= 2^31 - 1` | Khoảng 2.1 tỷ (chuẩn số nguyên 32-bit `int32`) | Dữ liệu là số nguyên thông thường, không lo tràn số trong JavaScript (hỗ trợ an toàn tới $2^{53}-1$). |
+
+---
+
+## ⚡ Mục 8: So Sánh 2 Biến Thể Two Pointers Cốt Lõi (Cùng Chiều vs Đối Đầu)
+
+| Đặc điểm | Loại 1: Cùng Chiều Đọc/Ghi (Move Zeroes) | Loại 2: Đối Đầu 2 Đầu (Valid Palindrome) |
+|---|---|---|
+| **Mục đích** | Gom, lọc hoặc sắp xếp lại mảng tại chỗ (Compaction / Partitioning) | So sánh tính đối xứng hoặc tìm cặp giá trị hai đầu |
+| **Tên con trỏ** | `readIndex` & `writeIndex` | `left` & `right` |
+| **Hướng di chuyển** | Cùng tiến về phía trước ($0 \rightarrow n-1$) | Đi ngược chiều nhau từ 2 đầu tiến về giữa |
+| **Vòng lặp tối ưu** | Dùng **`for`** (vì `readIndex` tăng đều mỗi vòng 1 bước) | Dùng **`while (left < right)`** (vì bước nhảy co giãn linh hoạt khi gặp rác) |
+| **Điều kiện dừng** | Duyệt hết độ dài mảng | Hai con trỏ chạm hoặc vượt qua nhau (`left >= right`) |
+
+---
+
+## 🔍 Mục 9: Nghệ Thuật Kiểm Tra Chữ/Số (Alphanumeric) Siêu Sạch Trong JavaScript
+
+Nhiều ứng viên lúng túng khi cần lọc bỏ ký tự đặc biệt vì sợ phải nhớ bảng mã ASCII hoặc viết Regex phức tạp. Trong JavaScript, có 3 cách xử lý:
+
+### 1. ❌ Cách 1: Nhớ bảng mã ASCII (`48-57`, `65-90`, `97-122`)
+* Nhược điểm: Quá áp lực trong phòng phỏng vấn, không ai rảnh nhớ từng con số cụ thể.
+
+### 2. ⚠️ Cách 2: Dùng Regex `/[a-zA-Z0-9]/i.test(char)`
+* Ưu điểm: Ngắn gọn.
+* Nhược điểm: Regex engine có chi phí khởi tạo (overhead).
+
+### 3. 🏆 Cách 3: So sánh trực tiếp theo thứ tự từ điển (Khuyên dùng)
+JavaScript cho phép so sánh chữ cái và chữ số trực tiếp bằng toán tử `>=` và `<=` y hệt số học:
+```javascript
+function isAlphanumeric(char) {
+  const c = char.toLowerCase();
+  return (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+}
+```
+* **Đọc như văn xuôi:** `"Nếu c nằm từ 'a' đến 'z' HOẶC từ '0' đến '9' thì trả về true"`.
+* **Ưu điểm tuyệt đối:** Không cần nhớ mã số, không cần regex, tốc độ $O(1)$, người phỏng vấn nhìn vào hiểu ngay.
+
+---
+
+## 🧮 Mục 10: Quy Tắc Vàng Big-O: "Nối Tiếp là CỘNG, Lồng Nhau mới là NHÂN"
+
+Một bẫy nhận thức kinh điển là cho rằng mọi chuỗi hàm dài đều là $O(n^2)$. Hãy phân biệt rõ:
+
+### 1. Thao tác Lồng Nhau (NHÂN: $n \times n = O(n^2)$)
+```javascript
+for (let i = 0; i < nums.length; i++) { // n lần
+  nums.splice(i, 1);                    // mỗi lần tốn n bước dịch mảng
+}
+```
+👉 Hàm tốn $O(n)$ nằm **BÊN TRONG** vòng lặp $O(n)$ $\rightarrow$ Bắt buộc phải **NHÂN**: $n \times n = \mathbf{O(n^2)}$.
+
+### 2. Thao tác Nối Tiếp (CỘNG: $n + n + n = O(n)$)
+```javascript
+s.split('').reverse().join('');
+```
+1. `split('')`: Duyệt $n$ ký tự để tạo mảng $\rightarrow$ Mất $n$ bước.
+2. `reverse()`: Lật ngược mảng $n$ phần tử $\rightarrow$ Mất $n/2 \approx n$ bước.
+3. `join('')`: Duyệt $n$ phần tử để ghép thành chuỗi $\rightarrow$ Mất $n$ bước.
+👉 Các hàm chạy **TUẦN TỰ** nối đuôi nhau $\rightarrow$ Phép **CỘNG**:
+$$\text{Time} = n + n + n = 3n \rightarrow \mathbf{O(n)}$$
+
+### 3. Vậy tại sao `split('').reverse().join('')` vẫn bị cấm trong Backend ANZ?
+Dù độ phức tạp toán học là $O(n)$, nhưng:
+* **Tốn $O(n)$ bộ nhớ RAM phụ:** Cấp phát thêm 1 mảng tạm + 1 chuỗi tạm khổng lồ trong heap.
+* **Stop-The-World:** Hàng triệu bản ghi làm V8 Garbage Collector quá tải, gây đứng hình Event Loop.
+* **Không có Early Exit:** Dù ký tự đầu và cuối khác nhau, nó vẫn cặm cụi đảo ngược cả chuỗi $100,000$ ký tự rồi mới biết sai, trong khi Two Pointers phát hiện sai ở bước đầu tiên là `return false` ngay lập tức!
+
 
