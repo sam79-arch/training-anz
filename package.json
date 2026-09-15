@@ -4,8 +4,10 @@
   "description": "PBL-driven Backend Interview Prep in JavaScript | Target: HCLTech x ANZ (DSA, Node.js Internals & System Design)",
   "main": "coding/week-01/01-move-zeroes.js",
   "scripts": {
-    "test": "node coding/week-01/01-move-zeroes.test.js",
-    "test:all": "node coding/week-01/01-move-zeroes.test.js"
+    "test": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js",
+    "test:01": "node coding/week-01/01-move-zeroes.test.js",
+    "test:02": "node coding/week-01/02-valid-palindrome.test.js",
+    "test:all": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js"
   },
   "keywords": [
     "anz",
