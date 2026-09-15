@@ -1,192 +1,480 @@
-# 📚 Cẩm Nang Thực Chiến: Node.js Internals & 6 Pha Event Loop (HCLTech x ANZ)
+# 📚 Node.js Event Loop — Giải Thích Từ Dễ Đến Khó (HCLTech x ANZ)
 
-> **Mục tiêu phỏng vấn:** Nắm vững kiến trúc đa luồng ngầm của Node.js, thứ tự ưu tiên các pha Event Loop, kỹ năng chống nghẽn luồng chính và phản xạ tiếng Anh chuẩn Senior Backend Engineer cho ANZ Bank.
-
----
-
-### 📺 Video Tham Khảo Trực Quan (Must-Watch):
-* 🏆 **[This is how the Node.js Event Loop really works](https://youtu.be/paI6J8my3Yw)** *(Software Developer Diaries)*:  
-  👉 **Khuyên xem số 1**: Video chuẩn xác nhất mô tả đúng 100% kiến trúc Backend của Node.js: Call Stack, Libuv, Timer Queue, I/O Queue, SetImmediate Queue, NextTick Queue và Promise Queue.
-* 🌐 **[JavaScript Event Loop & Asynchronous Programming](https://youtu.be/jzOy07fw2vY)** *(freeCodeCamp)*:  
-  👉 **Xem để phân biệt**: Video mô tả Event Loop trên môi trường **Trình duyệt (Browser / Frontend Web APIs)**, giúp bạn không bị nhầm lẫn giữa Frontend và Backend.
+> **Mục tiêu:** Sau khi đọc xong tài liệu này, bạn có thể giải thích Event Loop bằng ví dụ đời thường **trước**, rồi mới dùng thuật ngữ kỹ thuật khi cần. Đây là cách trả lời phỏng vấn ANZ gây ấn tượng nhất với Senior Architect.
 
 ---
 
-## 🏛️ Phần 1: Kiến Trúc 3 Tầng (The 3-Layer Runtime)
+### 📺 Xem Video Trước Khi Đọc (Hiệu Quả Hơn Nhiều):
+* 🏆 **[This is how the Node.js Event Loop really works](https://youtu.be/paI6J8my3Yw)** *(Software Developer Diaries)* — Video chuẩn nhất, có animation minh họa từng bước.
+* 🌐 **[JavaScript Event Loop & Asynchronous Programming](https://youtu.be/jzOy07fw2vY)** *(freeCodeCamp)* — Video về Browser (Frontend), xem để không bị nhầm lẫn.
 
-Nhiều người nói *"Node.js là single-threaded"* nhưng thực tế: **Chỉ có đoạn code JavaScript của bạn chạy trên 1 luồng, còn cả hệ thống bên dưới là ĐA LUỒNG MẠNH MẼ.**
+---
 
-```text
- ┌─────────────────────────────────────────────────────────────┐
- │                  JavaScript Code (User Space)               │
- └──────────────────────────────┬──────────────────────────────┘
-                                │
- ┌──────────────────────────────▼──────────────────────────────┐
- │              TẦNG 1: V8 ENGINE (Google C++)                 │
- │  - Main Thread: Chạy code đồng bộ (Call Stack)              │
- │  - Memory Heap: Cấp phát bộ nhớ, V8 Garbage Collector       │
- └──────────────────────────────┬──────────────────────────────┘
-                                │ (Gặp I/O hoặc việc nặng)
- ┌──────────────────────────────▼──────────────────────────────┐
- │                  TẦNG 2: LIBUV (C++ Library)                │
- │  - Event Loop: Điều phối 6 pha và hàng đợi callback         │
- │  - Thread Pool: Mặc định 4 worker threads (UV_THREADPOOL_SIZE)│
- └──────────────┬───────────────────────────────┬──────────────┘
-                │ (Network I/O)                 │ (File / Crypto / DNS)
- ┌──────────────▼──────────────┐ ┌──────────────▼──────────────┐
- │    TẦNG 3: OS KERNEL        │ │     LIBUV THREAD POOL       │
- │ - Linux: epoll              │ │ - 4 Worker Threads ngầm     │
- │ - macOS: kqueue             │ │ - fs.readFile / writeFile   │
- │ - Windows: IOCP             │ │ - crypto.pbkdf2 / scrypt    │
- │ (Xử lý hàng triệu TCP socket│ │ - zlib (nén/giải nén)       │
- │  mà KHÔNG tốn luồng nào!)   │ │ - dns.lookup                │
- └─────────────────────────────┘ └─────────────────────────────┘
+## 🏦 Phần 1: Bức Tranh Tổng Thể — Node.js Như Một Quầy Giao Dịch Ngân Hàng
+
+### Hình dung trước:
+
+Tưởng tượng một **quầy giao dịch ngân hàng ANZ** vào giờ cao điểm:
+
+```
+                    ┌──────────────────────────────────┐
+                    │   KHÁCH HÀNG (JavaScript Code)   │
+                    └──────────────┬───────────────────┘
+                                   │ đến quầy
+                    ┌──────────────▼───────────────────┐
+                    │  🧑‍💼 GIAO DỊCH VIÊN DUY NHẤT     │  ← V8 Engine (Main Thread)
+                    │  (Chỉ làm 1 việc tại 1 thời điểm)│    Call Stack = tờ giấy "việc đang làm"
+                    └──────┬────────────────────┬───────┘
+                           │                    │
+           Cần photo giấy  │                    │ Cần gọi điện
+           tờ / mã hóa tài │                    │ cho ngân hàng đối tác
+           liệu nặng       │                    │
+          ┌────────────────▼──┐      ┌──────────▼────────────────┐
+          │ 👨‍👩‍👦 NHÓM HỖ TRỢ    │      │  ☎️ ĐƯỜNG HOTLINE TRỰC TIẾP │
+          │ PHÍA SAU (4 người) │      │  (OS Kernel: epoll/kqueue)  │
+          │ = Libuv Thread Pool│      │  Không cần người trực!      │
+          └────────────────────┘      └────────────────────────────┘
 ```
 
-### 💡 Bảng Phân Chia Công Việc: Đi Đâu? Làm Gì?
-| Loại tác vụ | Ai xử lý dưới tầng C++? | Có ngốn Thread Pool không? |
+### 3 điểm cốt lõi từ hình trên:
+
+**① Giao dịch viên chỉ có 1 người** — Đây là JavaScript Main Thread. Mọi code `.js` của bạn chạy trên người này. Nếu bạn bắt họ đi photocopy tự tay → cả hàng dài khách đứng chờ!
+
+**② Nhóm hỗ trợ phía sau có 4 người** — Đây là **Libuv Thread Pool** (mặc định 4 worker threads). Giao dịch viên sẽ chuyển việc nặng cho họ: đọc/ghi file, mã hóa, nén dữ liệu. Khi xong, họ đặt kết quả vào hộp thư để giao dịch viên lấy sau.
+
+**③ Đường hotline OS Kernel không cần người trực** — Khi cần gọi đến ngân hàng đối tác qua mạng (HTTP request, kết nối Database, TCP socket), Node.js sử dụng cơ chế `epoll` (Linux) / `kqueue` (macOS) của hệ điều hành. Kernel tự thông báo khi có phản hồi về, **không cần chiếm người nào trong nhóm hỗ trợ cả**.
+
+### Ánh xạ kỹ thuật:
+| Hình ảnh quầy ngân hàng | Thuật ngữ kỹ thuật | Ghi chú |
 |---|---|---|
-| **Network I/O** (HTTP request, Database query, Webhook, TCP) | **OS Kernel** (`epoll` / `kqueue`) | ❌ **Không** (Non-blocking ở mức phần cứng OS) |
-| **File I/O** (`fs.readFile`, `fs.writeFile`) | **Libuv Thread Pool** | ✅ **Có** (Chiếm 1 trong 4 worker threads) |
-| **Mã hóa nặng** (`crypto.pbkdf2`, `bcrypt`) | **Libuv Thread Pool** | ✅ **Có** (Chiếm 1 trong 4 worker threads) |
-| **Nén dữ liệu** (`zlib.gzip`) | **Libuv Thread Pool** | ✅ **Có** (Chiếm 1 trong 4 worker threads) |
-| **DNS Resolution** (`dns.lookup`) | **Libuv Thread Pool** | ✅ **Có** (Vì dùng hàm `getaddrinfo` chặn luồng của OS) |
+| Giao dịch viên duy nhất | **V8 Engine / Main Thread** | Chạy toàn bộ code `.js` của bạn |
+| Tờ giấy "việc đang làm" | **Call Stack** | Stack LIFO — hàm nào gọi sau thì xong trước |
+| Nhóm hỗ trợ 4 người phía sau | **Libuv Thread Pool** | File I/O, Crypto, Zlib, DNS |
+| Đường hotline OS (không cần người trực) | **OS Kernel (`epoll` / `kqueue`)** | Network I/O, TCP Socket, Database connections |
+| Hộp thư kết quả từ nhóm hỗ trợ | **Task Queues (Event Loop)** | Nơi callback chờ được thực thi |
 
-> 📌 **Điểm cộng Senior ANZ:** Biết tinh chỉnh biến môi trường `process.env.UV_THREADPOOL_SIZE = 8` (hoặc 16) trên máy chủ nhiều core để tăng tốc độ đọc ghi file và mã hóa dữ liệu theo lô (batch processing).
-
----
-
-## 🎡 Phần 2: Vòng Tuần Hoàn 6 Pha Của Event Loop
-
-Event Loop là một vòng lặp vô tận viết bằng C++ chạy theo chiều kim đồng hồ, gồm 6 pha tuần hoàn:
-
-```text
-       ┌────────────────────────────────┐
-    ┌─>│      1. TIMERS PHASE           │ ⏰ setTimeout(), setInterval()
-    │  └───────────────┬────────────────┘
-    │  ┌───────────────┴────────────────┐
-    │  │   2. PENDING CALLBACKS         │ 📥 I/O callbacks bị hoãn từ vòng trước
-    │  └───────────────┬────────────────┘
-    │  ┌───────────────┴────────────────┐
-    │  │     3. IDLE / PREPARE          │ ⚙️ Dùng nội bộ cho Libuv (bỏ qua khi phỏng vấn)
-    │  └───────────────┬────────────────┘
-    │  ┌───────────────┴────────────────┐
-    │  │        4. POLL PHASE           │ 🌐 Hứng I/O mới & chạy callback đọc file/mạng
-    │  └───────────────┬────────────────┘
-    │                  │  👉 Vừa đọc file xong thì nhảy ngay xuống Check Phase!
-    │  ┌───────────────┴────────────────┐
-    │  │        5. CHECK PHASE          │ ⚡ setImmediate() độc quyền tại đây!
-    │  └───────────────┬────────────────┘
-    │  ┌───────────────┴────────────────┐
-    │  │    6. CLOSE CALLBACKS          │ 🚪 socket.on('close', ...)
-    └──┴────────────────────────────────┘
-```
-
-### 🔍 Chi Tiết 4 Pha Quan Trọng Nhất:
-1. **Timers Phase:**  
-   Node.js kiểm tra cấu trúc Min-Heap để lấy ra các timer (`setTimeout`, `setInterval`) đã hết hạn (expired) và chạy callback của chúng.
-2. **Poll Phase (Pha bận rộn nhất):**  
-   - Tính toán xem cần ngủ (block) bao lâu để chờ I/O mới từ OS Kernel.
-   - Chạy các callback I/O đã hoàn thành (ví dụ: dữ liệu đọc từ socket mạng hoặc disk đã về).
-3. **Check Phase:**  
-   - Dành riêng cho `setImmediate()`. Chạy ngay lập tức sau khi Poll Phase kết thúc.
-4. **Close Callbacks:**  
-   - Thực thi các callback dọn dẹp khi kết nối bị đóng đột ngột: `socket.on('close')`.
+> 📌 **Câu trả lời phỏng vấn kinh điển:** *"Node.js is single-threaded for JavaScript execution, but the underlying C++ runtime managed by Libuv is multi-threaded. Network I/O goes through the non-blocking OS kernel, while heavy operations like file access and cryptography use a background thread pool."*
 
 ---
 
-## ⚡ Phần 3: Phân Cấp Ưu Tiên (Execution Hierarchy)
+## 📬 Phần 2: Phe Vé Thường (Macrotasks) — 4 Hộp Thư Inbox Của Event Loop
 
-Trước khi Event Loop chuyển từ pha này sang pha khác, có **2 hàng đợi VIP (Microtasks)** luôn được quyền **chen ngang**:
+### 💡 Cả 4 hộp này cùng chung một cái tên lớn: MACROTASK QUEUE
+*(hay còn gọi là **Task Queue** hoặc **Callback Queue**)*
 
-```text
-CẤP 1 (Tối cao): Call Stack (Code đồng bộ chạy từ trên xuống dưới)
-       │
-       ▼
-CẤP 2 (VIP 1): process.nextTick Queue
-       │
-       ▼
-CẤP 3 (VIP 2): Promise Microtask Queue (Promise.then, async/await, queueMicrotask)
-       │
-       ▼
-CẤP 4 (Bình dân): Event Loop 6 Pha (setTimeout, setImmediate, I/O callbacks)
+Trong thế giới JavaScript, toàn bộ các tác vụ bất đồng bộ thực ra chỉ chia làm **2 phe lớn**:
+* 👑 **Phe VIP (Microtasks):** `process.nextTick`, `Promise.then` — luôn được ưu tiên chen ngang phục vụ trước (xem chi tiết ở Phần 3).
+* 🎟️ **Phe Vé Thường (Macrotasks):** Tất cả những tác vụ còn lại (`setTimeout`, `setImmediate`, đọc file, nhận data mạng...).
+
+> 🔄 **Khác biệt quan trọng giữa Trình duyệt và Node.js:**
+> * **Ở Trình duyệt (Browser):** Gom tất cả các tác vụ Macrotask vào **đúng 1 hàng đợi duy nhất** (`Macrotask Queue`).
+> * **Ở Node.js (Backend / Libuv):** Để điều phối hiệu quả, Libuv **chia nhỏ Macrotask thành 4 hộp thư chuyên biệt** tuần hoàn theo chiều kim đồng hồ:
+
+### Hình dung trước:
+
+Sau khi nhóm hỗ trợ xong việc, họ **không đến tay giao dịch viên ngay** — họ bỏ kết quả vào **4 hộp thư Macrotask riêng** trên bàn làm việc. Giao dịch viên sẽ xử lý hộp thư theo **thứ tự cố định, từ trái sang phải, lặp đi lặp lại**:
+
+```
+  ┌──────────────────────────────────────────────────────────┐
+  │              BÀN LÀM VIỆC CỦA GIAO DỊCH VIÊN            │
+  │                                                          │
+  │  ┌───────────┐  ┌───────────┐  ┌──────────┐  ┌────────┐ │
+  │  │ 📬 HỘP 1  │→ │ 📬 HỘP 2  │→ │ 📬 HỘP 3 │→ │📬 HỘP 4│ │
+  │  │  TIMER    │  │   I/O     │  │  CHECK   │  │ CLOSE  │ │
+  │  │           │  │           │  │(setImm.) │  │        │ │
+  │  └───────────┘  └───────────┘  └──────────┘  └────────┘ │
+  │       ↑_______________________________________________↵   │
+  │                      (vòng lặp liên tục)                 │
+  └──────────────────────────────────────────────────────────┘
 ```
 
-### 🧠 Quy Tắc Vận Hành:
-1. V8 Call Stack chạy sạch toàn bộ code đồng bộ.
-2. Trước khi bước vào MỖI pha của Event Loop, V8 luôn quay lại kiểm tra và dọn sạch:
-   - Toàn bộ `process.nextTick` trước.
-   - Toàn bộ `Promise.then` sau.
-3. Chỉ khi cả 2 hàng đợi Microtask này **rỗng hoàn toàn**, Event Loop mới được đi tiếp sang pha tiếp theo!
+Mỗi vòng, giao dịch viên lần lượt kiểm tra từng hộp, xử lý hết rồi chuyển sang hộp tiếp theo.
 
-### 🚨 Bẫy Starvation (Làm đói Event Loop):
+### Chi tiết 4 hộp thư:
+
+**📬 Hộp 1 — TIMER QUEUE** *(chuông hẹn giờ)*  
+Chứa các callback của `setTimeout()` và `setInterval()`. Giống như cái chuông hẹn giờ trên bàn — khi chuông reo (timer hết hạn), giao dịch viên mới mở hộp này ra làm.
+
+**📬 Hộp 2 — I/O QUEUE** *(tài liệu từ phòng hồ sơ gửi lên)*  
+Khi nhóm hỗ trợ đọc file xong hoặc có phản hồi mạng về, họ bỏ kết quả vào đây. Callback của `fs.readFile()`, `http.request()`, v.v. đều chờ ở hộp này.
+
+**📬 Hộp 3 — CHECK QUEUE** *(ghi chú dán "làm ngay khi xong hộp 2")*  
+Dành riêng cho `setImmediate()`. Đây là hộp đặc biệt luôn được kiểm tra **ngay sau** Hộp 2 (I/O Queue). Rất hữu ích khi bạn muốn chạy code "ngay sau khi I/O xong" mà không cần chờ đến vòng lặp tiếp theo.
+
+**📬 Hộp 4 — CLOSE QUEUE** *(thủ tục đóng file)*  
+Chứa các callback dọn dẹp khi kết nối bị đóng: `socket.on('close')`, `stream.on('close')`. Giống như thủ tục ký giấy đóng hồ sơ trước khi kết thúc ca làm việc.
+
+> ℹ️ **Tài liệu chính thức Node.js nói "6 pha"** — 2 pha còn lại (*Idle/Prepare* và *Pending Callbacks*) là cơ chế nội bộ của Libuv, developer không tương tác trực tiếp. 4 hộp trên là những gì code của bạn thực sự chạy qua.
+
+---
+
+## 👑 Phần 3: 2 Cửa VIP — Microtask Queues Không Bao Giờ Xếp Hàng
+
+### Hình dung trước:
+
+Bên cạnh 4 hộp thư bình thường, quầy ngân hàng ANZ có **2 cửa VIP đặc biệt** không bao giờ phải xếp hàng:
+
+```
+                     BÀN GIAO DỊCH VIÊN
+                            │
+         ┌──────────────────┤
+         │                  │
+  ┌──────▼──────┐           │
+  │ 🚨 CỬA VIP 1│           │
+  │  Giám đốc   │ ← process.nextTick()
+  │  chi nhánh  │   "Dừng ngay! Tôi cần duyệt thứ này trước"
+  └──────┬──────┘           │
+         │ (GĐ ra rồi)      │
+  ┌──────▼──────┐           │
+  │ ⭐ CỬA VIP 2│           │
+  │  Khách VIP  │ ← Promise.then() / async-await
+  │  Platinum   │   "Không xếp hàng hộp thư thường đâu nhé"
+  └──────┬──────┘           │
+         │ (VIP ra rồi)     │
+         └──────────────────┘
+                │
+                ▼
+      Mới xử lý 4 hộp thư bình thường
+      (Timer → I/O → Check → Close)
+```
+
+### Quy tắc VIP (quan trọng nhất cần nhớ!):
+
+> **Sau MỖI tác vụ hoàn thành** — dù là tác vụ từ hộp nào — giao dịch viên đều phải **kiểm tra và xử lý hết cửa VIP 1, rồi VIP 2** trước khi lấy tác vụ tiếp theo!
+
+Cụ thể theo 3 bước:
+1. ✅ Code đồng bộ trên Call Stack chạy xong.
+2. 🚨 Dọn sạch **toàn bộ** `nextTickQueue` (cửa VIP 1 — `process.nextTick`).
+3. ⭐ Dọn sạch **toàn bộ** `promiseQueue` (cửa VIP 2 — `Promise.then`, `async/await`).
+4. 📬 **Mới được** lấy 1 tác vụ tiếp theo từ 4 hộp thư bình thường.
+
+### ⚠️ Bẫy Starvation — Khi Giám Đốc Không Bao Giờ Ra:
+
 ```javascript
-function starve() {
-  process.nextTick(starve); // Đệ quy liên tục
+// ❌ ĐỪNG BAO GIỜ LÀM THẾ NÀY trong production:
+function giamdocKhongBaoGioRa() {
+  process.nextTick(giamdocKhongBaoGioRa); // GĐ gọi thêm GĐ mãi mãi
 }
-starve();
-// Server bị "đóng băng" 100%, không nhận thêm bất kỳ request HTTP nào!
+giamdocKhongBaoGioRa();
+
+// Hậu quả: Server đứng hình 100%!
+// Hộp I/O không bao giờ được mở → khách hàng ngân hàng không giao dịch được!
 ```
-* **Tại sao?** Vì `nextTickQueue` không bao giờ rỗng, khiến Event Loop bị kẹt vĩnh viễn ở Cấp 2, không bao giờ bước chân được vào Pha Poll để nhận kết nối mạng mới!
+
+**Tại sao?** Cửa VIP 1 (`nextTickQueue`) không bao giờ rỗng → giao dịch viên mãi mắc kẹt ở đó → 4 hộp thư bình thường không bao giờ được xử lý → mọi kết nối mạng đứng chết.
 
 ---
 
-## 🛡️ Phần 4: "Don't Block the Event Loop" (Bẫy Production & Cách Hóa Giải)
+## 🧪 Phần 4: 3 Bài Tập Thực Hành — Đọc Code Như Giao Dịch Viên
 
-Vì JavaScript chỉ chạy trên 1 Main Thread duy nhất, nếu Main Thread bị chặn, **hàng nghìn khách hàng ngân hàng sẽ bị treo giao dịch cùng lúc**.
+Hãy luyện kỹ năng "truy vết" — đọc code và đoán ra console sẽ in gì theo thứ tự nào.
 
-### ❌ 4 Thủ Phạm Gây Nghẽn & Cách Xử Lý:
+---
 
-| Thủ phạm | Ví dụ thực tế | Cách giải quyết chuẩn Backend |
+### 📝 Bài 1: Phân Loại Tác Vụ Vào Đúng Hộp
+
+```javascript
+console.log('A - Sync Start');          // ← đây là gì?
+
+setTimeout(() => {
+  console.log('B - setTimeout');        // ← vào hộp nào?
+}, 0);
+
+Promise.resolve().then(() => {
+  console.log('C - Promise');           // ← vào đâu?
+});
+
+process.nextTick(() => {
+  console.log('D - nextTick');          // ← vào đâu?
+});
+
+console.log('E - Sync End');            // ← đây là gì?
+```
+
+#### Phân tích theo hình ảnh quầy ngân hàng:
+
+Khi code chạy, giao dịch viên xử lý từng dòng theo thứ tự từ trên xuống:
+
+| Bước | Giao dịch viên làm gì | In ra |
 |---|---|---|
-| **1. Hàm đồng bộ I/O** | `fs.readFileSync()`, `crypto.pbkdf2Sync()` trong request handler | **Tuyệt đối cấm!** Luôn dùng bản bất đồng bộ: `fs.promises.readFile()`, `crypto.pbkdf2()` có callback hoặc `await`. |
-| **2. Parse JSON dung lượng lớn** | `JSON.parse(hugePayload)` với file báo cáo giao dịch 200MB | Dùng kỹ thuật **Stream** và thư viện `stream-json` để parse từng chunk nhỏ, không nạp cả file vào RAM. |
-| **3. Thuật toán CPU nặng** | Tính toán ma trận rủi ro, mã hóa ảnh | Đẩy sang **`worker_threads`** hoặc tạo một Microservice riêng bằng Go/Rust. |
-| **4. Biểu thức Regex thảm họa (ReDoS)** | Regex lồng nhau `/(a+)+$/` gặp chuỗi độc hại | Dùng thư viện an toàn như `re2` hoặc giới hạn độ dài chuỗi kiểm tra. |
+| 1 | Thấy `console.log('A')` → làm ngay (code đồng bộ) | **A - Sync Start** |
+| 2 | Thấy `setTimeout` → đặt chuông hẹn giờ, bỏ callback vào 📬 Hộp 1 | *(chưa in)* |
+| 3 | Thấy `Promise.then` → gửi callback lên ⭐ Cửa VIP 2 | *(chưa in)* |
+| 4 | Thấy `process.nextTick` → gửi callback lên 🚨 Cửa VIP 1 | *(chưa in)* |
+| 5 | Thấy `console.log('E')` → làm ngay (code đồng bộ) | **E - Sync End** |
+| 6 | Hết việc trên bàn! Kiểm tra cửa VIP 1 trước → thấy `D` → làm | **D - nextTick** |
+| 7 | VIP 1 rỗng → kiểm tra VIP 2 → thấy `C` → làm | **C - Promise** |
+| 8 | Cả 2 VIP rỗng → mở 📬 Hộp 1 (Timer) → thấy `B` → làm | **B - setTimeout** |
 
----
-
-## 🗣️ Phần 5: Kịch Bản Tiếng Anh Phỏng Vấn ANZ (3 Câu Hỏi Đinh)
-
-Luyện tập trả lời to, dứt khoát 3 câu hỏi này theo phong cách Senior Engineer:
-
-### ❓ Câu 1: *"How does Node.js handle high concurrency despite being single-threaded?"*
-> *"Node.js executes JavaScript code on a single main thread using the V8 engine. However, high concurrency is achieved because Node.js delegates asynchronous I/O operations to either the **OS Kernel** or the **Libuv Thread Pool**.*  
-> *For network requests, it leverages kernel non-blocking mechanisms like `epoll` on Linux. For heavy operations like file system access and cryptography, it uses a pool of worker threads.*  
-> *Once an operation finishes, the event loop picks up the callback and executes it on the main thread. This prevents thread-context switching overhead and minimizes memory usage."*
-
----
-
-### ❓ Câu 2: *"What is the difference between setImmediate, setTimeout(fn, 0), and process.nextTick?"*
-> *"The key difference lies in their execution priority:*  
-> *1. **`process.nextTick`** is a microtask. It runs immediately after the current operation completes, before the event loop advances to any phase.*  
-> *2. **`setTimeout(fn, 0)`** is processed in the **Timers phase** of the event loop after its threshold expires.*  
-> *3. **`setImmediate`** runs in the **Check phase**, right after the **Poll phase**.*  
-> *Crucially, inside an I/O cycle like `fs.readFile`, `setImmediate` will always execute before `setTimeout` because the event loop transitions directly from the Poll phase to the Check phase."*
-
----
-
-### ❓ Câu 3: *"How do you prevent Event Loop blocking in a high-throughput Banking API?"*
-> *"To ensure the event loop remains responsive, I follow three strict rules:*  
-> *First, **never use synchronous I/O methods** like `fs.readFileSync` in request paths.*  
-> *Second, for large data transformations such as massive transaction exports, I use **Node.js Streams** instead of loading entire datasets into memory.*  
-> *Third, if CPU-bound computations are unavoidable—such as complex risk scoring—I offload them to **Worker Threads** or dedicated background worker services."*
-
----
-
-## 🎯 Tóm Tắt Trong 1 Bảng Nhớ Nhanh
-
-```text
-┌─────────────────┬───────────────────┬──────────────────────────────────┐
-│ CƠ CHẾ          │ VỊ TRÍ            │ MỤC ĐÍCH THỰC TẾ                 │
-├─────────────────┼───────────────────┼──────────────────────────────────┤
-│ Sync Code       │ V8 Call Stack     │ Chạy tức thời                    │
-│ process.nextTick│ nextTickQueue     │ Việc khẩn cấp, chạy trước pha mới│
-│ Promise.then    │ Microtask Queue   │ Kết quả async, chạy sau nextTick │
-│ setTimeout      │ Timers Phase      │ Hẹn giờ chạy sau X mili-giây     │
-│ setImmediate    │ Check Phase       │ Chạy ngay sau khi I/O hoàn thành │
-│ fs / crypto     │ Thread Pool (4)   │ Tác vụ nặng đẩy xuống C++ worker │
-│ HTTP / Socket   │ OS Kernel (epoll) │ Xử lý hàng vạn kết nối đồng thời │
-└─────────────────┴───────────────────┴──────────────────────────────────┘
+#### 🎯 Kết quả console:
+```
+A - Sync Start
+E - Sync End
+D - nextTick
+C - Promise
+B - setTimeout
 ```
 
+---
+
+### 📝 Bài 2: setTimeout(0) vs setImmediate — Câu Hỏi Bẫy Kinh Điển
+
+#### Kịch bản A: Đặt ở ngoài cùng (top-level)
+
+```javascript
+setTimeout(() => console.log('setTimeout'), 0);
+setImmediate(() => console.log('setImmediate'));
+```
+
+**Kết quả: NGẪU NHIÊN** — Có lúc `setTimeout` trước, có lúc `setImmediate` trước!
+
+**Tại sao lại ngẫu nhiên?**
+
+Hãy nghĩ thế này: Bạn vừa đặt chuông hẹn giờ **1 giây** (tức `setTimeout 0ms` thực chất bị hệ điều hành làm tròn thành tối thiểu **1ms**).
+
+Câu hỏi là: Khi giao dịch viên bắt đầu mở 📬 Hộp 1 (Timer), **chuông đã reo chưa?**
+- Nếu chương trình khởi động nhanh < 1ms → Chuông **chưa reo** → Hộp 1 bỏ qua → Nhảy sang 📬 Hộp 3 (Check) → **`setImmediate` chạy trước**.
+- Nếu khởi động chậm > 1ms → Chuông **đã reo** → 📬 Hộp 1 có việc → **`setTimeout` chạy trước**.
+
+#### Kịch bản B: Đặt BÊN TRONG I/O callback (đọc file)
+
+```javascript
+const fs = require('fs');
+
+fs.readFile(__filename, () => {
+  // Chúng ta đang trong 📬 Hộp 2 (I/O Queue) lúc này!
+  setTimeout(() => console.log('setTimeout'), 0);
+  setImmediate(() => console.log('setImmediate'));
+});
+```
+
+**Kết quả: LUÔN LUÔN `setImmediate` trước — 100% tất định!**
+
+**Tại sao lại chắc chắn?**
+
+Callback của `fs.readFile` đang chạy ở 📬 **Hộp 2 (I/O Queue)**. Sau khi Hộp 2 xong, giao dịch viên đi đâu tiếp theo?
+
+```
+→ Hộp 2 (I/O) xong
+→ Kiểm tra VIP (không có gì)
+→ Hộp 3 (CHECK / setImmediate) ← setImmediate chạy ở đây!
+→ Hộp 4 (Close)
+→ Vòng mới: Hộp 1 (Timer) ← setTimeout chạy ở đây, vòng sau!
+```
+
+`setImmediate` **luôn thắng** khi đặt trong I/O callback, vì nó ở hộp ngay sau!
+
+> 🎯 **Tip phỏng vấn:** Câu trả lời chuẩn là: *"Outside an I/O cycle, the order is non-deterministic due to timer resolution. But inside an I/O callback, `setImmediate` always wins because the Event Loop goes directly from I/O to the Check phase."*
+
+---
+
+### 📝 Bài 3: Quy Tắc Xen Kẽ — VIP Được Phục Vụ Sau Mỗi Tác Vụ
+
+```javascript
+setTimeout(() => {
+  console.log('Timer 1');               // Hộp 1, tác vụ đầu tiên
+  process.nextTick(() => {
+    console.log('NextTick in Timer 1'); // VIP 1 được đăng ký trong lúc làm Hộp 1
+  });
+}, 0);
+
+setTimeout(() => {
+  console.log('Timer 2');               // Hộp 1, tác vụ thứ hai
+}, 0);
+
+setImmediate(() => {
+  console.log('Immediate 1');           // Hộp 3
+  Promise.resolve().then(() => {
+    console.log('Promise in Immediate'); // VIP 2 trong lúc làm Hộp 3
+  });
+});
+```
+
+**Quy tắc quan trọng từ Node.js v11+:**  
+> Sau khi xử lý **mỗi callback đơn lẻ** trong bất kỳ hộp nào, giao dịch viên phải **ghé qua 2 cửa VIP** trước khi lấy callback tiếp theo — kể cả khi cả 2 callback đều cùng hộp!
+
+#### Truy vết từng bước:
+
+| Bước | Hành động | In ra |
+|---|---|---|
+| 1 | Mở 📬 Hộp 1, lấy `Timer 1` chạy | **Timer 1** |
+| 2 | `Timer 1` xong → thấy nextTick mới đăng ký → ghé VIP 1 | **NextTick in Timer 1** |
+| 3 | VIP xong → quay lại Hộp 1, lấy `Timer 2` chạy | **Timer 2** |
+| 4 | `Timer 2` xong → VIP rỗng → qua 📬 Hộp 3, lấy `Immediate 1` | **Immediate 1** |
+| 5 | `Immediate 1` xong → thấy Promise mới → ghé VIP 2 | **Promise in Immediate** |
+
+#### 🎯 Kết quả console:
+```
+Timer 1
+NextTick in Timer 1
+Timer 2
+Immediate 1
+Promise in Immediate
+```
+
+---
+
+## 🧵 Phần 5: Khi Nào Dùng Nhóm Hỗ Trợ? Khi Nào Gọi Hotline?
+
+### Hình dung lại:
+
+Giao dịch viên có **2 cách để không phải tự làm việc nặng:**
+- 🤙 **Gọi hotline OS** (nhanh, không tốn người): cho các tác vụ mạng như HTTP, TCP, Database connections.
+- 👨‍👩‍👦 **Giao việc cho nhóm hỗ trợ** (dùng 1 trong 4 người): cho các tác vụ đọc/ghi file, mã hóa, nén dữ liệu.
+
+### Bảng phân việc:
+
+| Loại tác vụ | Ai xử lý? | Tốn worker thread không? |
+|---|---|---|
+| HTTP request, Database query, TCP socket | **OS Kernel** (`epoll`/`kqueue`) | ❌ Không — kernel báo lại khi có data |
+| `fs.readFile`, `fs.writeFile` | **Thread Pool** | ✅ Chiếm 1 người trong nhóm 4 |
+| `crypto.pbkdf2`, `bcrypt` (mã hóa) | **Thread Pool** | ✅ Chiếm 1 người |
+| `zlib.gzip` (nén file) | **Thread Pool** | ✅ Chiếm 1 người |
+| `dns.lookup` (phân giải tên miền) | **Thread Pool** | ✅ Chiếm 1 người |
+
+### Thực nghiệm — 4 người nhóm hỗ trợ chạy song song:
+
+```javascript
+const crypto = require('crypto');
+const start = Date.now();
+
+// Đẩy 4 tác vụ mã hóa xuống Thread Pool cùng lúc:
+for (let i = 0; i < 4; i++) {
+  crypto.pbkdf2('secret', 'salt', 100000, 512, 'sha512', () => {
+    console.log(`Task ${i + 1} xong sau: ${Date.now() - start}ms`);
+  });
+}
+// Kết quả thực tế: Cả 4 hoàn thành gần cùng lúc (~70ms)
+// Nếu chạy tuần tự: phải mất ~280ms!
+```
+
+> 📌 **Tip nâng cao:** Trên server nhiều CPU (như AWS EC2 c5.4xlarge), bạn có thể tăng `UV_THREADPOOL_SIZE = 16` trong `process.env` để xử lý nhiều tác vụ file/crypto song song hơn cho batch processing dữ liệu ngân hàng.
+
+---
+
+## 🛡️ Phần 6: "Don't Block the Event Loop" — 4 Lỗi Gây Sập Hệ Thống Ngân Hàng
+
+### Hình dung:
+
+> **Giao dịch viên bị chiếm hết thời gian = toàn bộ hàng khách đứng chờ.**  
+> Trong Node.js, nếu Main Thread bị block, **mọi request HTTP đến đều không được xử lý** → timeout → khách hàng mất tiền, ngân hàng mất uy tín.
+
+### 4 Thủ Phạm & Cách Xử Lý:
+
+**❌ Thủ phạm 1: Giao dịch viên tự đi photocopy (Sync I/O)**
+```javascript
+// SAI — Giao dịch viên tự làm, block cả hàng:
+const data = fs.readFileSync('transactions.csv'); // ❌
+
+// ĐÚNG — Giao cho nhóm hỗ trợ, giao dịch viên tiếp tục phục vụ:
+const data = await fs.promises.readFile('transactions.csv'); // ✅
+```
+
+**❌ Thủ phạm 2: Mở cả tủ hồ sơ 500MB lên bàn một lúc (JSON khổng lồ)**
+```javascript
+// SAI — Nạp nguyên 500MB vào RAM, parse mất 10 giây:
+const report = JSON.parse(fs.readFileSync('annual-report.json')); // ❌
+
+// ĐÚNG — Đọc từng tờ một (stream):
+const stream = fs.createReadStream('annual-report.json').pipe(StreamJson.parser()); // ✅
+```
+
+**❌ Thủ phạm 3: Giao dịch viên tự tính điểm tín dụng cho 10,000 khách (CPU nặng)**
+```javascript
+// SAI — Block Main Thread hàng chục giây:
+const score = calculateCreditScore(hugeDataset); // ❌
+
+// ĐÚNG — Giao cho Worker Thread riêng:
+const { Worker } = require('worker_threads');
+new Worker('./credit-scoring-worker.js', { workerData: hugeDataset }); // ✅
+```
+
+**❌ Thủ phạm 4: Regex bẫy — hacker gửi chuỗi làm server tê liệt (ReDoS)**
+```javascript
+// SAI — Regex có thể bị khai thác để chạy mãi mãi:
+const isMalicious = /^(a+)+$/.test(userInput); // ❌ ReDoS vulnerability
+
+// ĐÚNG — Dùng thư viện an toàn hoặc giới hạn độ dài:
+const RE2 = require('re2');
+const safeRegex = new RE2(/^(a+)+$/);
+if (userInput.length < 1000) safeRegex.test(userInput); // ✅
+```
+
+---
+
+## 🗣️ Phần 7: Kịch Bản Tiếng Anh Phỏng Vấn ANZ — 3 Câu Hỏi Kinh Điển
+
+> **Mẹo:** Mở đầu mỗi câu bằng hình ảnh ngân hàng, sau đó chuyển sang thuật ngữ kỹ thuật. Nghe tự nhiên và gây ấn tượng mạnh với interviewer hơn là đọc thuộc lòng định nghĩa.
+
+---
+
+### ❓ Câu 1: *"How does Node.js handle high concurrency if it's single-threaded?"*
+
+> *"Great question. Think of Node.js like a bank counter with a single teller, but a very smart one. The teller never does heavy work themselves — they delegate.*
+>
+> *Technically: JavaScript runs on a single V8 main thread. But Node.js delegates I/O to the operating system kernel via non-blocking mechanisms like `epoll` on Linux, which can monitor thousands of connections without consuming any threads. For CPU-heavy operations like file access or cryptography, it uses a **Libuv thread pool** of 4 worker threads by default.*
+>
+> *So concurrency isn't achieved through multiple JS threads, but through smart delegation to the OS and background workers. The event loop then picks up results and executes callbacks on the main thread when they're ready."*
+
+---
+
+### ❓ Câu 2: *"What's the difference between setTimeout(fn, 0), setImmediate, and process.nextTick?"*
+
+> *"Three different 'inbox priorities' in the event loop:*
+>
+> *`process.nextTick` has the highest priority — it's like the branch manager walking in. The teller stops whatever they're doing and handles it immediately, before moving to the next task in any queue.*
+>
+> *`Promise.then` (and async/await) is second priority — like a VIP Platinum customer. Gets served before the regular queues, but after nextTick.*
+>
+> *`setTimeout(fn, 0)` goes into the Timer Queue and only runs when the OS timer fires — minimum ~1ms, not truly 'zero'.*
+>
+> *`setImmediate` goes into the Check Queue, which runs right after the I/O Queue. So inside an I/O callback like `fs.readFile`, `setImmediate` is guaranteed to run before `setTimeout(fn, 0)` because the event loop goes directly from I/O to Check phase, not back to the Timer phase."*
+
+---
+
+### ❓ Câu 3: *"How do you prevent event loop blocking in a high-throughput banking API?"*
+
+> *"I follow four non-negotiables in production banking systems:*
+>
+> *First, **zero synchronous I/O** in any request path. `fs.readFileSync`, `crypto.pbkdf2Sync` — completely forbidden. Everything is async/await or callback-based.*
+>
+> *Second, for large data operations like transaction exports or statement generation, I use **Node.js Streams with backpressure**. Never load a 500MB file into memory with `JSON.parse`.*
+>
+> *Third, any CPU-intensive computation — risk scoring, bulk encryption — gets offloaded to **Worker Threads** or an isolated microservice, keeping the main thread free for incoming requests.*
+>
+> *Fourth, I audit all regular expressions for **ReDoS vulnerabilities** using tools like `safe-regex`, and enforce input length limits before any regex validation runs."*
+
+---
+
+## 🎯 Phần 8: Cheat-Sheet — Nhìn Là Nhớ Ngay
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     EXECUTION PRIORITY (Top = Chạy Trước)              │
+├──────────────────────┬───────────────────┬──────────────────────────────┤
+│ CƠ CHẾ               │ HÌNH ẢNH          │ KHI NÀO CHẠY                │
+├──────────────────────┼───────────────────┼──────────────────────────────┤
+│ [ĐỒNG BỘ] Sync Code  │ Việc trên bàn     │ Ngay lập tức                 │
+├──────────────────────┴───────────────────┴──────────────────────────────┤
+│ 👑 PHE VIP (MICROTASKS) — Chen ngang dọn sạch sau mỗi tác vụ            │
+├──────────────────────┬───────────────────┬──────────────────────────────┤
+│ • process.nextTick   │ 🚨 Giám đốc vào   │ Ưu tiên 1: Chạy trước hết    │
+│ • Promise.then/await │ ⭐ Khách VIP       │ Ưu tiên 2: Sau nextTick      │
+├──────────────────────┴───────────────────┴──────────────────────────────┤
+│ 🎟️ PHE VÉ THƯỜNG (MACROTASKS) — 4 Hộp thư luân phiên của Event Loop     │
+├──────────────────────┬───────────────────┬──────────────────────────────┤
+│ • setTimeout         │ ⏰ Chuông hẹn giờ  │ 📬 Hộp 1: Khi timer hết hạn │
+│ • fs / http callbacks│ 📨 Thư từ hỗ trợ  │ 📬 Hộp 2: Khi I/O xong      │
+│ • setImmediate       │ 📌 Ghi chú dán     │ 📬 Hộp 3: Ngay sau Hộp 2    │
+│ • socket.on('close') │ 📁 Đóng hồ sơ     │ 📬 Hộp 4: Dọn dẹp cuối vòng │
+├──────────────────────┴───────────────────┴──────────────────────────────┤
+│ ⚙️ TẦNG HẠ TẦNG C++ (LIBUV & OS KERNEL)                                  │
+├──────────────────────┬───────────────────┬──────────────────────────────┤
+│ • Network / TCP / DB │ ☎️ Hotline OS      │ Non-blocking, kernel báo về  │
+│ • fs / crypto / dns  │ 👨‍👩‍👦 Nhóm hỗ trợ  │ Thread Pool (mặc định 4)     │
+└──────────────────────┴───────────────────┴──────────────────────────────┘
+
+📌 Bộ nhớ nhanh:
+   Sync → nextTick → Promise → Timer → I/O → setImmediate → Close
+   (Giám đốc → VIP Platinum → Chuông hẹn giờ → Hồ sơ đến → Ghi chú → Đóng file)
+```
