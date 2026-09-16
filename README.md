@@ -69,10 +69,10 @@
 ## 📊 Bảng Theo Dõi Tiến Độ (Progress Dashboard)
 
 ### Pilot Week (Tuần này - Thử nghiệm Workflow & Tooling)
-- [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner, [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md) & [Cẩm nang ôn tập Ngày 1](file:///home/samnguyen/projects/training-anz/notes/day-01-core-concepts-and-two-pointers.md)
-- [ ] Day 2 (Thứ 3): Review System Design Template & Redis Cache-Aside concept
-- [ ] Day 3 (Thứ 4): Practice Two Pointers In-place variation
-- [ ] Day 4 (Thứ 5): Review Node.js Event Loop 6 phases
+- [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner, [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md) & [Valid Palindrome](file:///home/samnguyen/projects/training-anz/coding/week-01/02-valid-palindrome.md)
+- [x] Day 2 (Thứ 3): [Node.js Internals: Libuv & Event Loop Architecture](file:///home/samnguyen/projects/training-anz/notes/week-01/day-02-event-loop-architecture.md)
+- [x] Day 3 (Thứ 4): [Two Sum II: In-place Two Pointers on Sorted Array](file:///home/samnguyen/projects/training-anz/coding/week-01/03-two-sum-sorted.md) & [Cẩm nang 2 Biến thể Two Pointers](file:///home/samnguyen/projects/training-anz/notes/week-01/day-03-two-pointers-patterns.md)
+- [ ] Day 4 (Thứ 5): Review Node.js Event Loop Microtasks vs Macrotasks Deep Dive
 - [ ] Day 5 (Thứ 6): Review STAR Story 1 (Technical Disagreement)
 - [ ] Day 6 (Thứ 7): Pilot Retrospective & Ready for Official Week 1
 
