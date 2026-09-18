@@ -1,23 +1,20 @@
 ---
 name: Training ANZ Project Rules
-description: Project guidelines, native JS rules, and workflow standards for Gemini and Antigravity agents in training-anz.
+description: Project guidelines and state references for Antigravity agents in training-anz.
 ---
 
-# 🛡️ Training ANZ - Project Guidelines & SOP Extensions
+# 🛡️ Training ANZ — Agent Guidelines
 
-When working in this repository, the agent must adhere to the Core SOP in combination with the following project-specific standards:
+When working in this repository, adhere to the Core SOP plus these project-specific standards:
 
-## 1. Authoritative Guidelines & State
-- **Primary Agent Guide**: Refer to [`AGENTS.md`](./AGENTS.md) for full protocol details.
-- **Plan Writing Standard**: All technical plans must adhere to [`docs/PLAN_STANDARD.md`](./docs/PLAN_STANDARD.md).
-- **Active State Ledger**: Always inspect and maintain [`docs/AGENT_STATE.md`](./docs/AGENT_STATE.md) upon session start, pause ("Lưu bàn giao"), and conclusion ("Kết bàn giao").
-- **Active Plans Registry**: Check and maintain [`docs/plans/_ACTIVE.md`](./docs/plans/_ACTIVE.md).
+## 1. Authoritative State & Documentation
 
-## 2. Core Technical Constraints
-- **Native JavaScript Only**: Strictly zero external dependencies. Only native modules (`node:assert`, `node:crypto`, `node:fs`) are permitted.
-- **Execution & Test Runner**: Use `npm test` or direct node invocation `node <path-to-test>.test.js`. Do NOT install or run Jest, Mocha, or Babel.
-- **Test-First Discipline**: Always implement test cases in `*.test.js` before writing solutions in `*.js`.
-- **Line 1 Guard Clauses**: Mandatory validation of `null`, `undefined`, and boundary cases at the very start of functions.
-- **No In-Loop Array Mutations**: Do not use `splice()` or `unshift()` inside loops ($O(n^2)$ trap).
-- **6-Step English Communication Framework**: All algorithm documentation (`*.md`) must include the 6-step script: Clarify, Brute-Force, Optimize, Think Out Loud, Dry Run, Conclusion.
+- **Agent Guide**: [`AGENTS.md`](./AGENTS.md) — full protocol, task types, standup format.
+- **Plan Standard**: [`docs/PLAN_STANDARD.md`](./docs/PLAN_STANDARD.md)
+- **Active State Ledger**: [`docs/AGENT_STATE.md`](./docs/AGENT_STATE.md) — read on session start; update on pause/close.
+- **Active Plans**: [`docs/plans/_ACTIVE.md`](./docs/plans/_ACTIVE.md)
 
+## 2. Coding Standards
+
+See [`.agents/rules/js-coding-standards.md`](./.agents/rules/js-coding-standards.md) —
+loaded automatically when editing `*.js` files (glob-triggered).

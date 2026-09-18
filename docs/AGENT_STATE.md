@@ -2,35 +2,36 @@
 
 ## 🚦 TRẠNG THÁI HIỆN TẠI (Current State)
 
-- **Task Type**: `Research` → **Pilot Week: Day 4 Microtasks vs Macrotasks & Starvation Hoàn tất**
+- **Task Type**: `Coding` / `Meta Data` → **Pilot Day 5 & Tối ưu Agent Config Hoàn tất**
 - **Status**: `Closed`
-- **Task:** Hoàn tất Day 4: Deep dive Microtasks (`nextTickQueue` vs `microtaskQueue`) vs Macrotasks, hiện tượng Event Loop Starvation, kiểm chứng Node 11+ per-callback microtask flush; test suite `architecture/week-01/04-microtasks-macrotasks.test.js` PASS 4/4; cẩm nang `notes/week-01/day-04-microtasks-macrotasks.md` hoàn thiện.
-- **Phase:** Hoàn thành Day 4 (Pilot Week). Sẵn sàng cho Day 5 (STAR Story 1).
-- **Handoff:** `PILOT_DAY_04_MICROTASKS_MACROTASKS_COMPLETED`.
-- **Branch:** `research/week-01-day-04-microtasks-macrotasks` (sẵn sàng commit & PR vào `main`).
+- **Task:** Hoàn tất bài 04 Two Sum & Contains Duplicate (One-Pass Hash Map $O(n)$ và Early-Exit Set; 12/12 native tests PASS; 44/44 regression PASS); Triển khai Skill `technical-skepticism` chống Sycophancy toàn hệ sinh thái; Tách rule `.agents/rules/js-coding-standards.md` với `trigger: glob`. Toàn bộ đã commit và push thành công lên origin.
+- **Phase:** Hoàn thành Day 5. Sẵn sàng cho Day 6 (Pilot Retrospective & STAR Preparation).
+- **Handoff:** `PILOT_DAY_05_AND_AGENT_CONFIG_COMPLETED`.
+- **Branch:** `feature/week-01-day-05-two-sum-hash` (đã push origin, sẵn sàng merge PR vào `main`).
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
-1. **Location:** `architecture/week-01/04-microtasks-macrotasks.test.js`, `notes/week-01/day-04-microtasks-macrotasks.md`, `package.json`, `README.md`.
+1. **Location:** `coding/week-01/04-two-sum-hash.{js,test.js,md}`, `.agents/rules/js-coding-standards.md`, `GEMINI.md`, `~/.gemini/config/skills/technical-skepticism/`.
 2. **Completed vs pending:**
-   - **Completed:** Move Zeroes (Day 1), Valid Palindrome (Day 1), Libuv Event Loop (Day 2), Two Sum II (Day 3), Microtasks vs Macrotasks & Starvation (Day 4); 100% native tests pass (32/32 checkpoints); full regression `npm test` PASS.
-   - **Pending:** Day 5: Behavioral interview STAR Story 1 (Technical Disagreement); Day 6: Full week retrospective.
-3. **Exact next step:** Khởi động kế hoạch Day 5 (`docs/plans/pilot-day-05-star-behavioral-story-1.md`) về STAR Story 1.
+   - **Completed:** Toàn bộ nội dung Day 1 đến Day 5 (44/44 test assertions PASS 100%); Nâng cấp Agent chống Sycophancy và tối ưu token với glob trigger; Đã push 2 commit lên remote branch `feature/week-01-day-05-two-sum-hash`.
+   - **Pending:** Merge PR vào `main`; Bắt đầu Day 6: Pilot Retrospective & STAR Preparation.
+3. **Exact next step:** Khởi động buổi tổng kết Pilot Week Retrospective (Day 6).
 4. **Gotchas & Constraints:**
-   - Sử dụng native Node.js (`node:assert`, `node:crypto`), tuyệt đối không cài external libraries.
-   - Khi viết async tests kiểm tra microtask priority trong `runAllTests()`, bọc phần khởi chạy trong `setImmediate` để tránh bị rò rỉ context Promise microtask của `await`.
-   - Luôn đặt Guard clause ở dòng 1 của mọi hàm xử lý.
-   - Tránh dùng `splice()` hoặc `unshift()` trong vòng lặp ($O(n^2)$ trap).
+   - Sử dụng native Node.js (`node:assert`, `node:crypto`), không cài external dependencies.
+   - Luôn đặt Guard clause ở dòng 1 của mọi hàm giải thuật.
+   - `GEMINI.md` luôn `always_on` cấp cao; các rule theo ngôn ngữ đặt tại `.agents/rules/` với `trigger: glob`.
+   - Skill `technical-skepticism` tự động kích hoạt khi có yêu cầu review thiết kế hoặc debug sâu.
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
 
-*(Khu vực ghi nhận tích lũy giữa các phiên làm việc trong ngày theo lệnh "Lưu bàn giao")*
+*(Đã tổng kết và làm sạch vào Trạng Thái Hiện Tại theo lệnh "Kết bàn giao")*
 
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 
-- **2026-09-17:** `PILOT_DAY_04_MICROTASKS_MACROTASKS_COMPLETED` - Hoàn thành kiểm chứng Microtasks vs Macrotasks, cơ chế Starvation và kỹ thuật cooperative chunking với setImmediate, pass 4/4 test cases, biên soạn cẩm nang Sev-1 incident và kịch bản STAR tiếng Anh.
-- **2026-09-17:** `AGENT_FRAMEWORK_SYNCHRONIZED` - Khởi tạo bộ tài liệu Agent, quy chuẩn lập kế hoạch `PLAN_STANDARD.md`, sổ cái `AGENT_STATE.md`, bảng registry `_ACTIVE.md`, và các chỉ dẫn đồng bộ từ extract-doc-product.
-- **2026-09-16:** `PILOT_DAY_03_TWO_SUM_II_COMPLETED` - Hoàn thành giải thuật Two Sum II với Two Pointers, 7/7 test cases pass, kịch bản tiếng Anh 6 bước và cẩm nang phân loại 2 biến thể con trỏ.
-- **2026-09-15:** `PILOT_DAY_02_EVENT_LOOP_VERIFIED` - Kiểm chứng kiến trúc Libuv Event Loop 6 pha, thứ tự ưu tiên Sync -> nextTick -> Promise -> Timer -> Check, đo Thread Pool với 4 crypto task parallel pass.
+- **2026-09-18:** `PILOT_DAY_05_AND_AGENT_CONFIG_COMPLETED` - Hoàn thành giải thuật Two Sum & Contains Duplicate (12/12 TCs, regression 44/44), triển khai Skill technical-skepticism và rule js-coding-standards glob.
+- **2026-09-17:** `PILOT_DAY_04_MICROTASKS_MACROTASKS_COMPLETED` - Kiểm chứng Microtasks vs Macrotasks, cơ chế Starvation và cooperative chunking với setImmediate, pass 4/4 test cases (PR #19 merged).
+- **2026-09-17:** `AGENT_FRAMEWORK_SYNCHRONIZED` - Khởi tạo bộ tài liệu Agent, PLAN_STANDARD.md, AGENT_STATE.md, _ACTIVE.md.
+- **2026-09-16:** `PILOT_DAY_03_TWO_SUM_II_COMPLETED` - Hoàn thành Two Sum II với Two Pointers, 7/7 test cases pass, kịch bản tiếng Anh 6 bước.
+- **2026-09-15:** `PILOT_DAY_02_EVENT_LOOP_VERIFIED` - Kiểm chứng kiến trúc Libuv Event Loop 6 pha, đo Thread Pool với 4 crypto task parallel pass.
 - **2026-09-14:** `PILOT_DAY_01_SETUP_AND_MOVE_ZEROES` - Khởi tạo repo, thiết lập CI GitHub Actions với matrix Node 18/20, PR Automation, giải bài 01 Move Zeroes và 02 Valid Palindrome.
 
