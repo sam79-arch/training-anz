@@ -46,6 +46,7 @@
 | `pilot-day-02-libuv-event-loop.md` | `New Request` | `Closed` | 2026-09-15 | `main` | PR #17 / Commit `53b7d29` |
 | `pilot-day-03-two-sum-sorted.md` | `New Request` | `Closed` | 2026-09-16 | `main` | Commit `afabb48` |
 | `pilot-day-04-event-loop-microtasks.md` | `Research` | `Closed` | 2026-09-17 | `main` | Issue #12 Verification & Notes |
+| `pilot-day-05-two-sum-hash.md` | `New Request` | `Closed` | 2026-09-18 | `main` | Issue #13 Implementation & Notes |
 
 ---
 

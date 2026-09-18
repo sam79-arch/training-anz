@@ -4,13 +4,14 @@
   "description": "PBL-driven Backend Interview Prep in JavaScript | Target: HCLTech x ANZ (DSA, Node.js Internals & System Design)",
   "main": "coding/week-01/01-move-zeroes.js",
   "scripts": {
-    "test": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js && node coding/week-01/03-two-sum-sorted.test.js && node architecture/week-01/03-event-loop-phases.test.js && node architecture/week-01/04-microtasks-macrotasks.test.js",
+    "test": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js && node coding/week-01/03-two-sum-sorted.test.js && node architecture/week-01/03-event-loop-phases.test.js && node architecture/week-01/04-microtasks-macrotasks.test.js && node coding/week-01/04-two-sum-hash.test.js",
     "test:01": "node coding/week-01/01-move-zeroes.test.js",
     "test:02": "node coding/week-01/02-valid-palindrome.test.js",
     "test:03": "node coding/week-01/03-two-sum-sorted.test.js",
     "test:04": "node architecture/week-01/04-microtasks-macrotasks.test.js",
+    "test:05": "node coding/week-01/04-two-sum-hash.test.js",
     "test:event-loop": "node architecture/week-01/03-event-loop-phases.test.js",
-    "test:all": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js && node coding/week-01/03-two-sum-sorted.test.js && node architecture/week-01/03-event-loop-phases.test.js && node architecture/week-01/04-microtasks-macrotasks.test.js"
+    "test:all": "node coding/week-01/01-move-zeroes.test.js && node coding/week-01/02-valid-palindrome.test.js && node coding/week-01/03-two-sum-sorted.test.js && node architecture/week-01/03-event-loop-phases.test.js && node architecture/week-01/04-microtasks-macrotasks.test.js && node coding/week-01/04-two-sum-hash.test.js"
   },
   "keywords": [
     "anz",
