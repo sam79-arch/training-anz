@@ -72,7 +72,7 @@
 - [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner, [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md) & [Valid Palindrome](file:///home/samnguyen/projects/training-anz/coding/week-01/02-valid-palindrome.md)
 - [x] Day 2 (Thứ 3): [Node.js Internals: Libuv & Event Loop Architecture](file:///home/samnguyen/projects/training-anz/notes/week-01/day-02-event-loop-architecture.md)
 - [x] Day 3 (Thứ 4): [Two Sum II: In-place Two Pointers on Sorted Array](file:///home/samnguyen/projects/training-anz/coding/week-01/03-two-sum-sorted.md) & [Cẩm nang 2 Biến thể Two Pointers](file:///home/samnguyen/projects/training-anz/notes/week-01/day-03-two-pointers-patterns.md)
-- [ ] Day 4 (Thứ 5): Review Node.js Event Loop Microtasks vs Macrotasks Deep Dive
+- [x] Day 4 (Thứ 5): [Node.js Internals: Microtasks vs Macrotasks & Starvation](notes/week-01/day-04-microtasks-macrotasks.md)
 - [ ] Day 5 (Thứ 6): Review STAR Story 1 (Technical Disagreement)
 - [ ] Day 6 (Thứ 7): Pilot Retrospective & Ready for Official Week 1
 

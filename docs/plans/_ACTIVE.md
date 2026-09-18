@@ -1,0 +1,56 @@
+# Active Plans Registry & Status Board
+
+> **Source of Truth**: Registry of all plans in the repository categorized by the **5 Lifecycle Statuses** (`In Processing`, `Open`, `Pending`, `Cancelled`, `Closed`) and **16 Standard Task Types**.
+> **EOD Rule**: Update the status of processed plans at the end of each working day or during handoff.
+
+---
+
+## 🚀 1. In Processing Plans (Đang thực hiện)
+
+| Plan File | Task Type | Status | Branch | Description |
+|---|---|---|---|---|
+| *(None currently)* | — | `In Processing` | — | Active plan currently being implemented |
+
+---
+
+## 📌 2. Open Plans (Sẵn sàng thực hiện / Backlog)
+
+| Plan File | Task Type | Status | Target Branch | Description |
+|---|---|---|---|---|
+| `pilot-day-05-star-behavioral-story-1.md` | `Training` | `Open` | `main` | Day 5: Behavioral interview STAR story on Technical Disagreement |
+
+---
+
+## ⏳ 3. Pending Plans (Tạm dừng / Chờ làm rõ / Blocker)
+
+| Plan File | Task Type | Status | Blocker / Reason | Description |
+|---|---|---|---|---|
+| *(None currently)* | — | `Pending` | — | Paused plans awaiting confirmation |
+
+---
+
+## 🚫 4. Cancelled Plans (Đã hủy / Không cần làm)
+
+| Plan File | Task Type | Status | Cancellation Reason | Description |
+|---|---|---|---|---|
+| *(None currently)* | — | `Cancelled` | — | Obsolete or superseded plans |
+
+---
+
+## ✅ 5. Closed Plans (Đã hoàn tất & Đóng)
+
+| Plan File | Task Type | Status | Completed Date | Target Branch | Commit / PR |
+|---|---|---|---|---|---|
+| `pilot-day-01-move-zeroes.md` | `New Request` | `Closed` | 2026-09-14 | `main` | PR #16 / Commit `8fe6cfb` |
+| `pilot-day-01-valid-palindrome.md` | `New Request` | `Closed` | 2026-09-14 | `main` | PR #15 / Commit `2e85dd9` |
+| `pilot-day-02-libuv-event-loop.md` | `New Request` | `Closed` | 2026-09-15 | `main` | PR #17 / Commit `53b7d29` |
+| `pilot-day-03-two-sum-sorted.md` | `New Request` | `Closed` | 2026-09-16 | `main` | Commit `afabb48` |
+| `pilot-day-04-event-loop-microtasks.md` | `Research` | `Closed` | 2026-09-17 | `main` | Issue #12 Verification & Notes |
+
+---
+
+## 🏷️ Standard Task Types & Status Quick Reference
+
+- **Statuses**: `Open` (Ready), `In Processing` (WIP), `Pending` (Blocked/Hold), `Cancelled` (Discarded), `Closed` (Done).
+- **Task Types**: `Bug Fixing`, `Data Handling`, `Consulting`, `Modification`, `Customization`, `New Request`, `Support`, `Maintenance`, `Meta Data`, `DBMS Execution`, `Documentation`, `Reporting`, `Troubleshooting`, `Testing`, `Training`, `Research`.
+
