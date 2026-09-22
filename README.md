@@ -74,7 +74,7 @@
 - [x] Day 3 (Thứ 4): [Two Sum II: In-place Two Pointers on Sorted Array](file:///home/samnguyen/projects/training-anz/coding/week-01/03-two-sum-sorted.md) & [Cẩm nang 2 Biến thể Two Pointers](file:///home/samnguyen/projects/training-anz/notes/week-01/day-03-two-pointers-patterns.md)
 - [x] Day 4 (Thứ 5): [Node.js Internals: Microtasks vs Macrotasks & Starvation](notes/week-01/day-04-microtasks-macrotasks.md)
 - [x] Day 5 (Thứ 6): [Two Sum & Contains Duplicate (Hashing Space-Time Tradeoff)](coding/week-01/04-two-sum-hash.md) & [Cẩm nang Hash Table & V8 Internals](notes/week-01/day-05-hash-table-patterns.md)
-- [ ] Day 6 (Thứ 7): Pilot Retrospective & Ready for Official Week 1
+- [x] Day 6 (Thứ 7): [Behavioral STAR Story 1 (Technical Disagreement)](notes/week-01/day-06-behavioral-star-story-1.md) & [Pilot Week Retrospective](notes/week-01/day-06-pilot-retrospective.md)
 
 ### Lộ trình 12 Tuần Chính Thức (Bắt đầu Thứ 2 tuần sau)
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
