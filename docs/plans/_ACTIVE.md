@@ -17,7 +17,7 @@
 
 | Plan File | Task Type | Status | Target Branch | Description |
 |---|---|---|---|---|
-| `pilot-day-05-star-behavioral-story-1.md` | `Training` | `Open` | `main` | Day 5: Behavioral interview STAR story on Technical Disagreement |
+| *(None currently)* | — | `Open` | — | Backlog plans ready to be picked up |
 
 ---
 
@@ -47,6 +47,7 @@
 | `pilot-day-03-two-sum-sorted.md` | `New Request` | `Closed` | 2026-09-16 | `main` | Commit `afabb48` |
 | `pilot-day-04-event-loop-microtasks.md` | `Research` | `Closed` | 2026-09-17 | `main` | Issue #12 Verification & Notes |
 | `pilot-day-05-two-sum-hash.md` | `New Request` | `Closed` | 2026-09-18 | `main` | Issue #13 Implementation & Notes |
+| `pilot-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-22 | `main` | Issue #14 Implementation & Notes |
 
 ---
 
