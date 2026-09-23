@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| *(None currently)* | — | `In Processing` | — | Active plan currently being implemented |
+| `week-02-day-01-valid-anagram.md` | `New Request` | `In Processing` | `feature/week-02-day-01-valid-anagram` | Week 2 Day 1: Valid Anagram (#242) and Group Anagrams (#49) using Frequency Hashing |
 
 ---
 

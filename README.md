@@ -68,7 +68,7 @@
 
 ## 📊 Bảng Theo Dõi Tiến Độ (Progress Dashboard)
 
-### Pilot Week (Tuần này - Thử nghiệm Workflow & Tooling)
+### Pilot Week (Thử nghiệm Workflow & Tooling - Hoàn tất 100%)
 - [x] Day 1 (Thứ 2): Setup Repo, GitHub Actions, Native Test Runner, [Move Zeroes](file:///home/samnguyen/projects/training-anz/coding/week-01/01-move-zeroes.md) & [Valid Palindrome](file:///home/samnguyen/projects/training-anz/coding/week-01/02-valid-palindrome.md)
 - [x] Day 2 (Thứ 3): [Node.js Internals: Libuv & Event Loop Architecture](file:///home/samnguyen/projects/training-anz/notes/week-01/day-02-event-loop-architecture.md)
 - [x] Day 3 (Thứ 4): [Two Sum II: In-place Two Pointers on Sorted Array](file:///home/samnguyen/projects/training-anz/coding/week-01/03-two-sum-sorted.md) & [Cẩm nang 2 Biến thể Two Pointers](file:///home/samnguyen/projects/training-anz/notes/week-01/day-03-two-pointers-patterns.md)
@@ -76,7 +76,15 @@
 - [x] Day 5 (Thứ 6): [Two Sum & Contains Duplicate (Hashing Space-Time Tradeoff)](coding/week-01/04-two-sum-hash.md) & [Cẩm nang Hash Table & V8 Internals](notes/week-01/day-05-hash-table-patterns.md)
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 1 (Technical Disagreement)](notes/week-01/day-06-behavioral-star-story-1.md) & [Pilot Week Retrospective](notes/week-01/day-06-pilot-retrospective.md)
 
-### Lộ trình 12 Tuần Chính Thức (Bắt đầu Thứ 2 tuần sau)
+### Tuần 2: Advanced Hashing, Two Pointers Medium & Node.js Streams
+- [x] Day 1 (Thứ 2): [Valid Anagram & Group Anagrams (Frequency Hashing)](coding/week-02/01-valid-anagram.md) & [Cẩm nang Frequency Hashing](notes/week-02/day-01-frequency-hashing.md)
+- [ ] Day 2 (Thứ 3): 3Sum — Ba số có tổng bằng 0 (LeetCode #15)
+- [ ] Day 3 (Thứ 4): Container With Most Water (LeetCode #11)
+- [ ] Day 4 (Thứ 5): Longest Substring Without Repeating Characters (LeetCode #3)
+- [ ] Day 5 (Thứ 6): Node.js Streams & Backpressure Architecture
+- [ ] Day 6 (Thứ 7): Behavioral STAR Story 2: Severity-1 Production Incident
+
+### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
 - **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL & 15 bài DSA cốt lõi.
 - **Phase 2 (Weeks 5 - 8):** Data Platform System Design (Redis, Kafka, Transactional Outbox, Idempotency).
