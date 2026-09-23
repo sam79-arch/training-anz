@@ -2,23 +2,23 @@
 
 ## 🚦 TRẠNG THÁI HIỆN TẠI (Current State)
 
-- **Task Type**: `Documentation` / `Training` → **Pilot Week 100% Hoàn tất (Day 1 - Day 6)**
-- **Status**: `Closed`
-- **Task:** Hoàn tất toàn bộ tuần thử nghiệm Pilot Week: Day 6 Behavioral STAR Story 1 Deep-Dive (Technical Disagreement) & Pilot Full Retrospective; 44/44 native assertions PASS 100%; Sẵn sàng chuyển giao sang Lộ trình 12 tuần chính thức (Phase 1: Weeks 1–4).
-- **Phase:** Pilot Week Hoàn tất. Sẵn sàng khởi động Lộ trình 12 tuần chính thức.
-- **Handoff:** `PILOT_WEEK_100_PERCENT_COMPLETED`.
-- **Branch:** `docs/week-01-day-06-star-retrospective` (sẵn sàng commit, push & tạo PR đóng Issue #14).
+- **Task Type**: `New Request` / `Coding` → **Tuần 2 Day 1: Valid Anagram & Group Anagrams (Issue #22)**
+- **Status**: `In Processing`
+- **Task:** Triển khai bài 01 Tuần 2 (Issue #22): Valid Anagram (#242) và Group Anagrams (#49 Medium) bằng Frequency Hashing $O(N \cdot K)$ time và $O(1)$ space cho isAnagram; 10/10 test cases pass; 54/54 regression assertions PASS 100%. Sẵn sàng review Phase 2.
+- **Phase:** Tuần 2 Day 1 — Hoàn tất Phase 2 (Implementation & Review).
+- **Handoff:** `WEEK_02_DAY_01_IMPLEMENTED`.
+- **Branch:** `feature/week-02-day-01-valid-anagram` (sẵn sàng commit & PR đóng #22).
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
-1. **Location:** `notes/week-01/day-06-behavioral-star-story-1.md`, `notes/week-01/day-06-pilot-retrospective.md`, `docs/plans/pilot-day-06-star-and-retrospective.md`, `README.md`, `docs/plans/_ACTIVE.md`.
+1. **Location:** `coding/week-02/01-valid-anagram.{js,test.js,md}`, `notes/week-02/day-01-frequency-hashing.md`, `docs/plans/week-02-day-01-valid-anagram.md`, `package.json`, `README.md`.
 2. **Completed vs pending:**
-   - **Completed:** 100% Pilot Week (Days 1 đến 6); 44/44 test checkpoints PASS; Đầy đủ 5 bài DSA, 2 cẩm nang Node.js Internals, 1 cẩm nang STAR Story 1, và 1 báo cáo Retrospective.
-   - **Pending:** Merge PR của Day 6 vào `main`; Kích hoạt Tuần 1 chính thức (Sliding Window & Database B+Tree Indexing).
-3. **Exact next step:** Mở PR cho Day 6, đóng Issue #14 và Milestone Pilot Week, bắt đầu Lộ trình 12 tuần chính thức.
+   - **Completed:** 10/10 test cases pass; `isAnagram` (mảng 26 ký tự), `groupAnagrams` (Frequency signature `#counts` $O(N \cdot K)$); cẩm nang V8 SMI array và kịch bản 6 bước tiếng Anh; 54/54 regression tests pass.
+   - **Pending:** Nhận "OK" Phase 2 từ User để commit & push Phase 3 lên origin.
+3. **Exact next step:** Thực hiện Phase 3 Git Commit & Push lên remote `feature/week-02-day-01-valid-anagram`.
 4. **Gotchas & Constraints:**
-   - Luôn duy trì 3 nguyên tắc bất biến: Guard clause dòng 1, Native Node.js thuần, Không đột biến mảng trong vòng lặp.
-   - Khi phỏng vấn Behavioral tại ANZ: Dùng số liệu định lượng (benchmark metrics) để bảo vệ quan điểm, áp dụng nguyên tắc Disagree & Commit.
+   - Khi tập ký tự cố định 26 chữ cái thường, bắt buộc dùng mảng 26 phần tử để đạt $O(1)$ space, không dùng Map/Object.
+   - Khi tạo Frequency Key cho Group Anagrams, bắt buộc có delimiter `#` để tránh đụng độ giá trị số (vd: `#1#1` vs `#11`).
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
 
