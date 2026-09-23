@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `week-02-day-01-valid-anagram.md` | `New Request` | `In Processing` | `feature/week-02-day-01-valid-anagram` | Week 2 Day 1: Valid Anagram (#242) and Group Anagrams (#49) using Frequency Hashing |
+| *(None currently)* | — | `In Processing` | — | Active plan currently being implemented |
 
 ---
 
@@ -48,6 +48,7 @@
 | `pilot-day-04-event-loop-microtasks.md` | `Research` | `Closed` | 2026-09-17 | `main` | Issue #12 Verification & Notes |
 | `pilot-day-05-two-sum-hash.md` | `New Request` | `Closed` | 2026-09-18 | `main` | Issue #13 Implementation & Notes |
 | `pilot-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-22 | `main` | Issue #14 Implementation & Notes |
+| `week-02-day-01-valid-anagram.md` | `New Request` | `Closed` | 2026-09-23 | `main` | PR #28 / Commit `8ede247` |
 
 ---
 
