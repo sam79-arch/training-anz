@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-emerald {
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.55);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.55);
+    }
+    .cell-glow-rose {
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.55);
+    }
+    .window-active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: #38bdf8;
+    }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🪟</span> Mô Phỏng Cửa Sổ Trượt: Longest Substring
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">LeetCode #3 - Sliding Window kết hợp Hash Map O(1) Jump</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 8
+      </span>
+    </div>
+
+    <!-- Preset Selector -->
+    <div class="flex items-center justify-between bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-2 text-xs">
+      <span class="text-slate-300 font-semibold">Chọn kịch bản test:</span>
+      <div class="flex gap-2">
+        <button onclick="switchPreset(0)" id="preset-btn-0" class="px-2.5 py-1 rounded font-mono font-bold transition bg-sky-600 text-white">
+          "abcabcbb"
+        </button>
+        <button onclick="switchPreset(1)" id="preset-btn-1" class="px-2.5 py-1 rounded font-mono font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700">
+          "abba" (Bẫy)
+        </button>
+        <button onclick="switchPreset(2)" id="preset-btn-2" class="px-2.5 py-1 rounded font-mono font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700">
+          "pwwkew"
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Character Array Display -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-3">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Chuỗi đầu vào `s`:</span>
+        <span id="active-scenario-tag" class="font-mono text-[11px] bg-slate-800 px-2 py-0.5 rounded text-sky-300 border border-slate-700">
+          Classic Substring
+        </span>
+      </div>
+
+      <!-- Character Blocks Container -->
+      <div class="flex items-center justify-center gap-1.5 py-2 overflow-x-auto" id="char-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Pointer Legend -->
+      <div class="flex items-center justify-center gap-5 text-xs font-semibold pt-1 border-t border-slate-800 text-slate-300">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block shadow"></span>
+          <span>Left Pointer (L)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-amber-400 inline-block shadow"></span>
+          <span>Right Pointer (R)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-rose-500 inline-block shadow"></span>
+          <span>Trùng lặp (Duplicate)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Metrics & Hash Map Panel -->
+    <div class="grid grid-cols-2 gap-3">
+      <!-- Live Window Status -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 flex flex-col justify-between">
+        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Cửa sổ hiện tại [L, R]</span>
+        <div class="mt-1 flex items-baseline justify-between">
+          <span id="metric-window" class="text-xl font-mono font-bold text-sky-400">"a"</span>
+          <span id="metric-cur-len" class="text-xs font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">Len: 1</span>
+        </div>
+        <div class="mt-2 pt-2 border-t border-slate-800 flex justify-between items-center text-xs">
+          <span class="text-slate-400">Max Kỷ Lục:</span>
+          <span id="metric-max" class="text-emerald-400 font-mono font-bold text-sm">1</span>
+        </div>
+      </div>
+
+      <!-- Hash Map (Last Seen Indices) -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 flex flex-col justify-between">
+        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Hash Map (Vị trí cuối)</span>
+        <div id="map-entries" class="flex flex-wrap gap-1 mt-1.5 min-h-[32px] items-center text-xs font-mono">
+          <!-- Rendered by JS -->
+        </div>
+        <span class="text-[10px] text-slate-500 mt-1">L = Math.max(L, map[c] + 1)</span>
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1">
+      <div class="flex items-center gap-2">
+        <span id="action-icon" class="text-base">🔍</span>
+        <span id="action-title" class="text-xs font-bold text-slate-200">Khởi tạo</span>
+      </div>
+      <p id="action-desc" class="text-xs text-slate-300 leading-relaxed pl-6">
+        Bắt đầu duyệt chuỗi với L = 0, R = 0.
+      </p>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button onclick="prevStep()" id="prev-btn" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-30 disabled:pointer-events-none transition border border-slate-700">
+        ◀ Bước Trước
+      </button>
+
+      <div class="flex gap-2">
+        <button onclick="toggleAutoPlay()" id="play-btn" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600/40 text-blue-200 hover:bg-blue-600/60 transition border border-blue-500/40">
+          ▶ Tự Động
+        </button>
+        <button onclick="resetSteps()" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition border border-slate-700">
+          ↺ Làm Lại
+        </button>
+      </div>
+
+      <button onclick="nextStep()" id="next-btn" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:pointer-events-none transition shadow-lg shadow-blue-500/20">
+        Bước Tiếp ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const PRESETS = [
+      {
+        name: "abcabcbb",
+        title: "Standard Case: abcabcbb",
+        steps: [
+          { L: 0, R: 0, char: 'a', dup: false, trap: false, map: { a: 0 }, max: 1, desc: "R=0 ('a'): 'a' chưa có trong Map. Thêm Map['a']=0. Cửa sổ ['a'], độ dài 1. Max = 1." },
+          { L: 0, R: 1, char: 'b', dup: false, trap: false, map: { a: 0, b: 1 }, max: 2, desc: "R=1 ('b'): 'b' chưa có trong Map. Thêm Map['b']=1. Cửa sổ ['a', 'b'], độ dài 2. Max = 2." },
+          { L: 0, R: 2, char: 'c', dup: false, trap: false, map: { a: 0, b: 1, c: 2 }, max: 3, desc: "R=2 ('c'): 'c' chưa có trong Map. Thêm Map['c']=2. Cửa sổ ['a', 'b', 'c'], độ dài 3. Max = 3." },
+          { L: 1, R: 3, char: 'a', dup: true, trap: false, map: { a: 3, b: 1, c: 2 }, max: 3, desc: "R=3 ('a'): Trùng lặp! 'a' xuất hiện gần nhất tại index 0 >= L. Nhảy L = 0 + 1 = 1. Cửa sổ ['b', 'c', 'a'], độ dài 3. Max = 3." },
+          { L: 2, R: 4, char: 'b', dup: true, trap: false, map: { a: 3, b: 4, c: 2 }, max: 3, desc: "R=4 ('b'): Trùng lặp! 'b' xuất hiện gần nhất tại index 1 >= L. Nhảy L = 1 + 1 = 2. Cửa sổ ['c', 'a', 'b'], độ dài 3. Max = 3." },
+          { L: 3, R: 5, char: 'c', dup: true, trap: false, map: { a: 3, b: 4, c: 5 }, max: 3, desc: "R=5 ('c'): Trùng lặp! 'c' xuất hiện gần nhất tại index 2 >= L. Nhảy L = 2 + 1 = 3. Cửa sổ ['a', 'b', 'c'], độ dài 3. Max = 3." },
+          { L: 5, R: 6, char: 'b', dup: true, trap: false, map: { a: 3, b: 6, c: 5 }, max: 3, desc: "R=6 ('b'): Trùng lặp! 'b' ở index 4 >= L. Nhảy L = 4 + 1 = 5. Cửa sổ ['c', 'b'], độ dài 2. Max giữ nguyên 3." },
+          { L: 7, R: 7, char: 'b', dup: true, trap: false, map: { a: 3, b: 7, c: 5 }, max: 3, desc: "R=7 ('b'): Trùng lặp! 'b' ở index 6 >= L. Nhảy L = 6 + 1 = 7. Cửa sổ ['b'], độ dài 1. Hoàn tất! Kết quả: 3." }
+        ]
+      },
+      {
+        name: "abba",
+        title: "Critical Trap Demo: abba",
+        steps: [
+          { L: 0, R: 0, char: 'a', dup: false, trap: false, map: { a: 0 }, max: 1, desc: "R=0 ('a'): Thêm 'a' vào Map ở index 0. Cửa sổ ['a'], max = 1." },
+          { L: 0, R: 1, char: 'b', dup: false, trap: false, map: { a: 0, b: 1 }, max: 2, desc: "R=1 ('b'): Thêm 'b' vào Map ở index 1. Cửa sổ ['a', 'b'], max = 2." },
+          { L: 2, R: 2, char: 'b', dup: true, trap: false, map: { a: 0, b: 2 }, max: 2, desc: "R=2 ('b'): Trùng 'b' tại index 1. Nhảy L = 1 + 1 = 2. Cửa sổ ['b'], độ dài 1." },
+          { L: 2, R: 3, char: 'a', dup: false, trap: true, map: { a: 3, b: 2 }, max: 2, desc: "⚠️ BẪY NHẢY LÙI: Gặp 'a' (vị trí cũ là 0). Vì 0 < L=2, Math.max(2, 0 + 1) = 2. L KHÔNG bị nhảy lùi về 1! Cửa sổ ['b', 'a'], độ dài 2. Kết quả: 2." }
+        ]
+      },
+      {
+        name: "pwwkew",
+        title: "Consecutive Repeats: pwwkew",
+        steps: [
+          { L: 0, R: 0, char: 'p', dup: false, trap: false, map: { p: 0 }, max: 1, desc: "R=0 ('p'): Thêm 'p' vào Map ở index 0. Cửa sổ ['p'], max = 1." },
+          { L: 0, R: 1, char: 'w', dup: false, trap: false, map: { p: 0, w: 1 }, max: 2, desc: "R=1 ('w'): Thêm 'w' vào Map ở index 1. Cửa sổ ['p', 'w'], max = 2." },
+          { L: 2, R: 2, char: 'w', dup: true, trap: false, map: { p: 0, w: 2 }, max: 2, desc: "R=2 ('w'): Trùng lặp liên tiếp! Vị trí cũ là 1. Nhảy L = 1 + 1 = 2. Cửa sổ ['w'], độ dài 1." },
+          { L: 2, R: 3, char: 'k', dup: false, trap: false, map: { p: 0, w: 2, k: 3 }, max: 2, desc: "R=3 ('k'): 'k' chưa có. Thêm Map['k']=3. Cửa sổ ['w', 'k'], độ dài 2." },
+          { L: 2, R: 4, char: 'e', dup: false, trap: false, map: { p: 0, w: 2, k: 3, e: 4 }, max: 3, desc: "R=4 ('e'): Thêm Map['e']=4. Cửa sổ ['w', 'k', 'e'], độ dài 3. Cập nhật Max = 3!" },
+          { L: 3, R: 5, char: 'w', dup: true, trap: false, map: { p: 0, w: 5, k: 3, e: 4 }, max: 3, desc: "R=5 ('w'): Trùng 'w' (vị trí cũ là 2 >= L). Nhảy L = 2 + 1 = 3. Cửa sổ ['k', 'e', 'w'], độ dài 3. Hoàn tất! Kết quả: 3." }
+        ]
+      }
+    ];
+
+    let currentPresetIdx = 0;
+    let currentStepIdx = 0;
+    let autoPlayTimer = null;
+
+    function renderCurrentStep() {
+      const preset = PRESETS[currentPresetIdx];
+      const step = preset.steps[currentStepIdx];
+      const s = preset.name;
+
+      // Update badge
+      document.getElementById('step-badge').innerText = `Bước ${currentStepIdx + 1} / ${preset.steps.length}`;
+      document.getElementById('active-scenario-tag').innerText = preset.title;
+
+      // Render character array
+      const container = document.getElementById('char-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < s.length; i++) {
+        const char = s[i];
+        const isL = (i === step.L);
+        const isR = (i === step.R);
+        const inWindow = (i >= step.L && i <= step.R);
+
+        const card = document.createElement('div');
+        card.className = `flex flex-col items-center gap-1 transition-all duration-300`;
+
+        // Pointer indicators on top
+        let topTag = `<div class="h-4 text-[10px] font-bold font-mono">`;
+        if (isL && isR) {
+          topTag += `<span class="text-sky-300">L,R</span>`;
+        } else if (isL) {
+          topTag += `<span class="text-emerald-400">L</span>`;
+        } else if (isR) {
+          topTag += `<span class="text-amber-400">R</span>`;
+        }
+        topTag += `</div>`;
+
+        // Character block
+        let blockClass = "w-10 h-11 rounded-lg flex items-center justify-center font-mono font-bold text-base border-2 transition-all duration-300 ";
+        if (step.dup && isR) {
+          blockClass += "bg-rose-900/60 border-rose-500 text-white cell-glow-rose ";
+        } else if (step.trap && isR) {
+          blockClass += "bg-purple-900/60 border-purple-400 text-white shadow-lg ";
+        } else if (inWindow) {
+          blockClass += "bg-sky-950/60 border-sky-400 text-sky-200 ";
+          if (isL) blockClass += "cell-glow-emerald border-emerald-400 ";
+          if (isR) blockClass += "cell-glow-amber border-amber-400 ";
+        } else {
+          blockClass += "bg-slate-800/60 border-slate-700 text-slate-500 opacity-60 ";
+        }
+
+        // Subtext (index)
+        const bottomTag = `<span class="text-[10px] font-mono text-slate-500">[${i}]</span>`;
+
+        card.innerHTML = `${topTag}<div class="${blockClass}">${char}</div>${bottomTag}`;
+        container.appendChild(card);
+      }
+
+      // Update metrics
+      const activeSubstring = s.substring(step.L, step.R + 1);
+      document.getElementById('metric-window').innerText = `"${activeSubstring}"`;
+      document.getElementById('metric-cur-len').innerText = `Len: ${activeSubstring.length}`;
+      document.getElementById('metric-max').innerText = step.max;
+
+      // Render Hash Map
+      const mapContainer = document.getElementById('map-entries');
+      mapContainer.innerHTML = '';
+      for (const [key, val] of Object.entries(step.map)) {
+        const isCurrent = (key === step.char);
+        const tag = document.createElement('span');
+        tag.className = `px-2 py-0.5 rounded border ${isCurrent ? 'bg-amber-500/20 text-amber-300 border-amber-400 font-bold' : 'bg-slate-800 text-slate-400 border-slate-700'}`;
+        tag.innerText = `'${key}': ${val}`;
+        mapContainer.appendChild(tag);
+      }
+
+      // Update description & icons
+      const actionIcon = document.getElementById('action-icon');
+      const actionTitle = document.getElementById('action-title');
+      const actionDesc = document.getElementById('action-desc');
+
+      if (step.trap) {
+        actionIcon.innerText = '🛡️';
+        actionTitle.innerText = 'Tránh Bẫy Nhảy Lùi (Backward Jump Prevention)';
+        actionTitle.className = 'text-xs font-bold text-purple-300';
+      } else if (step.dup) {
+        actionIcon.innerText = '⚠️';
+        actionTitle.innerText = 'Phát hiện Ký tự Trùng lặp';
+        actionTitle.className = 'text-xs font-bold text-rose-400';
+      } else {
+        actionIcon.innerText = '✨';
+        actionTitle.innerText = 'Mở rộng Cửa sổ Hợp lệ';
+        actionTitle.className = 'text-xs font-bold text-emerald-400';
+      }
+      actionDesc.innerText = step.desc;
+
+      // Button states
+      document.getElementById('prev-btn').disabled = (currentStepIdx === 0);
+      document.getElementById('next-btn').disabled = (currentStepIdx === preset.steps.length - 1);
+    }
+
+    function switchPreset(idx) {
+      if (autoPlayTimer) toggleAutoPlay();
+      currentPresetIdx = idx;
+      currentStepIdx = 0;
+
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById(`preset-btn-${i}`);
+        if (i === idx) {
+          btn.className = "px-2.5 py-1 rounded font-mono font-bold transition bg-sky-600 text-white";
+        } else {
+          btn.className = "px-2.5 py-1 rounded font-mono font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700";
+        }
+      }
+      renderCurrentStep();
+    }
+
+    function nextStep() {
+      const preset = PRESETS[currentPresetIdx];
+      if (currentStepIdx < preset.steps.length - 1) {
+        currentStepIdx++;
+        renderCurrentStep();
+      } else if (autoPlayTimer) {
+        toggleAutoPlay();
+      }
+    }
+
+    function prevStep() {
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        renderCurrentStep();
+      }
+    }
+
+    function resetSteps() {
+      if (autoPlayTimer) toggleAutoPlay();
+      currentStepIdx = 0;
+      renderCurrentStep();
+    }
+
+    function toggleAutoPlay() {
+      const btn = document.getElementById('play-btn');
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btn.innerText = '▶ Tự Động';
+        btn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600/40 text-blue-200 hover:bg-blue-600/60 transition border border-blue-500/40';
+      } else {
+        btn.innerText = '⏸ Tạm Dừng';
+        btn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-600/40 text-amber-200 hover:bg-amber-600/60 transition border border-amber-500/40';
+        autoPlayTimer = setInterval(() => {
+          const preset = PRESETS[currentPresetIdx];
+          if (currentStepIdx < preset.steps.length - 1) {
+            nextStep();
+          } else {
+            toggleAutoPlay();
+          }
+        }, 1200);
+      }
+    }
+
+    // Initial render
+    renderCurrentStep();
+  </script>
+</body>
+</html>
+
