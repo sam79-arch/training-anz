@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| *(None currently)* | — | `In Processing` | — | Active plan currently being implemented |
+| `week-02-day-02-three-sum.md` | `New Request` | `In Processing` | `feature/week-02-day-02-three-sum` | 3Sum (LeetCode #15 Medium) Two Pointers & Skip Duplicates (Issue #23) |
 
 ---
 
