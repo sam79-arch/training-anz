@@ -204,4 +204,7 @@ When triggered, the agent MUST **not** implement any code. It compiles a reusabl
    - Step 4: **Think Out Loud** (narrate logic while coding).
    - Step 5: **Dry Run** (trace line-by-line with an example).
    - Step 6: **Conclusion** (state final Time and Space Complexity).
+5. **Interactive Visualizer Protocol for Complex DSA & Architecture**:
+   - Đối với các bài toán Medium hoặc các chủ đề kiến trúc phân tán / Event Loop trừu tượng, Agent chủ động tạo widget mô phỏng Generative UI tương tác từng bước (State Machine Stepper với Dark Mode tương phản cao, thẻ `bg-[#1e293b]`, viền phát sáng và nút bấm) để hỗ trợ trực quan hóa cơ chế con trỏ/dữ liệu và củng cố tư duy trước khi phỏng vấn.
+
 

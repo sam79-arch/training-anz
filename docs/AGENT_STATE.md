@@ -2,23 +2,24 @@
 
 ## 🚦 TRẠNG THÁI HIỆN TẠI (Current State)
 
-- **Task Type**: `Coding` → **Tuần 2 Day 1: Valid Anagram & Group Anagrams Hoàn tất (Issue #22 Closed)**
-- **Status**: `Closed`
-- **Task:** Hoàn tất bài 01 Tuần 2: Valid Anagram (#242) và Group Anagrams (#49 Medium) bằng Frequency Hashing $O(N \cdot K)$ time và $O(1)$ space cho isAnagram; 10/10 test cases pass; 54/54 regression assertions PASS 100%; PR #28 đã merge thành công vào `main` và tự động đóng Issue #22.
-- **Phase:** Tuần 2 Day 1 Hoàn tất. Sẵn sàng cho Day 2 (3Sum — Issue #23).
-- **Handoff:** `WEEK_02_DAY_01_COMPLETED`.
-- **Branch:** `main` (sẵn sàng tạo nhánh `feature/week-02-day-02-three-sum`).
+- **Task Type**: `Coding` → **Tuần 2 Day 2: 3Sum (Issue #23 - Sẵn sàng Merge PR)**
+- **Status**: `In Processing`
+- **Task:** Triển khai bài 02 Tuần 2: 3Sum (#15 Medium) bằng Two Pointers kẹp hai đầu kết hợp sắp xếp số học và chiến lược nhảy cóc 3 tầng (3-tier skip); 8/8 unit test cases pass; 58/58 regression test cases PASS 100%; O(n²) time và O(1) auxiliary space; đã bổ sung quy chuẩn Generative UI Visualizer.
+- **Phase:** Phase 3: Git & Push Hoàn tất (Đã push lên branch `feature/week-02-day-02-three-sum`).
+- **Handoff:** `WEEK_02_DAY_02_COMMITTED_AND_PUSHED`.
+- **Branch:** `feature/week-02-day-02-three-sum`.
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
-1. **Location:** `coding/week-02/01-valid-anagram.{js,test.js,md}`, `notes/week-02/day-01-frequency-hashing.md`, `docs/plans/week-02-day-01-valid-anagram.md`, `package.json`, `README.md`.
+1. **Location:** `coding/week-02/02-three-sum.{js,test.js,md}`, `notes/week-02/day-02-three-sum-patterns.md`, `docs/plans/week-02-day-02-three-sum.md`, `.agents/rules/js-coding-standards.md`, `AGENTS.md`, `package.json`, `README.md`.
 2. **Completed vs pending:**
-   - **Completed:** 10/10 test cases pass; `isAnagram` (mảng 26 ký tự), `groupAnagrams` (Frequency signature `#counts` $O(N \cdot K)$); cẩm nang V8 SMI array và kịch bản 6 bước tiếng Anh; 54/54 regression tests pass; PR #28 merged vào `main`.
-   - **Pending:** Bắt đầu Day 2: 3Sum (LeetCode #15 - Issue #23).
-3. **Exact next step:** Khởi tạo branch `feature/week-02-day-02-three-sum` và lập kế hoạch cho bài 3Sum.
+   - **Completed:** 8/8 unit test cases pass; `threeSum(nums)` hoàn chỉnh; cẩm nang chuyên sâu Two Pointers & bẫy JavaScript sort; script `test:w2-02`; cập nhật `README.md`, `_ACTIVE.md`, quy chuẩn Generative UI Visualizer vào `AGENTS.md` và `.agents/rules/js-coding-standards.md`; 58/58 regression test cases PASS 100%.
+   - **Pending:** Mở PR từ branch `feature/week-02-day-02-three-sum` vào `main`, merge PR để tự động đóng Issue #23.
+3. **Exact next step:** Tạo Pull Request trên GitHub cho nhánh `feature/week-02-day-02-three-sum` đóng Issue #23.
 4. **Gotchas & Constraints:**
-   - Khi tập ký tự cố định 26 chữ cái thường, bắt buộc dùng mảng 26 phần tử để đạt $O(1)$ space, không dùng Map/Object.
-   - Khi tạo Frequency Key cho Group Anagrams, bắt buộc có delimiter `#` để tránh đụng độ giá trị số (vd: `#1#1` vs `#11`).
+   - Trong JavaScript, `nums.sort()` mặc định sắp xếp theo từ điển UTF-16, BẮT BUỘC dùng comparator số học `(a, b) => a - b`.
+   - Bẫy trùng lặp con trỏ ngoài `i`: bắt buộc so sánh `sorted[i] === sorted[i - 1]` để không bỏ sót các cặp hợp lệ như `[-1, -1, 2]`.
+   - Không dùng `Set` để lọc trùng bộ ba nhằm giữ $O(1)$ auxiliary space và bảo vệ V8 engine khỏi áp lực Garbage Collection.
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
 

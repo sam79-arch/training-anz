@@ -99,3 +99,21 @@ All algorithm documentation (`*.md`) MUST include the 6-step English interview s
 4. **Think Out Loud** — narrate logic while coding
 5. **Dry Run** — trace line-by-line with an example
 6. **Conclusion** — state final Time and Space Complexity
+
+## 8. Interactive Algorithm Visualization (Generative UI)
+
+Khi giải thích, minh họa hoặc hỗ trợ người học vượt qua các điểm nghẽn thuật toán phức tạp (Two Pointers, Sliding Window, Fast-Slow Pointers, Tree/Graph Traversal, Event Loop Phases):
+- **Tạo Artifact HTML**: Tạo file HTML tự chứa (self-contained) trong thư mục artifact với Tailwind CSS và JavaScript điều khiển state machine (`steps = [...]`).
+- **Quy chuẩn hiển thị tương phản cao (High Contrast Dark Theme)**:
+  - Khung thẻ chính: `bg-[#1e293b] border-2 border-slate-600 rounded-2xl shadow-2xl text-slate-100`.
+  - Con trỏ trực quan: Dùng các viền và hiệu ứng phát sáng (Glow effect) phân màu rõ rệt:
+    - Con trỏ cố định (`i`): Màu xanh dương trời (`sky-400`).
+    - Con trỏ trái (`Left` / `Slow`): Màu xanh ngọc (`emerald-400`).
+    - Con trỏ phải (`Right` / `Fast`): Màu vàng hổ phách (`amber-400`).
+  - Hộp tính toán & Giải thích: Thể hiện công thức toán học thời gian thực, lý do dịch chuyển con trỏ (Ví dụ: `Tổng âm -> Thiếu -> Tăng Left`), và cảnh báo bẫy trùng lặp (Skip Duplicates).
+  - Điều khiển: Nút `Bước Trước`, `Bước Tiếp`, `Làm lại`.
+- **Nhúng trực tiếp vào hội thoại**:
+  ```html
+  <agent-embed src="file:///<artifact_path>/visualizer.html"></agent-embed>
+  ```
+
