@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Custom glow & high-contrast adjustments */
+    .cell-glow-blue {
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+    }
+    .cell-glow-emerald {
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.35);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.35);
+    }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <!-- Main High-Contrast Card -->
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🔍</span> Mô Phỏng Từng Bước Thuật Toán 3Sum
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">Two Pointers kẹp hai đầu trên mảng đã sắp xếp</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 10
+      </span>
+    </div>
+
+    <!-- Array Visualizer -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Mảng đã sắp xếp:</span>
+        <span class="font-mono bg-slate-900/80 px-2 py-0.5 rounded text-sky-300 border border-slate-700">[-4, -1, -1, 0, 1, 2]</span>
+      </div>
+      
+      <!-- Array Elements Grid -->
+      <div class="grid grid-cols-6 gap-2" id="array-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Pointers Legend / Indicator -->
+      <div class="flex items-center justify-center gap-4 text-xs font-semibold pt-1 text-slate-200">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-sky-400 inline-block shadow"></span>
+          <span>i (Cố định)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block shadow"></span>
+          <span>Left (Kẹp trái)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-amber-400 inline-block shadow"></span>
+          <span>Right (Kẹp phải)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Math Calculation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1.5">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-semibold">CÔNG THỨC:</span>
+        <span id="calc-formula" class="font-bold text-slate-200 tracking-wider">nums[i] + nums[left] + nums[right]</span>
+      </div>
+      <div id="calc-result" class="text-base font-bold font-mono tracking-wide text-center py-1">
+        <!-- Result text -->
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-slate-800/90 border border-sky-500/40 rounded-xl p-3 min-h-[76px] flex items-start gap-3 shadow-inner">
+      <span class="text-2xl select-none" id="action-icon">🎯</span>
+      <div class="text-xs space-y-1 leading-relaxed">
+        <p id="action-title" class="font-bold text-sky-300 text-sm"></p>
+        <p id="action-desc" class="text-slate-200 font-normal"></p>
+      </div>
+    </div>
+
+    <!-- Found Triplets Box -->
+    <div class="flex items-center justify-between bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-2 text-xs">
+      <span class="text-slate-300 font-semibold">Bộ ba tìm thấy:</span>
+      <div id="found-triplets" class="flex gap-2 font-mono font-bold">
+        <span class="text-slate-400 italic font-normal">Chưa có</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button id="btn-prev" onclick="prevStep()" class="px-3.5 py-2 text-xs font-bold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+        ← Bước Trước
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" onclick="goToStep(0)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+          Làm lại
+        </button>
+        <button id="btn-next" onclick="nextStep()" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-400 text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5">
+          <span>Bước Tiếp</span>
+          <span class="text-sm">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const array = [-4, -1, -1, 0, 1, 2];
+
+    const steps = [
+      {
+        i: 0, left: 1, right: 5,
+        title: "Bắt đầu với i = 0 (Giá trị -4)",
+        desc: "Cố định số đầu tiên i = -4. Đặt con trỏ Left ở -1 (chỉ mục 1) và Right ở 2 (chỉ mục 5).",
+        icon: "🎯",
+        triplets: []
+      },
+      {
+        i: 0, left: 1, right: 5,
+        title: "Tổng đang quá nhỏ: -3 < 0 (Đang thiếu)",
+        desc: "Tổng là (-4) + (-1) + 2 = -3. Muốn tổng to lên để về 0, ta bắt buộc phải dịch con trỏ Left sang phải (lấy số to hơn)!",
+        icon: "👉",
+        triplets: []
+      },
+      {
+        i: 0, left: 2, right: 5,
+        title: "Dịch Left sang chỉ mục 2",
+        desc: "Tổng vẫn là (-4) + (-1) + 2 = -3 < 0. Vẫn thiếu, Left tiếp tục nhích sang phải.",
+        icon: "👉",
+        triplets: []
+      },
+      {
+        i: 0, left: 3, right: 5,
+        title: "Left tiến lên chỉ mục 3 (Giá trị 0)",
+        desc: "Tổng là (-4) + 0 + 2 = -2 < 0. Vẫn nhỏ hơn 0, Left tiếp tục nhích sang phải.",
+        icon: "👉",
+        triplets: []
+      },
+      {
+        i: 0, left: 4, right: 5,
+        title: "Left tiến lên chỉ mục 4 (Giá trị 1)",
+        desc: "Tổng là (-4) + 1 + 2 = -1 < 0. Hai con trỏ Left và Right đã chạm nhau ➔ Hết mảng con, chuyển sang số tiếp theo!",
+        icon: "🛑",
+        triplets: []
+      },
+      {
+        i: 1, left: 2, right: 5,
+        title: "Chuyển sang i = 1 (Giá trị -1) - TÌM THẤY BỘ BA ĐẦU TIÊN!",
+        desc: "Tổng là (-1) + (-1) + 2 = 0! Đúng bằng 0! Ta lưu bộ ba [-1, -1, 2] vào danh sách kết quả.",
+        icon: "🎉",
+        triplets: [ "[-1, -1, 2]" ]
+      },
+      {
+        i: 1, left: 3, right: 4,
+        title: "Thu hẹp cả 2 con trỏ - TÌM THẤY BỘ THỨ HAI!",
+        desc: "Tổng là (-1) + 0 + 1 = 0! Tiếp tục đúng bằng 0! Ta lưu thêm bộ [-1, 0, 1]. Thu hẹp Left và Right tiếp.",
+        icon: "🎉",
+        triplets: [ "[-1, -1, 2]", "[-1, 0, 1]" ]
+      },
+      {
+        i: 2, left: null, right: null,
+        title: "i = 2 (Giá trị -1) - BẪY TRÙNG LẶP ĐƯỢC KÍCH HOẠT!",
+        desc: "Số này là -1, GIỐNG HỆT số trước đó (sorted[2] === sorted[1]). Thuật toán BỎ QUA (skip) ngay lập tức để không tạo ra bộ trùng!",
+        icon: "🛡️",
+        triplets: [ "[-1, -1, 2]", "[-1, 0, 1]" ]
+      },
+      {
+        i: 3, left: 4, right: 5,
+        title: "i = 3 (Giá trị 0) - NGẮT SỚM (EARLY EXIT)",
+        desc: "Số nhỏ nhất còn lại là 0 + 1 + 2 = 3 > 0. Các số phía sau toàn số dương nên không thể cộng ra 0 được nữa. Dừng hẳn thuật toán!",
+        icon: "⚡",
+        triplets: [ "[-1, -1, 2]", "[-1, 0, 1]" ]
+      },
+      {
+        i: null, left: null, right: null,
+        title: "HOÀN TẤT THUẬT TOÁN 100%!",
+        desc: "Ta tìm được đúng 2 bộ ba duy nhất: [-1, -1, 2] và [-1, 0, 1]. Không thừa, không thiếu, không trùng lặp!",
+        icon: "🏆",
+        triplets: [ "[-1, -1, 2]", "[-1, 0, 1]" ]
+      }
+    ];
+
+    let currentStep = 0;
+
+    function render() {
+      const step = steps[currentStep];
+      
+      // Update badge
+      document.getElementById('step-badge').innerText = `Bước ${currentStep + 1} / ${steps.length}`;
+
+      // Render Array
+      const container = document.getElementById('array-container');
+      container.innerHTML = '';
+      array.forEach((val, idx) => {
+        const isI = step.i === idx;
+        const isLeft = step.left === idx;
+        const isRight = step.right === idx;
+
+        let borderColor = 'border-slate-600';
+        let bgStyle = 'bg-slate-800/90';
+        let textStyle = 'text-slate-200';
+        let glowClass = '';
+
+        if (isI) {
+          borderColor = 'border-sky-400';
+          bgStyle = 'bg-sky-500/30';
+          textStyle = 'text-sky-300 font-black';
+          glowClass = 'cell-glow-blue';
+        } else if (isLeft) {
+          borderColor = 'border-emerald-400';
+          bgStyle = 'bg-emerald-500/30';
+          textStyle = 'text-emerald-300 font-black';
+          glowClass = 'cell-glow-emerald';
+        } else if (isRight) {
+          borderColor = 'border-amber-400';
+          bgStyle = 'bg-amber-500/30';
+          textStyle = 'text-amber-300 font-black';
+          glowClass = 'cell-glow-amber';
+        }
+
+        const cell = document.createElement('div');
+        cell.className = `flex flex-col items-center justify-center p-2 rounded-xl border-2 ${borderColor} ${bgStyle} ${glowClass} transition-all duration-200`;
+        
+        let pointerLabel = '<span class="text-[11px] text-transparent select-none font-bold">-</span>';
+        if (isI && isLeft) pointerLabel = '<span class="text-[11px] text-sky-300 font-black">i, Left</span>';
+        else if (isI) pointerLabel = '<span class="text-[11px] text-sky-300 font-black">i</span>';
+        else if (isLeft) pointerLabel = '<span class="text-[11px] text-emerald-300 font-black">Left</span>';
+        else if (isRight) pointerLabel = '<span class="text-[11px] text-amber-300 font-black">Right</span>';
+
+        cell.innerHTML = `
+          <span class="text-[10px] text-slate-400 font-mono font-bold">[${idx}]</span>
+          <span class="text-lg font-mono my-0.5 ${textStyle}">${val}</span>
+          ${pointerLabel}
+        `;
+        container.appendChild(cell);
+      });
+
+      // Update Formula Box
+      const calcFormula = document.getElementById('calc-formula');
+      const calcResult = document.getElementById('calc-result');
+      if (step.i !== null && step.left !== null && step.right !== null) {
+        const vi = array[step.i];
+        const vl = array[step.left];
+        const vr = array[step.right];
+        const sum = vi + vl + vr;
+        calcFormula.innerText = `(${vi}) + (${vl}) + (${vr})`;
+        
+        if (sum === 0) {
+          calcResult.innerHTML = `<span class="text-emerald-400 font-black text-lg">= 0 ➔ HỢP LỆ! 🎉</span>`;
+        } else if (sum < 0) {
+          calcResult.innerHTML = `<span class="text-sky-300 font-bold">= ${sum} &lt; 0 (Đang thiếu ➔ Tăng Left)</span>`;
+        } else {
+          calcResult.innerHTML = `<span class="text-amber-300 font-bold">= ${sum} &gt; 0 (Đang thừa ➔ Giảm Right)</span>`;
+        }
+      } else if (step.i === 2) {
+        calcFormula.innerText = `sorted[2] === sorted[1] (-1 === -1)`;
+        calcResult.innerHTML = `<span class="text-rose-400 font-black text-base">TRÙNG LẶP ➔ BỎ QUA (SKIP)</span>`;
+      } else {
+        calcFormula.innerText = `Kiểm tra hoàn tất`;
+        calcResult.innerHTML = `<span class="text-emerald-400 font-black text-base">Hoàn tất kiểm tra mảng</span>`;
+      }
+
+      // Action Box
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = step.desc;
+
+      // Triplets
+      const tripContainer = document.getElementById('found-triplets');
+      if (step.triplets.length === 0) {
+        tripContainer.innerHTML = '<span class="text-slate-400 italic font-normal">Chưa có</span>';
+      } else {
+        tripContainer.innerHTML = step.triplets.map(t => 
+          `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 font-bold shadow-sm">${t}</span>`
+        ).join('');
+      }
+
+      // Buttons
+      document.getElementById('btn-prev').disabled = currentStep === 0;
+      document.getElementById('btn-next').disabled = currentStep === steps.length - 1;
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        render();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        render();
+      }
+    }
+
+    function goToStep(idx) {
+      currentStep = idx;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

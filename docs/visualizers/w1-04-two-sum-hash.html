@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-sky { box-shadow: 0 0 14px rgba(56, 189, 248, 0.45); }
+    .cell-glow-emerald { box-shadow: 0 0 14px rgba(52, 211, 153, 0.45); }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>⚡</span> Mô Phỏng: Two Sum Hash Map (LeetCode #1)
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">Đánh Đổi Bộ Nhớ Lấy Thời Gian: O(n) Time, O(n) Space</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 3
+      </span>
+    </div>
+
+    <!-- Array & Target Display -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Mảng đầu vào:</span>
+        <div class="flex gap-2">
+          <span class="font-mono bg-slate-900 px-2 py-0.5 rounded text-sky-300 border border-slate-700">[2, 7, 11, 15]</span>
+          <span class="font-mono bg-blue-500/20 px-2 py-0.5 rounded text-blue-300 border border-blue-400/40 font-bold">Target = 9</span>
+        </div>
+      </div>
+
+      <!-- Elements Grid -->
+      <div class="grid grid-cols-4 gap-3 py-1" id="array-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Hash Map Visualizer -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2">
+      <div class="flex justify-between items-center text-xs font-mono">
+        <span class="text-slate-400 font-semibold">BẢNG BĂM: Map (Số đã gặp ➔ Chỉ mục)</span>
+        <span id="map-count" class="text-sky-400 font-bold">0 phần tử</span>
+      </div>
+      <div class="flex flex-wrap gap-2 min-h-[36px] items-center" id="map-entries">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Math Calculation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1.5">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-semibold">PHẦN BÙ CẦN TÌM:</span>
+        <span id="calc-formula" class="font-bold text-slate-200 tracking-wider">complement = target - nums[i]</span>
+      </div>
+      <div id="calc-result" class="text-base font-bold font-mono tracking-wide text-center py-1">
+        <!-- Result text -->
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-slate-800/90 border border-sky-500/40 rounded-xl p-3 min-h-[76px] flex items-start gap-3 shadow-inner">
+      <span class="text-2xl select-none" id="action-icon">🎯</span>
+      <div class="text-xs space-y-1 leading-relaxed">
+        <p id="action-title" class="font-bold text-sky-300 text-sm"></p>
+        <p id="action-desc" class="text-slate-200 font-normal"></p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button id="btn-prev" onclick="prevStep()" class="px-3.5 py-2 text-xs font-bold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+        ← Bước Trước
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" onclick="goToStep(0)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+          Làm lại
+        </button>
+        <button id="btn-next" onclick="nextStep()" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-400 text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5">
+          <span>Bước Tiếp</span>
+          <span class="text-sm">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const nums = [2, 7, 11, 15];
+    const target = 9;
+
+    const steps = [
+      {
+        i: 0,
+        val: 2,
+        comp: 7,
+        map: [],
+        found: false,
+        title: "Duyệt i = 0 (Giá trị 2)",
+        desc: "Phần bù cần tìm: complement = 9 - 2 = 7. Kiểm tra Map xem đã gặp số 7 chưa? Chưa có! Lưu số 2 vào Map: seen.set(2, 0).",
+        icon: "🔍"
+      },
+      {
+        i: 1,
+        val: 7,
+        comp: 2,
+        map: [ { key: 2, val: 0 } ],
+        found: true,
+        title: "Duyệt i = 1 (Giá trị 7) - TÌM THẤY TRONG O(1)! 🎉",
+        desc: "Phần bù cần tìm: complement = 9 - 7 = 2. Kiểm tra Map: Số 2 ĐÃ CÓ trong Map tại chỉ mục 0! Trả về ngay [0, 1]!",
+        icon: "🎉"
+      },
+      {
+        i: 1,
+        val: 7,
+        comp: 2,
+        map: [ { key: 2, val: 0 } ],
+        found: true,
+        title: "Hoàn tất thuật toán Two Sum Hash Map!",
+        desc: "Nhờ Hash Map tra cứu O(1), ta chỉ cần 1 vòng lặp duy nhất để tìm ra kết quả [0, 1]. O(n) Time, O(n) Space.",
+        icon: "🏆"
+      }
+    ];
+
+    let currentStep = 0;
+
+    function render() {
+      const step = steps[currentStep];
+
+      document.getElementById('step-badge').innerText = `Bước ${currentStep + 1} / ${steps.length}`;
+      document.getElementById('calc-formula').innerText = `9 - ${step.val} = ${step.comp}`;
+
+      if (step.found) {
+        document.getElementById('calc-result').innerHTML = `<span class="text-emerald-400 font-bold text-lg">Tìm thấy số ${step.comp} tại index ${step.map[0].val}! ➔ Kết quả: [${step.map[0].val}, ${step.i}]</span>`;
+      } else {
+        document.getElementById('calc-result').innerHTML = `<span class="text-sky-300 font-bold text-base">Cần số ${step.comp} ➔ Chưa có trong Map ➔ Lưu seen.set(${step.val}, ${step.i})</span>`;
+      }
+
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = step.desc;
+
+      // Render Array
+      const container = document.getElementById('array-container');
+      container.innerHTML = '';
+      nums.forEach((v, idx) => {
+        const isCurrent = step.i === idx;
+        const isMatched = step.found && (idx === step.map[0].val || idx === step.i);
+
+        let border = 'border-slate-600';
+        let bg = 'bg-slate-800/90';
+        let glow = '';
+
+        if (isMatched) {
+          border = 'border-emerald-400';
+          bg = 'bg-emerald-500/30';
+          glow = 'cell-glow-emerald';
+        } else if (isCurrent) {
+          border = 'border-sky-400';
+          bg = 'bg-sky-500/30';
+          glow = 'cell-glow-sky';
+        }
+
+        const cell = document.createElement('div');
+        cell.className = `flex flex-col items-center justify-center p-3 rounded-xl border-2 ${border} ${bg} ${glow} transition-all duration-200`;
+        cell.innerHTML = `
+          <span class="text-[10px] text-slate-400 font-mono font-bold">[${idx}]</span>
+          <span class="text-2xl font-mono my-1 font-bold ${isMatched ? 'text-emerald-300' : isCurrent ? 'text-sky-300' : 'text-slate-200'}">${v}</span>
+          <span class="text-[10px] font-bold ${isMatched ? 'text-emerald-400' : isCurrent ? 'text-sky-400' : 'text-transparent'}">${isMatched ? 'MATCH' : isCurrent ? 'Current' : '-'}</span>
+        `;
+        container.appendChild(cell);
+      });
+
+      // Render Map
+      const mapContainer = document.getElementById('map-entries');
+      mapContainer.innerHTML = '';
+      document.getElementById('map-count').innerText = `${step.map.length} phần tử`;
+
+      if (step.map.length === 0) {
+        mapContainer.innerHTML = '<span class="text-xs text-slate-500 italic">Map rỗng (chưa có phần tử nào)</span>';
+      } else {
+        step.map.forEach(entry => {
+          const badge = document.createElement('div');
+          badge.className = 'px-3 py-1 bg-blue-500/20 text-sky-300 border border-sky-400/40 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm';
+          badge.innerHTML = `<span>${entry.key}</span><span class="text-slate-400">➔</span><span class="text-emerald-400">index [${entry.val}]</span>`;
+          mapContainer.appendChild(badge);
+        });
+      }
+
+      document.getElementById('btn-prev').disabled = currentStep === 0;
+      document.getElementById('btn-next').disabled = currentStep === steps.length - 1;
+    }
+
+    function nextStep() { if (currentStep < steps.length - 1) { currentStep++; render(); } }
+    function prevStep() { if (currentStep > 0) { currentStep--; render(); } }
+    function goToStep(idx) { currentStep = idx; render(); }
+
+    render();
+  </script>
+</body>
+</html>
+

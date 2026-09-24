@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>📊</span> Mô Phỏng: Frequency Hashing (Valid Anagram #242)
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">Mảng Tĩnh 26 Phần Tử (Array Bucket O(1) Space)</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 4
+      </span>
+    </div>
+
+    <!-- Strings Display -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Hai chuỗi cần so sánh:</span>
+        <div class="flex gap-2">
+          <span class="font-mono bg-slate-900 px-2 py-0.5 rounded text-sky-300 border border-slate-700">s = "anagram"</span>
+          <span class="font-mono bg-slate-900 px-2 py-0.5 rounded text-amber-300 border border-slate-700">t = "nagaram"</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 26-element Bucket Visualizer (Showing active letters) -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2">
+      <div class="flex justify-between items-center text-xs font-mono">
+        <span class="text-slate-400 font-semibold">MẢNG TẦN SUẤT 26 CHỮ CÁI (Array Bucket):</span>
+        <span class="text-emerald-400 font-bold">O(1) Memory</span>
+      </div>
+
+      <!-- Frequency Badges for letters involved -->
+      <div class="grid grid-cols-5 gap-2" id="bucket-container">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- State & Calculation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1.5">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-semibold">THAO TÁC:</span>
+        <span id="calc-formula" class="font-bold text-slate-200 tracking-wider">counts[char - 97]</span>
+      </div>
+      <div id="calc-result" class="text-base font-bold font-mono tracking-wide text-center py-1">
+        <!-- Result text -->
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-slate-800/90 border border-sky-500/40 rounded-xl p-3 min-h-[76px] flex items-start gap-3 shadow-inner">
+      <span class="text-2xl select-none" id="action-icon">🎯</span>
+      <div class="text-xs space-y-1 leading-relaxed">
+        <p id="action-title" class="font-bold text-sky-300 text-sm"></p>
+        <p id="action-desc" class="text-slate-200 font-normal"></p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button id="btn-prev" onclick="prevStep()" class="px-3.5 py-2 text-xs font-bold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+        ← Bước Trước
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" onclick="goToStep(0)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+          Làm lại
+        </button>
+        <button id="btn-next" onclick="nextStep()" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-400 text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5">
+          <span>Bước Tiếp</span>
+          <span class="text-sm">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Các ký tự xuất hiện: a, g, m, n, r
+    const letters = ['a', 'g', 'm', 'n', 'r'];
+
+    const steps = [
+      {
+        counts: { a: 0, g: 0, m: 0, n: 0, r: 0 },
+        formula: "Khởi tạo mảng new Array(26).fill(0)",
+        result: "Tất cả 26 ô đếm ban đầu = 0",
+        title: "Khởi tạo mảng đếm tần suất",
+        desc: "Thay vì dùng Hash Map, ta cấp phát 1 mảng 26 số nguyên (V8 PACKED_SMI_ELEMENTS) nằm trọn trong CPU Cache.",
+        icon: "🏁"
+      },
+      {
+        counts: { a: 3, g: 1, m: 1, n: 1, r: 1 },
+        formula: "Duyệt chuỗi s = 'anagram' ➔ CỘNG (+1)",
+        result: "Đếm được: a=3, g=1, m=1, n=1, r=1",
+        title: "Pha 1: Cộng tần suất chuỗi s",
+        desc: "Mỗi khi gặp ký tự c trong chuỗi s, ta tăng counts[c - 97] thêm 1.",
+        icon: "➕"
+      },
+      {
+        counts: { a: 0, g: 0, m: 0, n: 0, r: 0 },
+        formula: "Duyệt chuỗi t = 'nagaram' ➔ TRỪ (-1)",
+        result: "Tất cả các ô đếm trở về đúng = 0",
+        title: "Pha 2: Trừ tần suất chuỗi t",
+        desc: "Mỗi khi gặp ký tự c trong chuỗi t, ta giảm counts[c - 97] đi 1. Số lượng ký tự hai bên triệt tiêu lẫn nhau hoàn toàn!",
+        icon: "➖"
+      },
+      {
+        counts: { a: 0, g: 0, m: 0, n: 0, r: 0 },
+        formula: "Kiểm tra 26 ô ➔ Không ô nào khác 0",
+        result: "KẾT QUẢ: TRUE (LÀ ANAGRAM CỦA NHAU! 🎉)",
+        title: "Hoàn tất thuật toán Valid Anagram!",
+        desc: "Hai chuỗi có cùng tập hợp ký tự và cùng tần suất xuất hiện. O(n) Time, O(1) Auxiliary Space!",
+        icon: "🏆"
+      }
+    ];
+
+    let currentStep = 0;
+
+    function render() {
+      const step = steps[currentStep];
+
+      document.getElementById('step-badge').innerText = `Bước ${currentStep + 1} / ${steps.length}`;
+      document.getElementById('calc-formula').innerText = step.formula;
+      document.getElementById('calc-result').innerHTML = `<span class="text-emerald-400 font-bold">${step.result}</span>`;
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = step.desc;
+
+      const container = document.getElementById('bucket-container');
+      container.innerHTML = '';
+
+      letters.forEach(char => {
+        const count = step.counts[char];
+        const isNonZero = count !== 0;
+
+        const cell = document.createElement('div');
+        cell.className = `flex flex-col items-center justify-center p-2 rounded-xl border-2 ${isNonZero ? 'border-sky-400 bg-sky-500/25' : 'border-slate-700 bg-slate-800'} transition-all duration-200`;
+        cell.innerHTML = `
+          <span class="text-xs text-slate-400 font-mono font-bold">'${char}'</span>
+          <span class="text-xl font-mono my-0.5 font-black ${isNonZero ? 'text-sky-300' : 'text-slate-300'}">${count}</span>
+        `;
+        container.appendChild(cell);
+      });
+
+      document.getElementById('btn-prev').disabled = currentStep === 0;
+      document.getElementById('btn-next').disabled = currentStep === steps.length - 1;
+    }
+
+    function nextStep() { if (currentStep < steps.length - 1) { currentStep++; render(); } }
+    function prevStep() { if (currentStep > 0) { currentStep--; render(); } }
+    function goToStep(idx) { currentStep = idx; render(); }
+
+    render();
+  </script>
+</body>
+</html>
+

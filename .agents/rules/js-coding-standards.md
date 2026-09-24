@@ -116,4 +116,6 @@ Khi giải thích, minh họa hoặc hỗ trợ người học vượt qua các 
   ```html
   <agent-embed src="file:///<artifact_path>/visualizer.html"></agent-embed>
   ```
+- **Lưu trữ vĩnh viễn trong Repository**:
+  Bên cạnh file artifact nhúng vào chat, BẮT BUỘC lưu một bản sao độc lập tại `docs/visualizers/<id>-<tên-bài>.html` để commit vào Git, đồng thời gắn link trong file tài liệu giải thuật `*.md` để người học có thể mở offline trên bất kỳ trình duyệt nào (Chrome, Edge, Safari, Firefox).
 

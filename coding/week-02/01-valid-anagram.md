@@ -73,3 +73,12 @@ Trong hệ thống **ANZ Data Platform & Fraud Detection**:
 ### Step 6: Conclusion (Kết luận độ phức tạp)
 > *"To conclude, `isAnagram` achieves $O(n)$ time complexity and $O(1)$ auxiliary space because the alphabet size is constant at 26. `groupAnagrams` runs in $O(N \cdot K)$ time complexity and $O(N \cdot K)$ space to store the grouped strings. This linear approach avoids sorting bottlenecks and leverages Node.js V8 array access efficiently."*
 
+---
+
+## 🎨 5. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/w2-01-valid-anagram.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/w2-01-valid-anagram.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng mảng đếm tần suất 26 chữ cái (Array Bucket).*
+
+
