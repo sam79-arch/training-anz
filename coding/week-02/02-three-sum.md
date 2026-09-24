@@ -85,3 +85,11 @@ Trong hệ thống **General Ledger Reconciliation & Clearing House** tại ANZ:
 ### Step 6: Conclusion (Kết luận độ phức tạp)
 > *"In summary, the time complexity is $O(n^2)$ because sorting takes $O(n \log n)$ and the two-pointer sweep inside the outer loop takes $O(n \times n) = O(n^2)$. The auxiliary space complexity is $O(1)$ beyond the output list, as we perform in-place pointer manipulation without hash tables."*
 
+---
+
+## 🎨 5. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/02-three-sum.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/02-three-sum.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng 3 con trỏ và bẫy trùng lặp từng bước.*
+

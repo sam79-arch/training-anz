@@ -145,3 +145,12 @@ Bởi vì bài toán **3Sum (LeetCode #15)** thực chất chỉ là:
 ```
 Nắm vững cách điều khiển 2 con trỏ hôm nay giúp bạn viết bài 3Sum chỉ trong vòng 10 phút mà không gặp bất kỳ lỗi lặp vô tận hay trùng lặp phần tử nào.
 
+---
+
+## 🎨 6. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/w1-03-two-sum-sorted.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/w1-03-two-sum-sorted.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng 2 con trỏ kẹp hai đầu trên mảng đã sắp xếp.*
+
+

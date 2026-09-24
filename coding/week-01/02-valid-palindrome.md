@@ -122,3 +122,12 @@ Luyện tập đọc to thành tiếng theo khung chuẩn ANZ:
 > **"Dạng bài Two Pointers Đối Đầu (Left-Right Collision) luôn được áp dụng khi cần so sánh tính đối xứng hoặc tìm cặp giá trị ở hai đầu mảng/chuỗi. Luôn dùng mã ASCII thay vì Regex để giữ trọn vẹn $O(1)$ Space."**  
 > *(Đây là bước đệm trực tiếp để giải bài Medium tiếp theo trong Week 1: Two Sum II trên mảng đã sắp xếp).*
 
+---
+
+## 🎨 6. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/w1-02-valid-palindrome.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/w1-02-valid-palindrome.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng 2 con trỏ kẹp hai đầu và bỏ qua ký tự đặc biệt.*
+
+

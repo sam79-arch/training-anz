@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-emerald { box-shadow: 0 0 14px rgba(52, 211, 153, 0.45); }
+    .cell-glow-amber { box-shadow: 0 0 14px rgba(251, 191, 36, 0.45); }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🔄</span> Mô Phỏng: Valid Palindrome (LeetCode #125)
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">Two Pointers Kẹp Hai Đầu & Bỏ Qua Ký Tự Đặc Biệt</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 7
+      </span>
+    </div>
+
+    <!-- String Display -->
+    <div class="space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Chuỗi đầu vào (Rút gọn minh họa):</span>
+        <span class="font-mono bg-slate-900 px-2 py-0.5 rounded text-sky-300 border border-slate-700">"A man, a plan, a canal: Panama"</span>
+      </div>
+
+      <!-- Character Badges -->
+      <div class="flex flex-wrap justify-center gap-1.5 py-2 px-1 bg-[#0f172a] rounded-xl border border-slate-700" id="chars-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Legend -->
+      <div class="flex items-center justify-center gap-6 text-xs font-semibold pt-1 text-slate-200">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block shadow"></span>
+          <span>Left (Con trỏ trái)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-amber-400 inline-block shadow"></span>
+          <span>Right (Con trỏ phải)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comparison Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1.5">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-semibold">SO SÁNH KÝ TỰ:</span>
+        <span id="calc-formula" class="font-bold text-slate-200 tracking-wider">s[left].toLowerCase() === s[right].toLowerCase()</span>
+      </div>
+      <div id="calc-result" class="text-base font-bold font-mono tracking-wide text-center py-1">
+        <!-- Comparison Result -->
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-slate-800/90 border border-sky-500/40 rounded-xl p-3 min-h-[76px] flex items-start gap-3 shadow-inner">
+      <span class="text-2xl select-none" id="action-icon">🎯</span>
+      <div class="text-xs space-y-1 leading-relaxed">
+        <p id="action-title" class="font-bold text-sky-300 text-sm"></p>
+        <p id="action-desc" class="text-slate-200 font-normal"></p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button id="btn-prev" onclick="prevStep()" class="px-3.5 py-2 text-xs font-bold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+        ← Bước Trước
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" onclick="goToStep(0)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+          Làm lại
+        </button>
+        <button id="btn-next" onclick="nextStep()" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-400 text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5">
+          <span>Bước Tiếp</span>
+          <span class="text-sm">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Chuỗi mẫu ngắn gọn để hiển thị trực quan đẹp mắt
+    const chars = ['A', ' ', 'm', 'a', 'n', ',', ' ', 'n', 'a', 'm', ' ', 'a'];
+
+    const steps = [
+      {
+        left: 0, right: 11,
+        title: "Bắt đầu tại 2 đầu chuỗi",
+        desc: "L = 0 ('A'), R = 11 ('a'). 'A' chuẩn hóa chữ thường thành 'a'. Hai bên giống nhau ('a' === 'a')! Thu hẹp cả 2 đầu.",
+        icon: "🏁",
+        comp: "'A'.toLowerCase() === 'a' ➔ 'a' === 'a' (TRÙNG KHỚP! ✅)"
+      },
+      {
+        left: 1, right: 10,
+        title: "Bỏ qua ký tự đặc biệt / dấu cách",
+        desc: "Tại L = 1 là dấu cách ' ' (không phải chữ số), ta tự động dịch L sang 2. Tại R = 10 là dấu cách ' ', dịch R về 9.",
+        icon: "⏭️",
+        comp: "Gặp khoảng trắng ➔ Bỏ qua (Skip non-alphanumeric)"
+      },
+      {
+        left: 2, right: 9,
+        title: "So sánh cặp ký tự tiếp theo: 'm' và 'm'",
+        desc: "L = 2 ('m'), R = 9 ('m'). Cả 2 đều là chữ 'm'. Trùng khớp! Thu hẹp tiếp.",
+        icon: "✅",
+        comp: "'m' === 'm' (TRÙNG KHỚP! ✅)"
+      },
+      {
+        left: 3, right: 8,
+        title: "So sánh cặp ký tự: 'a' và 'a'",
+        desc: "L = 3 ('a'), R = 8 ('a'). Trùng khớp hoàn hảo! Tiếp tục thu hẹp.",
+        icon: "✅",
+        comp: "'a' === 'a' (TRÙNG KHỚP! ✅)"
+      },
+      {
+        left: 4, right: 7,
+        title: "So sánh cặp ký tự ở tâm: 'n' và 'n'",
+        desc: "L = 4 ('n'), R = 7 ('n'). Trùng khớp! Tiếp tục thu hẹp.",
+        icon: "✅",
+        comp: "'n' === 'n' (TRÙNG KHỚP! ✅)"
+      },
+      {
+        left: 5, right: 6,
+        title: "Bỏ qua dấu phẩy và dấu cách ở giữa",
+        desc: "L = 5 (','), R = 6 (' '). Đều là ký tự đặc biệt. Hai con trỏ vượt qua nhau.",
+        icon: "⏭️",
+        comp: "Ký tự ',' và ' ' ➔ Bỏ qua ➔ Con trỏ chạm nhau"
+      },
+      {
+        left: null, right: null,
+        title: "KẾT LUẬN: ĐÂY LÀ CHUỖI ĐỐI XỨNG (VALID PALINDROME)!",
+        desc: "Mọi cặp ký tự hợp lệ đều trùng khớp 100%. Trả về true! O(n) Time, O(1) Space.",
+        icon: "🏆",
+        comp: "KẾT QUẢ: TRUE (Hoàn tất kiểm tra)"
+      }
+    ];
+
+    let currentStep = 0;
+
+    function render() {
+      const step = steps[currentStep];
+
+      document.getElementById('step-badge').innerText = `Bước ${currentStep + 1} / ${steps.length}`;
+      document.getElementById('calc-result').innerHTML = `<span class="text-emerald-400 font-bold">${step.comp}</span>`;
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = step.desc;
+
+      const container = document.getElementById('chars-container');
+      container.innerHTML = '';
+
+      chars.forEach((ch, idx) => {
+        const isL = step.left === idx;
+        const isR = step.right === idx;
+
+        let borderColor = 'border-slate-700';
+        let bgStyle = 'bg-slate-800';
+        let textStyle = 'text-slate-300';
+        let glowClass = '';
+
+        if (isL) {
+          borderColor = 'border-emerald-400';
+          bgStyle = 'bg-emerald-500/30';
+          textStyle = 'text-emerald-300 font-black';
+          glowClass = 'cell-glow-emerald';
+        } else if (isR) {
+          borderColor = 'border-amber-400';
+          bgStyle = 'bg-amber-500/30';
+          textStyle = 'text-amber-300 font-black';
+          glowClass = 'cell-glow-amber';
+        }
+
+        const badge = document.createElement('div');
+        badge.className = `w-7 h-10 flex flex-col items-center justify-center rounded-lg border-2 ${borderColor} ${bgStyle} ${glowClass} transition-all duration-200`;
+        badge.innerHTML = `
+          <span class="text-sm font-mono font-bold ${textStyle}">${ch === ' ' ? '␣' : ch}</span>
+          <span class="text-[9px] font-bold ${isL ? 'text-emerald-400' : isR ? 'text-amber-400' : 'text-slate-500'}">${isL ? 'L' : isR ? 'R' : idx}</span>
+        `;
+        container.appendChild(badge);
+      });
+
+      document.getElementById('btn-prev').disabled = currentStep === 0;
+      document.getElementById('btn-next').disabled = currentStep === steps.length - 1;
+    }
+
+    function nextStep() { if (currentStep < steps.length - 1) { currentStep++; render(); } }
+    function prevStep() { if (currentStep > 0) { currentStep--; render(); } }
+    function goToStep(idx) { currentStep = idx; render(); }
+
+    render();
+  </script>
+</body>
+</html>
+

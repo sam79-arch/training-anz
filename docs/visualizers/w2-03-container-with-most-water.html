@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-emerald {
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.45);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.45);
+    }
+    .water-fill {
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.45) 0%, rgba(14, 165, 233, 0.25) 100%);
+      border-top: 2px dashed #38bdf8;
+    }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🌊</span> Mô Phỏng Thuật Toán: Container With Most Water
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">Two Pointers kẹp hai đầu tối đa hóa diện tích nước</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 9
+      </span>
+    </div>
+
+    <!-- Bar Chart & Water Visualization -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Biểu đồ cột chiều cao `height`:</span>
+        <span class="font-mono bg-slate-800 px-2 py-0.5 rounded text-sky-300 border border-slate-700">[1, 8, 6, 2, 5, 4, 8, 3, 7]</span>
+      </div>
+
+      <!-- Bars Container with Height Scale -->
+      <div class="relative h-44 flex items-end justify-between px-2 pt-4 pb-1 border-b border-slate-700" id="chart-container">
+        <!-- Bars and Water overlay injected by JS -->
+      </div>
+
+      <!-- X-axis index labels -->
+      <div class="flex justify-between px-2 text-[10px] font-mono text-slate-400 font-bold" id="axis-labels">
+        <!-- [0] to [8] -->
+      </div>
+
+      <!-- Pointers Legend -->
+      <div class="flex items-center justify-center gap-6 text-xs font-semibold pt-1 text-slate-200">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block shadow"></span>
+          <span>Left (Cột L)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-amber-400 inline-block shadow"></span>
+          <span>Right (Cột R)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3.5 h-2 rounded bg-sky-400/40 border border-sky-400 inline-block"></span>
+          <span>Mặt nước</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Math Calculation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1.5">
+      <div class="flex items-center justify-between text-xs font-mono">
+        <span class="text-slate-400 font-semibold">TÍNH DIỆN TÍCH:</span>
+        <span id="calc-formula" class="font-bold text-slate-200 tracking-wider">min(hL, hR) × (R - L)</span>
+      </div>
+      <div id="calc-result" class="text-base font-bold font-mono tracking-wide text-center py-1">
+        <!-- Result text -->
+      </div>
+    </div>
+
+    <!-- Action & Explanation Box -->
+    <div class="bg-slate-800/90 border border-sky-500/40 rounded-xl p-3 min-h-[76px] flex items-start gap-3 shadow-inner">
+      <span class="text-2xl select-none" id="action-icon">🎯</span>
+      <div class="text-xs space-y-1 leading-relaxed">
+        <p id="action-title" class="font-bold text-sky-300 text-sm"></p>
+        <p id="action-desc" class="text-slate-200 font-normal"></p>
+      </div>
+    </div>
+
+    <!-- Max Water Record Box -->
+    <div class="flex items-center justify-between bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-2 text-xs">
+      <span class="text-slate-300 font-semibold">Dung tích nước KỶ LỤC:</span>
+      <div id="max-record" class="flex items-center gap-2 font-mono font-bold text-base text-emerald-400">
+        0
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button id="btn-prev" onclick="prevStep()" class="px-3.5 py-2 text-xs font-bold rounded-lg border border-slate-600 bg-slate-800 hover:bg-slate-700 text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed transition-all">
+        ← Bước Trước
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" onclick="goToStep(0)" class="px-2.5 py-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+          Làm lại
+        </button>
+        <button id="btn-next" onclick="nextStep()" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-500 hover:bg-blue-400 text-white shadow-lg disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-1.5">
+          <span>Bước Tiếp</span>
+          <span class="text-sm">→</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const height = [1, 8, 6, 2, 5, 4, 8, 3, 7];
+    const maxHeightVal = 8;
+
+    const steps = [
+      {
+        L: 0, R: 8,
+        title: "Khởi tạo con trỏ ở 2 biên: L = 0, R = 8",
+        desc: "Chiều rộng cực đại Width = 8 - 0 = 8. Cột L cao 1, cột R cao 7. Cột thấp là L (1). Diện tích = 1 × 8 = 8.",
+        icon: "🏁",
+        maxWater: 8,
+        isNewRecord: true,
+        move: "L",
+        moveReason: "Vì cột L (1) < cột R (7), cột L là điểm nghẽn. Dịch L sang phải để tìm cột cao hơn!"
+      },
+      {
+        L: 1, R: 8,
+        title: "L tiến lên 1 (Cao 8) - KỶ LỤC MỚI! 🎉",
+        desc: "Width = 8 - 1 = 7. Cột L cao 8, cột R cao 7. Mực nước đạt min(8, 7) = 7. Diện tích = 7 × 7 = 49!",
+        icon: "🎉",
+        maxWater: 49,
+        isNewRecord: true,
+        move: "R",
+        moveReason: "Cột R (7) < cột L (8). Cột R là điểm nghẽn, dịch R sang trái tìm cột cao hơn!"
+      },
+      {
+        L: 1, R: 7,
+        title: "R lùi về 7 (Cao 3)",
+        desc: "Width = 7 - 1 = 6. Cột R quá thấp (3). Diện tích = min(8, 3) × 6 = 18. Không vượt qua kỷ lục 49.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "Cột R (3) < cột L (8), tiếp tục lùi R sang trái!"
+      },
+      {
+        L: 1, R: 6,
+        title: "R lùi về 6 (Cao 8)",
+        desc: "Width = 6 - 1 = 5. Cả 2 cột đều cao 8. Mực nước đạt 8. Diện tích = 8 × 5 = 40. Vẫn nhỏ hơn kỷ lục 49.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "Hai cột bằng nhau (8 == 8). Dịch bên nào cũng được, theo quy ước ta lùi R."
+      },
+      {
+        L: 1, R: 5,
+        title: "R lùi về 5 (Cao 4)",
+        desc: "Width = 5 - 1 = 4. Cột R cao 4. Diện tích = min(8, 4) × 4 = 16.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "Cột R (4) < cột L (8), tiếp tục lùi R."
+      },
+      {
+        L: 1, R: 4,
+        title: "R lùi về 4 (Cao 5)",
+        desc: "Width = 4 - 1 = 3. Cột R cao 5. Diện tích = min(8, 5) × 3 = 15.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "Cột R (5) < cột L (8), tiếp tục lùi R."
+      },
+      {
+        L: 1, R: 3,
+        title: "R lùi về 3 (Cao 2)",
+        desc: "Width = 3 - 1 = 2. Cột R cao 2. Diện tích = min(8, 2) × 2 = 4.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "Cột R (2) < cột L (8), tiếp tục lùi R."
+      },
+      {
+        L: 1, R: 2,
+        title: "R lùi về 2 (Cao 6)",
+        desc: "Width = 2 - 1 = 1. Cột R cao 6. Diện tích = min(8, 6) × 1 = 6.",
+        icon: "👉",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "R",
+        moveReason: "L và R đã đứng sát nhau, bước tiếp theo 2 con trỏ sẽ gặp nhau."
+      },
+      {
+        L: 1, R: 1,
+        title: "HOÀN TẤT THUẬT TOÁN!",
+        desc: "Hai con trỏ đã gặp nhau (L == R). Không còn khoảng trống để chứa nước. Diện tích lớn nhất tìm được là 49!",
+        icon: "🏆",
+        maxWater: 49,
+        isNewRecord: false,
+        move: "DONE",
+        moveReason: "Đã duyệt hết toàn bộ không gian nghiệm trong đúng O(n) bước!"
+      }
+    ];
+
+    let currentStep = 0;
+
+    function render() {
+      const step = steps[currentStep];
+
+      // Update badge
+      document.getElementById('step-badge').innerText = `Bước ${currentStep + 1} / ${steps.length}`;
+
+      // Render chart
+      const chart = document.getElementById('chart-container');
+      chart.innerHTML = '';
+
+      const L = step.L;
+      const R = step.R;
+      const isFinished = L === R;
+
+      // Water Overlay Box if valid L < R
+      if (!isFinished && L < R) {
+        const hL = height[L];
+        const hR = height[R];
+        const waterHeight = Math.min(hL, hR);
+        const waterHeightPercent = (waterHeight / maxHeightVal) * 85;
+
+        // Position water container
+        const leftPercent = (L / (height.length - 1)) * 90 + 2;
+        const widthPercent = ((R - L) / (height.length - 1)) * 90;
+
+        const waterDiv = document.createElement('div');
+        waterDiv.className = 'absolute bottom-1 water-fill rounded-t-sm transition-all duration-300 pointer-events-none flex items-center justify-center';
+        waterDiv.style.left = `${leftPercent}%`;
+        waterDiv.style.width = `${widthPercent}%`;
+        waterDiv.style.height = `${waterHeightPercent}%`;
+        waterDiv.innerHTML = `<span class="text-xs font-mono font-bold text-sky-200 drop-shadow">${waterHeight * (R - L)}</span>`;
+        chart.appendChild(waterDiv);
+      }
+
+      // Render vertical bars
+      height.forEach((val, idx) => {
+        const isL = L === idx;
+        const isR = R === idx;
+        const barHeightPercent = (val / maxHeightVal) * 85;
+
+        let barColor = 'bg-slate-700 border-slate-600';
+        let glowClass = '';
+        let label = '';
+
+        if (isL && isR) {
+          barColor = 'bg-purple-500 border-purple-300';
+          label = 'L,R';
+        } else if (isL) {
+          barColor = 'bg-emerald-500 border-emerald-300';
+          glowClass = 'cell-glow-emerald';
+          label = 'Left';
+        } else if (isR) {
+          barColor = 'bg-amber-500 border-amber-300';
+          glowClass = 'cell-glow-amber';
+          label = 'Right';
+        }
+
+        const barWrapper = document.createElement('div');
+        barWrapper.className = 'flex flex-col items-center z-10';
+        barWrapper.style.width = '24px';
+
+        barWrapper.innerHTML = `
+          <span class="text-[10px] font-mono font-bold ${isL ? 'text-emerald-300' : isR ? 'text-amber-300' : 'text-slate-400'}">${val}</span>
+          <div class="w-4 rounded-t-sm border-t-2 border-x ${barColor} ${glowClass} transition-all duration-300" style="height: ${barHeightPercent}px;"></div>
+          <span class="text-[10px] font-bold mt-1 ${isL ? 'text-emerald-400' : isR ? 'text-amber-400' : 'text-transparent select-none'}">${label || '-'}</span>
+        `;
+        chart.appendChild(barWrapper);
+      });
+
+      // Axis labels
+      const axis = document.getElementById('axis-labels');
+      axis.innerHTML = height.map((_, i) => `<span class="${i === L ? 'text-emerald-400' : i === R ? 'text-amber-400' : ''}">[${i}]</span>`).join('');
+
+      // Math Formula
+      const calcFormula = document.getElementById('calc-formula');
+      const calcResult = document.getElementById('calc-result');
+      if (!isFinished) {
+        const hL = height[L];
+        const hR = height[R];
+        const w = R - L;
+        const minH = Math.min(hL, hR);
+        const area = w * minH;
+
+        calcFormula.innerText = `min(${hL}, ${hR}) × (${R} - ${L})`;
+        if (step.isNewRecord) {
+          calcResult.innerHTML = `<span class="text-emerald-400 font-black text-lg">= ${minH} × ${w} = ${area} ➔ KỶ LỤC MỚI! 🎉</span>`;
+        } else {
+          calcResult.innerHTML = `<span class="text-sky-300 font-bold text-base">= ${minH} × ${w} = ${area} (Nhỏ hơn kỷ lục ${step.maxWater})</span>`;
+        }
+      } else {
+        calcFormula.innerText = `L == R (Gặp nhau)`;
+        calcResult.innerHTML = `<span class="text-emerald-400 font-black text-lg">Diện tích lớn nhất: ${step.maxWater}</span>`;
+      }
+
+      // Action Box
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = `${step.desc} 👉 ${step.moveReason}`;
+
+      // Max Record
+      document.getElementById('max-record').innerHTML = `
+        <span class="px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/50">
+          ${step.maxWater}
+        </span>
+      `;
+
+      // Buttons
+      document.getElementById('btn-prev').disabled = currentStep === 0;
+      document.getElementById('btn-next').disabled = currentStep === steps.length - 1;
+    }
+
+    function nextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        render();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        render();
+      }
+    }
+
+    function goToStep(idx) {
+      currentStep = idx;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>

@@ -162,3 +162,12 @@ Khi bạn giải xong Two Sum trong vòng 10 phút, người phỏng vấn ANZ t
    * Đề bài: Tìm số lượng mảng con liên tiếp có tổng bằng $K$.
    * Cách giải: Kết hợp **Prefix Sum + Hash Map đếm tần suất** để đạt độ phức tạp $O(n)$.
 
+---
+
+## 🎨 6. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/w1-04-two-sum-hash.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/w1-04-two-sum-hash.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng Hash Map tra cứu phần bù complement trong O(1).*
+
+

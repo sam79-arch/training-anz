@@ -79,7 +79,7 @@
 ### Tuần 2: Advanced Hashing, Two Pointers Medium & Node.js Streams
 - [x] Day 1 (Thứ 2): [Valid Anagram & Group Anagrams (Frequency Hashing)](coding/week-02/01-valid-anagram.md) & [Cẩm nang Frequency Hashing](notes/week-02/day-01-frequency-hashing.md)
 - [x] Day 2 (Thứ 3): [3Sum — Triplet Sum to Zero (Two Pointers Medium)](coding/week-02/02-three-sum.md) & [Cẩm nang Two Pointers & Duplicate Skipping](notes/week-02/day-02-three-sum-patterns.md)
-- [ ] Day 3 (Thứ 4): Container With Most Water (LeetCode #11)
+- [x] Day 3 (Thứ 4): [Container With Most Water (Two Pointers Area Maximization)](coding/week-02/03-container-with-most-water.md) & [Cẩm nang Inward Collision](notes/week-02/day-03-container-patterns.md)
 - [ ] Day 4 (Thứ 5): Longest Substring Without Repeating Characters (LeetCode #3)
 - [ ] Day 5 (Thứ 6): Node.js Streams & Backpressure Architecture
 - [ ] Day 6 (Thứ 7): Behavioral STAR Story 2: Severity-1 Production Incident

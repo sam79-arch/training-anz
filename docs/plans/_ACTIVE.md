@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `week-02-day-02-three-sum.md` | `New Request` | `In Processing` | `feature/week-02-day-02-three-sum` | 3Sum (LeetCode #15 Medium) Two Pointers & Skip Duplicates (Issue #23) |
+| `week-02-day-03-container-with-most-water.md` | `New Request` | `In Processing` | `feature/week-02-day-03-container-with-most-water` | Container With Most Water (#11 Medium) Two Pointers Area Maximization (Issue #24) |
 
 ---
 
@@ -49,6 +49,7 @@
 | `pilot-day-05-two-sum-hash.md` | `New Request` | `Closed` | 2026-09-18 | `main` | Issue #13 Implementation & Notes |
 | `pilot-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-22 | `main` | Issue #14 Implementation & Notes |
 | `week-02-day-01-valid-anagram.md` | `New Request` | `Closed` | 2026-09-23 | `main` | PR #28 / Commit `8ede247` |
+| `week-02-day-02-three-sum.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #29 / Commit `ddff43c` |
 
 ---
 

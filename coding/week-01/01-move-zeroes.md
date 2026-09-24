@@ -121,3 +121,12 @@ Luyện đọc to thành tiếng kịch bản này trong 15 phút mỗi sáng (p
 > **"Khi cần tái sắp xếp hoặc lọc phần tử trong mảng tại chỗ (in-place) mà vẫn phải bảo toàn thứ tự ban đầu, luôn dùng một con trỏ ĐỌC (`readIndex`) và một con trỏ GHI (`writeIndex`)."**  
 > *(Quy luật này là tiền đề trực tiếp để giải các bài Medium: Remove Duplicates from Sorted Array II, Container With Most Water, và 3Sum).*
 
+---
+
+## 🎨 6. Bảng Mô Phỏng Trực Quan Tương Tác (Interactive Visualizer)
+
+> 🔗 **File mô phỏng độc lập (Lưu vĩnh viễn trong Repo):**  
+> [`docs/visualizers/w1-01-move-zeroes.html`](file:///home/samnguyen/projects/training-anz/docs/visualizers/w1-01-move-zeroes.html)  
+> *Bạn có thể click đúp vào file trên để mở trực tiếp trên trình duyệt (Chrome/Edge/Safari/Firefox) bất kỳ lúc nào để xem mô phỏng con trỏ readIdx và writeIdx di chuyển từng bước.*
+
+
