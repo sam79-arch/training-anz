@@ -81,7 +81,7 @@
 - [x] Day 2 (Thứ 3): [3Sum — Triplet Sum to Zero (Two Pointers Medium)](coding/week-02/02-three-sum.md) & [Cẩm nang Two Pointers & Duplicate Skipping](notes/week-02/day-02-three-sum-patterns.md)
 - [x] Day 3 (Thứ 4): [Container With Most Water (Two Pointers Area Maximization)](coding/week-02/03-container-with-most-water.md) & [Cẩm nang Inward Collision](notes/week-02/day-03-container-patterns.md)
 - [x] Day 4 (Thứ 5): [Longest Substring Without Repeating Characters (Sliding Window)](coding/week-02/04-longest-substring.md) & [Cẩm nang Sliding Window](notes/week-02/day-04-sliding-window-patterns.md)
-- [ ] Day 5 (Thứ 6): Node.js Streams & Backpressure Architecture
+- [x] Day 5 (Thứ 6): [Node.js Streams & Backpressure Architecture](architecture/week-02/05-streams-backpressure.md) & [Cẩm nang Streams & Backpressure](notes/week-02/day-05-streams-patterns.md)
 - [ ] Day 6 (Thứ 7): Behavioral STAR Story 2: Severity-1 Production Incident
 
 ### Lộ trình 12 Tuần Chính Thức

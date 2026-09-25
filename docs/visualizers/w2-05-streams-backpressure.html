@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-emerald {
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.55);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.55);
+    }
+    .cell-glow-rose {
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.65);
+    }
+    .pulse-fast {
+      animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🌊</span> Mô Phỏng Kiến Trúc: Streams & Backpressure
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">ANZ Data Platform - Xử lý luồng dữ liệu tài chính lớn & kiểm soát RAM</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 7
+      </span>
+    </div>
+
+    <!-- Scenario Mode Selector -->
+    <div class="flex items-center justify-between bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-2 text-xs">
+      <span class="text-slate-300 font-semibold">Chọn kịch bản kiến trúc:</span>
+      <div class="flex gap-2">
+        <button onclick="switchMode(0)" id="mode-btn-0" class="px-3 py-1 rounded font-bold transition bg-emerald-600 text-white shadow">
+          ✅ Streams + Backpressure
+        </button>
+        <button onclick="switchMode(1)" id="mode-btn-1" class="px-3 py-1 rounded font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700">
+          ❌ fs.readFile (OOM Crash)
+        </button>
+      </div>
+    </div>
+
+    <!-- Streaming Pipeline Diagram -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-3">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Đường ống dẫn dữ liệu (Pipeline Handshake):</span>
+        <span id="pipe-status-tag" class="font-mono text-[11px] bg-slate-800 px-2 py-0.5 rounded text-emerald-400 border border-slate-700 font-bold">
+          PRODUCING
+        </span>
+      </div>
+
+      <!-- Pipeline Node Visuals -->
+      <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
+        <!-- 1. Producer -->
+        <div id="node-producer" class="bg-slate-800/80 border-2 border-emerald-400 rounded-lg p-2.5 flex flex-col items-center justify-center transition-all duration-300 cell-glow-emerald">
+          <span class="text-lg">⚡</span>
+          <span class="font-bold text-emerald-300 mt-1">Readable</span>
+          <span class="text-[10px] text-slate-400 mt-0.5" id="producer-rate">Tốc độ: 500 MB/s</span>
+        </div>
+
+        <!-- 2. Buffer (Queue) -->
+        <div id="node-buffer" class="bg-slate-800/80 border-2 border-sky-400 rounded-lg p-2.5 flex flex-col items-center justify-center transition-all duration-300">
+          <span class="text-lg">📦</span>
+          <span class="font-bold text-sky-300 mt-1">Buffer Queue</span>
+          <div class="w-full bg-slate-700 h-2 rounded-full mt-1.5 overflow-hidden">
+            <div id="buffer-progress" class="bg-sky-400 h-full transition-all duration-300" style="width: 25%"></div>
+          </div>
+          <span class="text-[10px] text-slate-300 mt-1 font-bold" id="buffer-text">1 / 4 Chunks</span>
+        </div>
+
+        <!-- 3. Consumer -->
+        <div id="node-consumer" class="bg-slate-800/80 border-2 border-amber-400 rounded-lg p-2.5 flex flex-col items-center justify-center transition-all duration-300">
+          <span class="text-lg">💾</span>
+          <span class="font-bold text-amber-300 mt-1">Writable Sink</span>
+          <span class="text-[10px] text-slate-400 mt-0.5">Tốc độ: 10 MB/s</span>
+        </div>
+      </div>
+
+      <!-- Pointer Legend -->
+      <div class="flex items-center justify-center gap-5 text-xs font-semibold pt-1 border-t border-slate-800 text-slate-300">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block shadow"></span>
+          <span>Phát dữ liệu (`push`)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-rose-500 inline-block shadow"></span>
+          <span>Tạm dừng (`pause`)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-sky-400 inline-block shadow"></span>
+          <span>Xả bộ đệm (`drain`)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live RAM Footprint & Backpressure Status -->
+    <div class="grid grid-cols-2 gap-3">
+      <!-- RAM Gauge -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 flex flex-col justify-between">
+        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Mức tiêu thụ V8 Heap Memory</span>
+        <div class="mt-1 flex items-baseline justify-between">
+          <span id="metric-ram" class="text-xl font-mono font-bold text-emerald-400">24.5 MB</span>
+          <span id="metric-ram-status" class="text-xs font-mono text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800">
+            ỔN ĐỊNH
+          </span>
+        </div>
+        <div class="w-full bg-slate-800 h-2 rounded-full mt-2 overflow-hidden border border-slate-700">
+          <div id="ram-meter" class="bg-emerald-400 h-full transition-all duration-300" style="width: 5%"></div>
+        </div>
+        <span class="text-[10px] text-slate-400 mt-1" id="ram-subtext">Giới hạn K8s: 512 MB</span>
+      </div>
+
+      <!-- Handshake Signal -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 flex flex-col justify-between">
+        <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Trạng thái Tín hiệu Luồng</span>
+        <div class="mt-1">
+          <span id="signal-badge" class="text-sm font-mono font-bold px-2 py-1 rounded border inline-block bg-emerald-500/20 text-emerald-300 border-emerald-400">
+            write() === true
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-300 mt-2" id="signal-desc">
+          Buffer < highWaterMark. Luồng thông suốt.
+        </p>
+      </div>
+    </div>
+
+    <!-- Explanation Box -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-1">
+      <div class="flex items-center gap-2">
+        <span id="action-icon" class="text-base">🟢</span>
+        <span id="action-title" class="text-xs font-bold text-slate-200">Khởi đầu luồng</span>
+      </div>
+      <p id="action-desc" class="text-xs text-slate-300 leading-relaxed pl-6">
+        Readable bắt đầu đọc từng chunk 64KB từ tệp sao kê ngân hàng 2GB trên ổ đĩa SSD.
+      </p>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between pt-1">
+      <button onclick="prevStep()" id="prev-btn" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-30 disabled:pointer-events-none transition border border-slate-700">
+        ◀ Bước Trước
+      </button>
+
+      <div class="flex gap-2">
+        <button onclick="toggleAutoPlay()" id="play-btn" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600/40 text-blue-200 hover:bg-blue-600/60 transition border border-blue-500/40">
+          ▶ Tự Động
+        </button>
+        <button onclick="resetSteps()" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition border border-slate-700">
+          ↺ Làm Lại
+        </button>
+      </div>
+
+      <button onclick="nextStep()" id="next-btn" class="px-4 py-1.5 text-xs font-bold rounded-lg bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-30 disabled:pointer-events-none transition shadow-lg shadow-blue-500/20">
+        Bước Tiếp ▶
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const STREAMS_STEPS = [
+      {
+        step: 1,
+        statusTag: "STREAMING",
+        producerState: "active",
+        bufferPct: 25,
+        bufferText: "1 / 4 Chunks (16KB)",
+        ramMb: 24.5,
+        ramStatus: "ỔN ĐỊNH",
+        signal: "write() === true",
+        signalClass: "bg-emerald-500/20 text-emerald-300 border-emerald-400",
+        signalDesc: "Bộ đệm còn trống, Producer tiếp tục đọc chunk tiếp theo.",
+        icon: "🟢",
+        title: "Khởi tạo dòng chảy (Normal Flow)",
+        desc: "Readable Stream đọc chunk 16KB đầu tiên từ tệp 2GB. Writable nhận và ghi thành công."
+      },
+      {
+        step: 2,
+        statusTag: "FILLING BUFFER",
+        producerState: "active",
+        bufferPct: 75,
+        bufferText: "3 / 4 Chunks (48KB)",
+        ramMb: 25.1,
+        ramStatus: "ỔN ĐỊNH",
+        signal: "write() === true",
+        signalClass: "bg-emerald-500/20 text-emerald-300 border-emerald-400",
+        signalDesc: "Producer đọc nhanh (500MB/s), Consumer ghi DB chậm (10MB/s). Bộ đệm đang đầy dần.",
+        icon: "⚡",
+        title: "Tốc độ chênh lệch (Speed Mismatch)",
+        desc: "Do tốc độ đọc SSD nhanh gấp 50 lần tốc độ ghi Database, các chunk bắt đầu tích tụ trong buffer của Writable Stream."
+      },
+      {
+        step: 3,
+        statusTag: "BACKPRESSURE ACTIVE",
+        producerState: "paused",
+        bufferPct: 100,
+        bufferText: "4 / 4 Chunks (highWaterMark)",
+        ramMb: 26.2,
+        ramStatus: "BẢO VỆ",
+        signal: "write() === false",
+        signalClass: "bg-rose-500/20 text-rose-300 border-rose-500 cell-glow-rose",
+        signalDesc: "🚨 Buffer chạm ngưỡng highWaterMark! write() trả về false.",
+        icon: "🛑",
+        title: "Kích hoạt Áp suất ngược (Backpressure Trigger)",
+        desc: "Bộ đệm đã đầy 100%! write() trả về false. Producer lập tức gọi readable.pause() để ngừng đọc thêm từ đĩa!"
+      },
+      {
+        step: 4,
+        statusTag: "PAUSED (WAITING)",
+        producerState: "paused",
+        bufferPct: 75,
+        bufferText: "3 / 4 Chunks (Đang xả)",
+        ramMb: 26.0,
+        ramStatus: "BẢO VỆ",
+        signal: "readable.pause()",
+        signalClass: "bg-amber-500/20 text-amber-300 border-amber-400",
+        signalDesc: "Producer hoàn toàn tạm dừng. Không có chunk nào mới được nạp vào RAM.",
+        icon: "⏸️",
+        title: "Dừng phát dữ liệu (Zero RAM Ballooning)",
+        desc: "Nhờ tạm dừng kịp thời, RAM không bị phình to. Writable Stream tranh thủ thời gian này để flush dữ liệu vào Database."
+      },
+      {
+        step: 5,
+        statusTag: "DRAINING",
+        producerState: "draining",
+        bufferPct: 25,
+        bufferText: "1 / 4 Chunks (Gần cạn)",
+        ramMb: 25.3,
+        ramStatus: "ỔN ĐỊNH",
+        signal: "Buffer Drained",
+        signalClass: "bg-sky-500/20 text-sky-300 border-sky-400",
+        signalDesc: "Consumer đã ghi xong gần hết các chunk cũ. Buffer hạ xuống mức an toàn.",
+        icon: "🌊",
+        title: "Bộ đệm xả sạch (Clearing Buffer)",
+        desc: "Database đã xác nhận ghi thành công 3 chunk. Dung lượng hàng đợi giảm xuống dưới ngưỡng an toàn."
+      },
+      {
+        step: 6,
+        statusTag: "DRAIN EMITTED",
+        producerState: "resumed",
+        bufferPct: 0,
+        bufferText: "0 / 4 Chunks (Trống)",
+        ramMb: 24.8,
+        ramStatus: "ỔN ĐỊNH",
+        signal: "emit('drain')",
+        signalClass: "bg-emerald-500/20 text-emerald-300 border-emerald-400 cell-glow-emerald",
+        signalDesc: "✨ Writable Stream phát sự kiện 'drain'. Báo hiệu sẵn sàng tiếp nhận!",
+        icon: "🔔",
+        title: "Bắt tay nối lại luồng ('drain' Handshake)",
+        desc: "Sự kiện 'drain' kích hoạt callback. Readable Stream gọi readable.resume() và tiếp tục chu kỳ truyền dữ liệu!"
+      },
+      {
+        step: 7,
+        statusTag: "COMPLETED",
+        producerState: "finished",
+        bufferPct: 0,
+        bufferText: "Hoàn tất 100%",
+        ramMb: 24.5,
+        ramStatus: "HOÀN HẢO",
+        signal: "pipeline finished",
+        signalClass: "bg-blue-500/20 text-blue-300 border-blue-400",
+        signalDesc: "Xử lý thành công toàn bộ 5,000,000 giao dịch. RAM giữ cố định 24.5MB!",
+        icon: "🎉",
+        title: "Hoàn tất an toàn tuyệt đối",
+        desc: "File 2GB đã được xử lý xong trong khi RAM của Kubernetes Pod không bao giờ vượt quá 30MB! Nguy cơ OOMKilled bằng 0."
+      }
+    ];
+
+    const NAIVE_STEPS = [
+      {
+        step: 1,
+        statusTag: "fs.readFile() CALLED",
+        producerState: "active",
+        bufferPct: 30,
+        bufferText: "Nạp 500MB vào RAM",
+        ramMb: 520,
+        ramStatus: "TĂNG NHANH",
+        signal: "Buffering into Heap",
+        signalClass: "bg-amber-500/20 text-amber-300 border-amber-400",
+        signalDesc: "Node.js cấp phát Buffer khổng lồ trong V8 Heap.",
+        icon: "⚠️",
+        title: "Nạp toàn bộ file vào bộ nhớ",
+        desc: "Hàm fs.readFile() cố nạp toàn bộ nội dung file 2GB vào một Buffer duy nhất trong RAM."
+      },
+      {
+        step: 2,
+        statusTag: "HEAP ALLOCATION SPIKE",
+        producerState: "active",
+        bufferPct: 80,
+        bufferText: "Nạp 1.2GB vào RAM",
+        ramMb: 1250,
+        ramStatus: "NGUY CƠ CRASH",
+        signal: "Heap Limit Reached",
+        signalClass: "bg-rose-500/20 text-rose-300 border-rose-500 cell-glow-rose",
+        signalDesc: "RAM chạm trần 1.4GB mặc định của V8 Engine.",
+        icon: "🚨",
+        title: "V8 Mark-Sweep GC quá tải",
+        desc: "Garbage Collector chạy liên tục gây đơ Event Loop (Stop-the-World pause). Liveness Probe của Kubernetes bắt đầu timeout!"
+      },
+      {
+        step: 3,
+        statusTag: "POD KILLED",
+        producerState: "dead",
+        bufferPct: 100,
+        bufferText: "CRASH",
+        ramMb: 1420,
+        ramStatus: "OOMKILLED",
+        signal: "Exit Code 137",
+        signalClass: "bg-red-600 text-white font-bold cell-glow-rose",
+        signalDesc: "💥 Linux Kernel OOM Killer tiêu diệt Pod!",
+        icon: "💀",
+        title: "Sự cố Sev-1: Kubernetes OOMKilled",
+        desc: "Tiến trình Node.js chết đứng vì lỗi 'JavaScript heap out of memory'. Toàn bộ các giao dịch đang xử lý dở dang bị hủy hoại!"
+      }
+    ];
+
+    let currentMode = 0; // 0 = Streams, 1 = Naive
+    let currentStepIdx = 0;
+    let autoPlayTimer = null;
+
+    function getActiveSteps() {
+      return currentMode === 0 ? STREAMS_STEPS : NAIVE_STEPS;
+    }
+
+    function renderCurrentStep() {
+      const steps = getActiveSteps();
+      const step = steps[currentStepIdx];
+
+      // Update badge & title
+      document.getElementById('step-badge').innerText = `Bước ${currentStepIdx + 1} / ${steps.length}`;
+      document.getElementById('pipe-status-tag').innerText = step.statusTag;
+
+      // Update buffer
+      const bufferProgress = document.getElementById('buffer-progress');
+      bufferProgress.style.width = `${step.bufferPct}%`;
+      if (step.bufferPct >= 100 && currentMode === 0) {
+        bufferProgress.className = "bg-rose-500 h-full transition-all duration-300 cell-glow-rose";
+      } else if (currentMode === 1) {
+        bufferProgress.className = "bg-rose-600 h-full transition-all duration-300";
+      } else {
+        bufferProgress.className = "bg-sky-400 h-full transition-all duration-300";
+      }
+      document.getElementById('buffer-text').innerText = step.bufferText;
+
+      // Update Producer visual
+      const prodNode = document.getElementById('node-producer');
+      const prodRate = document.getElementById('producer-rate');
+      if (step.producerState === 'paused') {
+        prodNode.className = "bg-rose-950/60 border-2 border-rose-500 rounded-lg p-2.5 flex flex-col items-center justify-center transition-all duration-300 cell-glow-rose";
+        prodRate.innerText = "TẠM DỪNG (0 MB/s)";
+        prodRate.className = "text-[10px] text-rose-300 font-bold mt-0.5";
+      } else if (step.producerState === 'dead') {
+        prodNode.className = "bg-red-950 border-2 border-red-700 rounded-lg p-2.5 flex flex-col items-center justify-center opacity-50";
+        prodRate.innerText = "CRASHED";
+      } else {
+        prodNode.className = "bg-slate-800/80 border-2 border-emerald-400 rounded-lg p-2.5 flex flex-col items-center justify-center transition-all duration-300 cell-glow-emerald";
+        prodRate.innerText = "Tốc độ: 500 MB/s";
+        prodRate.className = "text-[10px] text-slate-400 mt-0.5";
+      }
+
+      // Update RAM
+      document.getElementById('metric-ram').innerText = `${step.ramMb} MB`;
+      const ramMeter = document.getElementById('ram-meter');
+      const ramPct = Math.min(100, (step.ramMb / 512) * 100);
+      ramMeter.style.width = `${ramPct}%`;
+
+      const ramStatus = document.getElementById('metric-ram-status');
+      ramStatus.innerText = step.ramStatus;
+      if (step.ramMb > 500) {
+        ramStatus.className = "text-xs font-mono text-rose-300 bg-rose-950/80 px-1.5 py-0.5 rounded border border-rose-700 font-bold cell-glow-rose";
+        ramMeter.className = "bg-rose-500 h-full transition-all duration-300";
+        document.getElementById('metric-ram').className = "text-xl font-mono font-bold text-rose-400";
+      } else {
+        ramStatus.className = "text-xs font-mono text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800";
+        ramMeter.className = "bg-emerald-400 h-full transition-all duration-300";
+        document.getElementById('metric-ram').className = "text-xl font-mono font-bold text-emerald-400";
+      }
+
+      // Update Signal
+      const signalBadge = document.getElementById('signal-badge');
+      signalBadge.innerText = step.signal;
+      signalBadge.className = `text-sm font-mono font-bold px-2 py-1 rounded border inline-block ${step.signalClass}`;
+      document.getElementById('signal-desc').innerText = step.signalDesc;
+
+      // Update Description
+      document.getElementById('action-icon').innerText = step.icon;
+      document.getElementById('action-title').innerText = step.title;
+      document.getElementById('action-desc').innerText = step.desc;
+
+      // Button states
+      document.getElementById('prev-btn').disabled = (currentStepIdx === 0);
+      document.getElementById('next-btn').disabled = (currentStepIdx === steps.length - 1);
+    }
+
+    function switchMode(mode) {
+      if (autoPlayTimer) toggleAutoPlay();
+      currentMode = mode;
+      currentStepIdx = 0;
+
+      const btn0 = document.getElementById('mode-btn-0');
+      const btn1 = document.getElementById('mode-btn-1');
+
+      if (mode === 0) {
+        btn0.className = "px-3 py-1 rounded font-bold transition bg-emerald-600 text-white shadow";
+        btn1.className = "px-3 py-1 rounded font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700";
+      } else {
+        btn0.className = "px-3 py-1 rounded font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700";
+        btn1.className = "px-3 py-1 rounded font-bold transition bg-rose-600 text-white shadow cell-glow-rose";
+      }
+      renderCurrentStep();
+    }
+
+    function nextStep() {
+      const steps = getActiveSteps();
+      if (currentStepIdx < steps.length - 1) {
+        currentStepIdx++;
+        renderCurrentStep();
+      } else if (autoPlayTimer) {
+        toggleAutoPlay();
+      }
+    }
+
+    function prevStep() {
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        renderCurrentStep();
+      }
+    }
+
+    function resetSteps() {
+      if (autoPlayTimer) toggleAutoPlay();
+      currentStepIdx = 0;
+      renderCurrentStep();
+    }
+
+    function toggleAutoPlay() {
+      const btn = document.getElementById('play-btn');
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        btn.innerText = '▶ Tự Động';
+        btn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600/40 text-blue-200 hover:bg-blue-600/60 transition border border-blue-500/40';
+      } else {
+        btn.innerText = '⏸ Tạm Dừng';
+        btn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-600/40 text-amber-200 hover:bg-amber-600/60 transition border border-amber-500/40';
+        autoPlayTimer = setInterval(() => {
+          const steps = getActiveSteps();
+          if (currentStepIdx < steps.length - 1) {
+            nextStep();
+          } else {
+            toggleAutoPlay();
+          }
+        }, 1400);
+      }
+    }
+
+    // Initial render
+    renderCurrentStep();
+  </script>
+</body>
+</html>
