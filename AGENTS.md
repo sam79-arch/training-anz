@@ -207,6 +207,10 @@ When triggered, the agent MUST **not** implement any code. It compiles a reusabl
 5. **Interactive Visualizer Protocol for Complex DSA & Architecture**:
    - Đối với các bài toán Medium hoặc các chủ đề kiến trúc phân tán / Event Loop trừu tượng, Agent chủ động tạo widget mô phỏng Generative UI tương tác từng bước (State Machine Stepper với Dark Mode tương phản cao, thẻ `bg-[#1e293b]`, viền phát sáng và nút bấm) để hỗ trợ trực quan hóa cơ chế con trỏ/dữ liệu và củng cố tư duy trước khi phỏng vấn.
    - BẮT BUỘC lưu bản sao vĩnh viễn tại `docs/visualizers/<id>-<tên-bài>.html` và gắn link trong tài liệu `*.md` để commit vào Git và mở offline bất cứ lúc nào.
+6. **Weekly Curriculum Balance & Anti-Burnout Protocol**:
+   - **Xen kẽ nghiêm ngặt**: Thứ 2, 4, 6 = DSA Coding; Thứ 3, 5 = System Design / Database Indexing / Node.js Internals (**TUYỆT ĐỐI CẤM GIẢI LEETCODE**); Thứ 7 = Behavioral STAR Story; Chủ nhật = Nghỉ ngơi.
+   - **Giới hạn nhận thức**: Tối đa 1 bài Medium mỗi tuần. Tuyệt đối không xếp 2 bài Medium liền kề.
+   - **Kỷ luật 60 phút**: Tối ưu nội dung vừa sức trong 60 phút mỗi sáng (05:00 - 06:00 AM) để chống quá tải nhận thức và duy trì lâu dài.
 
 
 
