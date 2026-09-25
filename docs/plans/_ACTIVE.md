@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `week-02-day-04-longest-substring.md` | `New Request` | `In Processing` | `feature/week-02-day-04-longest-substring` | Longest Substring Without Repeating Characters (#3 Medium) Sliding Window (Issue #25) |
+| `week-02-day-05-streams-backpressure.md` | `Research` | `In Processing` | `research/week-02-day-05-streams-backpressure` | Node.js Streams & Backpressure Architecture (Issue #26) |
 
 ---
 
@@ -51,6 +51,7 @@
 | `week-02-day-01-valid-anagram.md` | `New Request` | `Closed` | 2026-09-23 | `main` | PR #28 / Commit `8ede247` |
 | `week-02-day-02-three-sum.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #29 / Commit `ddff43c` |
 | `week-02-day-03-container-with-most-water.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #30 / Commit `7b18a10` |
+| `week-02-day-04-longest-substring.md` | `New Request` | `Closed` | 2026-09-25 | `main` | PR #31 / Commit `fa4b275` |
 
 ---
 
