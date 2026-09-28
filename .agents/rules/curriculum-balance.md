@@ -21,6 +21,8 @@ Tuyệt đối không xếp 2 ngày liên tiếp cùng học DSA/LeetCode:
 
 ## 2. Giới Hạn Tải Nhận Thức Bài Medium (Cognitive Load Budgeting)
 - **Tối đa 1 bài Medium mỗi tuần**: Một tuần chỉ được phép có tối đa 1 bài LeetCode Medium. Các ngày DSA còn lại phải là bài Easy hoặc bài biến thể nhẹ nhàng (dưới 20 dòng code).
+- **Khuyến khích Tuần 0-Medium (Tuần 100% Easy)**: Các tuần củng cố nền tảng cấu trúc dữ liệu (như Stack, Linked List cơ bản) hoàn toàn có thể là tuần 100% Easy để dồn trọn vẹn năng lượng cho các ngày System Design & Database Internals.
+- **Hàng rào đầu tuần (Early-Week Gate)**: Ngày Thứ 2 mở đầu tuần mới **TUYỆT ĐỐI CẤM GIẢI BÀI MEDIUM**. Thứ 2 luôn là bài Easy cơ bản để khởi động tuần nhẹ nhàng, xây dựng sự tự tin và nhịp sinh học 05:00 AM.
 - **Tuyệt đối cấm xếp 2 bài Medium liền kề**: Không bao giờ lên kế hoạch 2 bài Medium trong cùng một đợt học mà không có ít nhất 2 ngày nghỉ/chuyển đổi chủ đề kiến trúc ở giữa.
 
 ## 3. Cân Bằng Trọng Số Phỏng Vấn ANZ (ANZ Interview Realism)
@@ -32,5 +34,6 @@ Tuyệt đối không xếp 2 ngày liên tiếp cùng học DSA/LeetCode:
 
 ## 4. Kỷ Luật 60 Phút Mỗi Sáng (The 60-Minute Morning Gate)
 - Nội dung của mỗi buổi sáng (05:00 - 06:00 AM) phải được thiết kế tinh gọn để người học có thể nắm vững và hoàn thành trọn vẹn trong đúng 60 phút.
+- **Quy tắc 1 bài duy nhất mỗi buổi sáng (Single-Problem Invariant)**: Tuyệt đối cấm gộp 2 bài toán (ví dụ 1 bài Easy và 1 bài biến thể/Medium) vào chung 1 buổi sáng. Một buổi sáng DSA chỉ được giải DUY NHẤT 1 bài toán để đảm bảo trọn vẹn quy trình 5 bước PBL (Problem, Pain Point, Solution, Test Native Assert, English Script 6 bước, Generative UI Stepper).
 - Nếu một bài tập đòi hỏi chứng minh toán học quá phức tạp hoặc vượt quá 60 phút, Agent phải chia nhỏ bài học thành 2 buổi (Part 1: Intuition & Brute-force; Part 2: Optimization & Invariant Proof).
 
