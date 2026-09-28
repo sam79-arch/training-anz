@@ -4,7 +4,9 @@
 Hiện thực giải pháp kiểm tra tính hợp lệ của chuỗi dấu ngoặc (`()`, `{}`, `[]`) theo cấu trúc dữ liệu Ngăn xếp (Stack - LIFO) và bảng ánh xạ ngoặc đối ứng bằng JavaScript thuần (Node.js Native, Zero External Dependencies). Bài toán mô phỏng kịch bản xác thực cú pháp lồng nhau (Payload Syntax Validation) trong các gói tin giao dịch tài chính ISO 20022 hoặc cấu trúc JSON/XML trước khi đẩy vào hệ thống thanh toán cốt lõi của ngân hàng ANZ.
 
 - **Task Type**: `New Request`
-- **Status**: `Open`
+- **Status**: `In Processing`
+- **Issue**: [#34](https://github.com/sam79-arch/training-anz/issues/34)
+- **Milestone**: [Milestone #6 (Week 3: Stack, Linked List & Database Deep Dive)](https://github.com/sam79-arch/training-anz/milestone/6)
 - **Target Branch**: `main`
 
 ---
@@ -50,18 +52,18 @@ Hiện thực giải pháp kiểm tra tính hợp lệ của chuỗi dấu ngo�
 ## 4. Implementation Checklist
 *(Tuân thủ nghiêm ngặt nguyên tắc Test-First: Test cases được viết trước khi hiện thực mã nguồn)*
 
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-01 – Guard clauses & Invalid inputs (null, undefined, non-string → `false`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-02 – Early exit cho chuỗi có độ dài lẻ (e.g. `"("`, `"(()"`, `"{[]"` → `false`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-03 – Chuỗi rỗng `""` → `true` (quy ước valid).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-04 – Các trường hợp chuẩn hợp lệ (`"()"`, `"()[]{}"`, `"{[]}"` → `true`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-05 – Đóng sai loại ngoặc (`"(]"` → `false`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-06 – Đóng sai thứ tự lồng nhau (`"([)]"` → `false`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-07 – Dấu đóng xuất hiện khi stack rỗng (`"]"` hoặc `")()"` → `false`).
-- [ ] `coding/week-03/01-valid-parentheses.test.js`: TC-08 – Hiệu năng trên chuỗi cực lớn (100,000 ký tự hợp lệ lồng nhau < 20ms).
-- [ ] `coding/week-03/01-valid-parentheses.js`: Hiện thực hàm `isValid(s)` với guard clause, lookup map, và vòng lặp `for...of`.
-- [ ] `coding/week-03/01-valid-parentheses.md`: Soạn thảo tài liệu 5 bước PBL và kịch bản đối thoại phỏng vấn tiếng Anh 6 bước (Clarify, Brute-force, Optimize, Think Out Loud, Dry Run, Complexity).
-- [ ] `docs/visualizers/w3-01-valid-parentheses.html`: Dựng Generative UI Stepper mô phỏng ngăn xếp Stack hoạt động trực quan.
-- [ ] `package.json`: Tích hợp test suite của Tuần 3 Day 1 vào `npm test`.
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-01 – Guard clauses & Invalid inputs (null, undefined, non-string → `false`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-02 – Early exit cho chuỗi có độ dài lẻ (e.g. `"("`, `"(()"`, `"{[]"` → `false`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-03 – Chuỗi rỗng `""` → `true` (quy ước valid).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-04 – Các trường hợp chuẩn hợp lệ (`"()"`, `"()[]{}"`, `"{[]}"` → `true`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-05 – Đóng sai loại ngoặc (`"(]"` → `false`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-06 – Đóng sai thứ tự lồng nhau (`"([)]"` → `false`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-07 – Dấu đóng xuất hiện khi stack rỗng (`"]"` hoặc `")()"` → `false`).
+- [x] `coding/week-03/01-valid-parentheses.test.js`: TC-08 – Hiệu năng trên chuỗi cực lớn (100,000 ký tự hợp lệ lồng nhau < 20ms).
+- [x] `coding/week-03/01-valid-parentheses.js`: Hiện thực hàm `isValid(s)` với guard clause, lookup map, và vòng lặp `for...of`.
+- [x] `coding/week-03/01-valid-parentheses.md`: Soạn thảo tài liệu 5 bước PBL và kịch bản đối thoại phỏng vấn tiếng Anh 6 bước (Clarify, Brute-force, Optimize, Think Out Loud, Dry Run, Complexity).
+- [x] `docs/visualizers/w3-01-valid-parentheses.html`: Dựng Generative UI Stepper mô phỏng ngăn xếp Stack hoạt động trực quan.
+- [x] `package.json`: Tích hợp test suite của Tuần 3 Day 1 vào `npm test`.
 
 ---
 
@@ -90,6 +92,6 @@ Hiện thực giải pháp kiểm tra tính hợp lệ của chuỗi dấu ngo�
 ```
 Branch:               feature/week-03-day-01-valid-parentheses
 Target Branch:        main
-Commit message:       feat(coding): implement valid parentheses using stack lifo and guard clauses (close #32)
+Commit message:       feat(coding): implement valid parentheses using stack lifo and guard clauses (close #34)
 GitHub PR Labels:     coding, enhancement
 ```

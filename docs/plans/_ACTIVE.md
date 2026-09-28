@@ -9,7 +9,8 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `rebalance-roadmap-and-week-03-plan` | `Meta Data` | `In Processing` | `meta/rebalance-roadmap-and-week-03-plan` | Rebalance 12-week roadmap and prepare Week 3 Day 1 plan |
+| `week-02-day-05-streams-backpressure.md` | `Research` | `In Processing` | `research/week-02-day-05-streams-backpressure` | Node.js Streams & Backpressure Architecture (Issue #26) |
+| `week-02-day-06-star-and-retrospective.md` | `Documentation` | `In Processing` | `docs/week-02-day-06-star-retrospective` | Behavioral STAR Story 2 & Week 2 Retrospective (Issue #27) |
 
 ---
 
@@ -17,7 +18,7 @@
 
 | Plan File | Task Type | Status | Target Branch | Description |
 |---|---|---|---|---|
-| `week-03-day-01-valid-parentheses.md` | `New Request` | `Open` | `main` | Valid Parentheses (LeetCode #20 - Easy): Stack LIFO, Map lookup & Guard Clauses |
+| *(None currently)* | — | `Open` | — | Backlog plans ready to be picked up |
 
 ---
 
@@ -52,8 +53,6 @@
 | `week-02-day-02-three-sum.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #29 / Commit `ddff43c` |
 | `week-02-day-03-container-with-most-water.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #30 / Commit `7b18a10` |
 | `week-02-day-04-longest-substring.md` | `New Request` | `Closed` | 2026-09-25 | `main` | PR #31 / Commit `fa4b275` |
-| `week-02-day-05-streams-backpressure.md` | `Research` | `Closed` | 2026-09-25 | `main` | PR #32 / Commit `252a4de` |
-| `week-02-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-28 | `main` | PR #33 / Commit `6aeb5c5` |
 
 ---
 
