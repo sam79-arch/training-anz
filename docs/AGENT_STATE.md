@@ -33,6 +33,17 @@
    - Kỷ luật 60 phút mỗi sáng (05:00 - 06:00 AM) được bảo vệ tuyệt đối.
 
 
+### [2026-09-28 06:41:30] - Session Handoff
+1. **Current In-Progress Location:** `.agents/rules/curriculum-balance.md` (lines 20-37), `docs/plans/week-03-day-01-valid-parentheses.md` (Branch: `meta/rebalance-roadmap-and-week-03-plan`, Commit `e043e74`).
+2. **Completed vs. Failing/Pending:**
+   - **Completed:** Khóa cứng quy tắc Anti-Burnout vào `.agents/rules/curriculum-balance.md` (Single-Problem Invariant, Early-Week Gate, Tuần 0-Medium); hoàn tất commit `e043e74` và push lên remote `origin/meta/rebalance-roadmap-and-week-03-plan`; toàn bộ 80/80 tests PASS. Kế hoạch Tuần 3 Day 1 (`isValid(s)` Stack LIFO) đã sẵn sàng.
+   - **Pending:** Chờ User review & merge PR trên GitHub vào `main`.
+3. **Exact Next Step for Next Agent:** Checkout nhánh `main`, kéo mã nguồn mới nhất (`git pull origin main`), sau đó tạo nhánh `feature/week-03-day-01-valid-parentheses` và bắt đầu Phase 2 Implementation (viết 8 test cases trong `coding/week-03/01-valid-parentheses.test.js` theo test-first order).
+4. **Gotchas & Constraints:**
+   - Tuân thủ nghiêm ngặt rule mới: Thứ 2 tuyệt đối cấm giải Medium; chỉ giải duy nhất 1 bài Valid Parentheses (Easy).
+   - Guard clause dòng 1 bắt buộc: early exit khi độ dài chuỗi lẻ (`s.length % 2 !== 0`) trong $O(1)$.
+   - Zero external dependencies.
+
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 
 - **2026-09-28:** `WEEK_02_DAY_06_READY` - Hoàn thành bù Day 6 STAR Story 2 (Sev-1 Outage, RCA) và Week 2 Retrospective, khép lại 100% Tuần 2 với 80/80 tests pass.
