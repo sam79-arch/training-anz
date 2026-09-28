@@ -82,7 +82,7 @@
 - [x] Day 3 (Thứ 4): [Container With Most Water (Two Pointers Area Maximization)](coding/week-02/03-container-with-most-water.md) & [Cẩm nang Inward Collision](notes/week-02/day-03-container-patterns.md)
 - [x] Day 4 (Thứ 5): [Longest Substring Without Repeating Characters (Sliding Window)](coding/week-02/04-longest-substring.md) & [Cẩm nang Sliding Window](notes/week-02/day-04-sliding-window-patterns.md)
 - [x] Day 5 (Thứ 6): [Node.js Streams & Backpressure Architecture](architecture/week-02/05-streams-backpressure.md) & [Cẩm nang Streams & Backpressure](notes/week-02/day-05-streams-patterns.md)
-- [ ] Day 6 (Thứ 7): Behavioral STAR Story 2: Severity-1 Production Incident
+- [x] Day 6 (Thứ 7): [Behavioral STAR Story 2 (Severity-1 Production Incident)](notes/week-02/day-06-behavioral-star-story-2.md) & [Week 2 Retrospective](notes/week-02/day-06-week-2-retrospective.md)
 
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:

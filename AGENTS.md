@@ -137,6 +137,39 @@ To prevent race conditions and information loss when multiple IDEs or agents wor
 
 ---
 
+## Mandatory PR / MR Handoff Protocol
+
+Whenever an agent finishes **Phase 3: Git & Push**, it MUST NOT only print the branch name and PR link. It **MUST ALWAYS** output the standardized PR Title and Markdown Body message formatted as follows so the user can copy and paste directly into GitHub/GitLab:
+
+### 1. Title
+```text
+<type>(<scope>): <short-description> (close #<issue-number>)
+```
+
+### 2. Body Message
+```markdown
+## 📌 Summary
+- **Why**: [Business & technical motivation, root cause, related issue]
+- **What**: 
+  - [Key components, classes, modules implemented/modified]
+  - [Key algorithms, invariants, and edge case handling]
+  - [Native unit test suite and test cases covered]
+  - [Theoretical notes, PBL guides, and Generative UI visualizers if applicable]
+- **Impact**: [Time/Space complexity, RAM/CPU benchmark results, resilience guarantees]
+
+## 🔍 Verification
+1. [Command to run specific unit test suite]
+2. [Command to run full regression test `npm test` with total tests passed]
+
+## 🛠️ Context
+- **Task Type**: [One of the 16 Standard Task Types]
+- **Related Plan**: [Path to technical plan file]
+- **Target Branch**: `main`
+- **Closes**: #[Issue Number]
+```
+
+---
+
 ## Premium Prompt Generation Protocol (`premium`)
 
 **Trigger Phrases:** Any chat message whose first line begins with `"premium"`, `"prenium"`, `"premium prompt"`, or `"tạo prompt copilot"` (case-insensitive, e.g. `"premium:"`, `"prenium:"`). The rest is a free-form description of the task.
