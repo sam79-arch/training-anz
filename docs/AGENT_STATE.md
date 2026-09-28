@@ -2,28 +2,36 @@
 
 ## 🚦 TRẠNG THÁI HIỆN TẠI (Current State)
 
-- **Task Type**: `Documentation` → **Tuần 2 Day 6: Behavioral STAR Story 2 & Week 2 Retrospective (Issue #27 - Hoàn tất Phase 2)**
+- **Task Type**: `Meta Data` → **Tái cấu trúc 12-Tuần Roadmap & Lập kế hoạch Tuần 3 Day 1 (Valid Parentheses)**
 - **Status**: `In Processing`
-- **Task:** Bù tiến độ Day 6 (Thứ Bảy Tuần 2) — Soạn cẩm nang STAR Story 2 (Sev-1 Outage, K8s OOMKilled, RCA, Zero Data Loss) & Báo cáo Week 2 Retrospective (80/80 test cases toàn repo PASS, đánh giá Curriculum Balance).
-- **Phase:** Phase 2: Implementation & Code Review (Đã hoàn tất tài liệu, review và kiểm thử; chờ "OK" lần 2 để Commit/Push).
-- **Handoff:** `WEEK_02_DAY_06_PHASE_2_REVIEW_READY`.
-- **Branch:** `docs/week-02-day-06-star-retrospective`.
+- **Task:** Tái cấu trúc `ROADMAP.md` và `README.md` theo chuẩn Weekly Curriculum Balance & Anti-Burnout Protocol (Tuần 3 là 100% Easy DSA + Database Deep Dive; dời Min Stack sang Tuần 4), khép lại toàn bộ Tuần 2 (PR #32, #33 merged) và lập file plan chuẩn `docs/plans/week-03-day-01-valid-parentheses.md`.
+- **Phase:** Phase 3: Git & Push (Đã commit và push nhánh `meta/rebalance-roadmap-and-week-03-plan`).
+- **Handoff:** `WEEK_03_ROADMAP_REBALANCED_PLAN_PUSHED`.
+- **Branch:** `meta/rebalance-roadmap-and-week-03-plan`.
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
-1. **Location:** `notes/week-02/day-06-behavioral-star-story-2.md`, `notes/week-02/day-06-week-2-retrospective.md`, `docs/plans/week-02-day-06-star-and-retrospective.md`, `README.md`, `docs/plans/_ACTIVE.md`, `docs/AGENT_STATE.md`.
+1. **Location:** `ROADMAP.md`, `README.md`, `docs/plans/_ACTIVE.md`, `docs/plans/week-03-day-01-valid-parentheses.md`, `docs/AGENT_STATE.md`.
 2. **Completed vs pending:**
-   - **Completed:** Toàn bộ cẩm nang STAR Story 2, kịch bản tiếng Anh 3-4 phút, 3 câu hỏi follow-up chuyên sâu, báo cáo tổng kết Tuần 2, plan chuẩn hóa và dashboard README đã hoàn thành. 80/80 test cases toàn repo PASS 100%.
-   - **Pending:** Chờ User review DIFF và duyệt "OK" lần 2 trước khi Git commit/push (Phase 3).
-3. **Exact next step:** Trình bày DIFF Preview, chờ User phê duyệt "OK" lần 2, sau đó tiến hành commit và push branch `docs/week-02-day-06-star-retrospective`.
+   - **Completed:** Toàn bộ lộ trình 12 tuần trong `ROADMAP.md` đã được tái cấu trúc triệt để loại bỏ mâu thuẫn nội tại; Dashboard `README.md` đã cập nhật checklist Tuần 3; `_ACTIVE.md` đã chuyển Tuần 2 sang `Closed` và mở Tuần 3 Day 1; Kế hoạch chuẩn `docs/plans/week-03-day-01-valid-parentheses.md` đã khởi tạo xong. 80/80 unit tests pass.
+   - **Pending:** Chờ User review và merge PR vào `main`.
+3. **Exact next step:** Sau khi PR được merge vào `main`, checkout nhánh `main`, `git pull origin main`, sau đó checkout sang `feature/week-03-day-01-valid-parentheses` và bắt đầu Phase 2 Implementation cho Valid Parentheses (viết test-first `coding/week-03/01-valid-parentheses.test.js`).
 4. **Gotchas & Constraints:**
-   - Tính nhất quán kiến trúc: STAR Story 2 kết nối trực tiếp với kiến trúc Streams & Backpressure của Day 5 (rủi ro buffer không kiểm soát gây K8s OOMKilled).
-   - Tuân thủ quy tắc Curriculum Balance: Tuần 2 duy trì đúng 1 bài Medium cốt lõi, xen kẽ Coding - System Design - STAR Story.
-   - Zero external npm dependencies.
+   - Tuân thủ triệt để Anti-Burnout Protocol: Tuần 3 là 100% Easy cho DSA, không nhồi Min Stack vào cùng buổi Day 1.
+   - Thứ 3 và Thứ 5 là System Design & Database Internals, tuyệt đối cấm giải LeetCode.
+   - Zero external dependencies.
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
 
-*(Đã làm sạch và chuyển tiếp cho ngày mới 2026-09-28)*
+### [2026-09-28 06:31:00] - Session Handoff
+1. **Current In-Progress Location:** `ROADMAP.md`, `README.md`, `docs/plans/_ACTIVE.md`, `docs/plans/week-03-day-01-valid-parentheses.md`, `docs/AGENT_STATE.md` (Branch: `meta/rebalance-roadmap-and-week-03-plan`).
+2. **Completed vs. Failing/Pending:**
+   - **Completed:** Hoàn tất 100% tái cấu trúc Roadmap 12 tuần, sửa chữa toàn bộ mâu thuẫn tài liệu, chuẩn hóa Tuần 3 theo Curriculum Balance, soạn thảo xong Plan Tuần 3 Day 1, pass 80/80 tests, commit và push lên remote.
+   - **Pending:** Chờ User review và merge PR trên GitHub.
+3. **Exact Next Step for Next Agent:** Checkout `main`, pull latest, kích hoạt Phase 2 implementation cho `week-03-day-01-valid-parentheses`.
+4. **Gotchas & Constraints:**
+   - Kỷ luật 60 phút mỗi sáng (05:00 - 06:00 AM) được bảo vệ tuyệt đối.
+
 
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 

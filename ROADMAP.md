@@ -30,49 +30,96 @@ Thiết lập toàn bộ cấu trúc dự án `training-anz` (`anz-interview-pre
 ---
 
 ## Milestone Roadmap (Lộ trình chiến lược 12 Tuần HCLTech x ANZ)
-Lộ trình được thiết kế đúng chuẩn 12 tuần bền vững (60m mỗi sáng 05:00 - 06:00), chia thành 4 giai đoạn chiến lược, bao quát toàn bộ 15 bài DSA cốt lõi, Node.js Internals, CSDL, System Design phân tán và 3 câu chuyện STAR:
+Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ luật 60 phút mỗi sáng 05:00 - 06:00 AM), tuân thủ nghiêm ngặt [Weekly Curriculum Balance & Anti-Burnout Protocol](#weekly-curriculum-balance--anti-burnout-protocol): xen kẽ Thứ 2, 4, 6 học DSA Coding (tối đa 1 bài Medium/tuần); Thứ 3, 5 học System Design/Database (tuyệt đối cấm giải LeetCode); Thứ 7 luyện STAR Story; Chủ nhật nghỉ ngơi hoàn toàn.
 
-### 🏁 Milestone 0: Pilot Week (Tuần này)
-- **Mục tiêu**: Thử nghiệm nhịp sinh học 05:00 AM, kiểm thử test-runner native, template PBL, và GitHub PR automation.
+### 🏁 Milestone 0: Pilot Week (Hoàn thành 100%)
+- **Mục tiêu**: Thử nghiệm nhịp sinh học 05:00 AM, kiểm thử test-runner native assert, template PBL, và GitHub Actions automation.
 - **DSA**: Move Zeroes (In-place Two Pointers $O(1)$ space).
 
+---
+
 ### 🧱 Giai đoạn 1 (Weeks 1 - 4): Node.js Internals, Tối ưu CSDL & DSA Nền tảng
-- **Milestone 1 (Week 1 - 2): `Phase 1A: Two Pointers, Hashing & Event Loop`**
-  - **DSA**: Valid Palindrome, Two Sum II / 3Sum, Two Sum, Contains Duplicate, Valid Anagram.
-  - **Node.js Internals**: Libuv Architecture, 6 pha Event Loop (Timers $\rightarrow$ Pending $\rightarrow$ Idle $\rightarrow$ Poll $\rightarrow$ Check $\rightarrow$ Close), Microtasks (`nextTick`, `Promise`) vs Macrotasks (`setTimeout`, `setImmediate`).
-  - **Behavioral (STAR)**: Story 1 - Bất đồng quan điểm kỹ thuật (Technical Disagreement), dùng dữ liệu benchmark để tạo đồng thuận.
-- **Milestone 2 (Week 3 - 4): `Phase 1B: Stack, Streams, Backpressure & RDBMS Indexing`**
-  - **DSA**: Valid Parentheses, Min Stack, Reverse Linked List, Linked List Cycle (Floyd's Tortoise & Hare), Merge Two Sorted Lists.
-  - **Node.js Internals**: Node.js Streams (Readable, Writable, Transform) & Backpressure mechanism khi xử lý batch dữ liệu lớn không tràn RAM.
-  - **Database Optimization**: B+Tree Indexing, Clustered vs Non-Clustered Index, đọc `EXPLAIN ANALYZE`, Covering Index, ACID Isolation Levels (Dirty, Non-repeatable, Phantom Read).
-  - **Behavioral (STAR)**: Story 2 - Xử lý sự cố nghiêm trọng Production (Sev-1 Incident, Hotfix, RCA).
+
+#### ✅ Milestone 1 (Weeks 1 - 2): `Phase 1A: Two Pointers, Hashing, Event Loop & Streams` (HOÀN THÀNH 100% - 80/80 Tests Pass)
+- **DSA Cốt lõi**:
+  - Valid Palindrome, Two Sum II (Sorted Two Pointers).
+  - Two Sum & Contains Duplicate (Hash Map & Set space-time tradeoff).
+  - Valid Anagram & Group Anagrams (Frequency Hashing).
+  - 3Sum & Container With Most Water (Two Pointers Medium).
+  - Longest Substring Without Repeating Characters (Single-Pass Sliding Window).
+- **Node.js Internals**:
+  - Libuv Architecture & 6 pha Event Loop.
+  - Microtasks (`nextTick`, `Promise`) vs Macrotasks (`setTimeout`, `setImmediate`) & Event Loop Starvation.
+  - Node.js Custom Streams & Backpressure mechanism (`highWaterMark`, `drain`, `pipeline()`).
+- **Behavioral (STAR)**:
+  - Story 1: Bất đồng quan điểm kỹ thuật (Technical Disagreement), dùng benchmark data để tạo đồng thuận.
+  - Story 2: Xử lý sự cố nghiêm trọng Production (Sev-1 Outage, K8s Pod OOMKilled, RCA & Zero Data Loss).
+
+#### 🚀 Milestone 2 (Weeks 3 - 4): `Phase 1B: Stack, Linked List & RDBMS Deep Dive` (ĐANG THỰC HIỆN)
+- **Tuần 3 (Tuần 100% Easy DSA + Database Internals - Giảm tải nhận thức)**:
+  - **Day 1 (T2)**: [Valid Parentheses](coding/week-03/01-valid-parentheses.md) (LeetCode #20 - Easy) — Cơ chế Stack LIFO, Map lookup, Guard Clause kiểm tra độ dài lẻ early exit trong $O(1)$.
+  - **Day 2 (T3)**: Database Deep Dive 1 — B+Tree Index Architecture, Clustered vs Non-Clustered Index, Covering Index & `EXPLAIN ANALYZE` (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: [Reverse Linked List](coding/week-03/02-reverse-linked-list.md) (LeetCode #206 - Easy) — Thao tác 3 con trỏ trượt `prev`, `curr`, `next` in-place $O(1)$ space (12 dòng code).
+  - **Day 4 (T5)**: Database Concurrency — 4 Cấp độ cô lập ACID (Dirty, Non-repeatable, Phantom Read), MVCC & Locking (Pessimistic `SELECT FOR UPDATE` vs Optimistic `version`) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: [Linked List Cycle](coding/week-03/03-linked-list-cycle.md) (LeetCode #141 - Easy) — Thuật toán Rùa & Thỏ (Floyd's Tortoise & Hare) $O(n)$ time, $O(1)$ space.
+  - **Day 6 (T7)**: Behavioral STAR Story 3 — Đàm phán phạm vi với PO dưới áp lực tiến độ (Tight Deadline vs Tech Debt) & Week 3 Retrospective.
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
+- **Tuần 4 (Kết thúc Phase 1B & Database Scaling)**:
+  - **Day 1 (T2)**: Merge Two Sorted Lists (LeetCode #21 - Easy) — Kỹ thuật Dummy Head Node ghép 2 danh sách giao dịch.
+  - **Day 2 (T3)**: Database Connection Pooling trong Node.js — Kiến trúc `pg-pool` / `HikariCP`, tính toán pool sizing, timeout và chống leak connection khi có traffic spike.
+  - **Day 3 (T4)**: Min Stack (LeetCode #155 - **Bài Medium duy nhất của tuần**) — Kỹ thuật 2 stack song song để `getMin()` trong $O(1)$ time.
+  - **Day 4 (T5)**: Database Sharding & Replication Lag — Kiến trúc Master-Slave, giải quyết bài toán Đọc sau khi Ghi (Read-Your-Own-Writes consistency).
+  - **Day 5 (T6)**: Mock HackerRank 45m trên màn hình thô — Ôn tập tổng hợp Stack & Linked List, giải 1 bài Easy trong 20 phút + 6 bước tiếng Anh.
+  - **Day 6 (T7)**: Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3.
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
+
+---
 
 ### 🚀 Giai đoạn 2 (Weeks 5 - 8): Kiến trúc phân tán & Data Platform System Design
-- **Milestone 3 (Week 5 - 6): `Phase 2A: Caching Architecture & Redis Deep Dive`**
-  - **DSA**: Maximum Subarray (Kadane), Best Time to Buy/Sell Stock, Longest Substring Without Repeating Characters.
-  - **System Design**:
-    - Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind.
-    - Xử lý Cache Stampede / Avalanche bằng **TTL Jitter**.
-    - Xử lý Cache Penetration bằng Bloom Filter hoặc Null Object có TTL ngắn.
-    - Khóa phân tán (Distributed Lock) với `SET key value NX EX` / Redlock kiểm soát race condition trừ tiền.
-  - **Behavioral (STAR)**: Story 3 - Đàm phán phạm vi với PO dưới áp lực tiến độ gắt gao (Tight Deadline vs Tech Debt).
-- **Milestone 4 (Week 7 - 8): `Phase 2B: Event-Driven Kafka & Transactional Consistency`**
-  - **DSA**: Luyện phản xạ biến thể Two Pointers & Sliding Window, ôn tập bẫy edge-case.
-  - **System Design**:
-    - Apache Kafka: Lựa chọn Partition Key theo Customer Account ID để bảo đảm thứ tự nghiêm ngặt.
-    - Consumer Group & Rebalance: Tinh chỉnh `max.poll.interval.ms`, heartbeat, xử lý consumer lag.
-    - **Transactional Outbox Pattern**: Tích hợp Debezium CDC đọc DB Outbox table bắn vào Kafka (chống mất sự kiện tài chính).
-    - **Idempotency Key**: Thiết kế API thanh toán chống double-charging khi client retry mạng.
+
+#### 📦 Milestone 3 (Weeks 5 - 6): `Phase 2A: Caching Architecture & Redis Deep Dive`
+- **DSA (Thứ 2, 4, 6)**:
+  - Best Time to Buy and Sell Stock (LeetCode #121 - Easy, 1 lượt duyệt $O(n)$, code 10 dòng).
+  - Maximum Subarray / Kadane's Algorithm (LeetCode #53 - Medium cơ bản, code đúng 7 dòng).
+  - Ôn tập biến thể mảng 1 chiều, bẫy khởi tạo `nums[0]` thay vì `0` khi mảng toàn số âm.
+- **System Design & Backend (Thứ 3, 5 - Trọng tâm 50% phỏng vấn ANZ)**:
+  - Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind.
+  - Xử lý **Cache Stampede / Avalanche** bằng kỹ thuật ngẫu nhiên hóa thời gian sống (**TTL Jitter**).
+  - Xử lý **Cache Penetration** bằng Bloom Filter hoặc Null Object có TTL ngắn.
+  - **Distributed Lock** với Redis (`SET resource_name my_random_value NX PX 30000`) & thuật toán Redlock kiểm soát race condition trừ tiền tài khoản.
+- **Behavioral (Thứ 7)**: STAR Story 3 follow-up & Deep dive kịch bản xử lý lỗi cache phân tán.
+
+#### ⚡ Milestone 4 (Weeks 7 - 8): `Phase 2B: Event-Driven Kafka & Transactional Consistency`
+- **DSA (Thứ 2, 4, 6)**:
+  - Binary Search template chuẩn tránh tràn số: `mid = left + Math.floor((right - left) / 2)`.
+  - Search in Rotated Sorted Array (LeetCode #33 - Medium duy nhất của đợt).
+  - Luyện phản xạ gõ Binary Search trên màn hình thô trong 15 phút.
+- **System Design & Backend (Thứ 3, 5 - Trọng tâm cốt lõi Data Platform ANZ)**:
+  - **Apache Kafka**: Lựa chọn Partition Key theo Customer Account ID để bảo đảm thứ tự giao dịch nghiêm ngặt.
+  - Consumer Group & Rebalance: Tinh chỉnh `max.poll.interval.ms`, heartbeat, xử lý consumer lag.
+  - **Transactional Outbox Pattern**: Tích hợp Debezium CDC đọc DB Outbox table bắn vào Kafka (chống mất sự kiện tài chính).
+  - **Idempotency Key**: Thiết kế API thanh toán chống double-charging khi client retry mạng.
+
+---
 
 ### 🛡️ Giai đoạn 3 (Weeks 9 - 11): Kịch bản thực tế ngân hàng & Tích hợp liên hoàn
-- **Milestone 5 (Week 9 - 11): `Phase 3: Banking Real-time Scenarios & STAR Mastery`**
-  - **DSA**: Xử lý luồng dữ liệu (Data Stream Deduplication, Transaction Matching Window), giải quyết bài toán trên màn hình thô không gợi ý.
-  - **System Design**: Thiết kế hệ thống Real-time Ledger / Transaction Settlement System hoàn chỉnh, Rate Limiting (Token Bucket / Sliding Window Counter) & Circuit Breaker.
-  - **English & STAR**: Rèn luyện trôi chảy 3 kịch bản STAR và phản biện System Design bằng tiếng Anh.
+
+#### 🏦 Milestone 5 (Weeks 9 - 11): `Phase 3: Banking Real-time Scenarios & STAR Mastery`
+- **DSA Live Coding**: Không học bài mới. Tập trung Live Coding mô phỏng bấm giờ 45 phút trên Notepad/Google Docs, vừa gõ vừa nói tiếng Anh theo kịch bản 6 bước.
+- **System Design**:
+  - Thiết kế hoàn chỉnh: **Real-time Ledger & Transaction Settlement System** (Hệ thống sổ cái giao dịch thời gian thực).
+  - Cơ chế phòng vệ hệ thống: **Rate Limiting** (Token Bucket / Sliding Window Counter) & **Circuit Breaker** (chống sập dây chuyền).
+  - High Availability & Multi-Region Active-Active Data Platform.
+- **English & STAR**: Rèn luyện trôi chảy 3 kịch bản STAR và phản biện System Design bằng tiếng Anh.
+
+---
 
 ### 🎯 Giai đoạn 4 (Week 12): Full Mock Interviews & Sẵn sàng lâm trận
-- **Milestone 6 (Week 12): `Phase 4: Full ANZ Mock Simulation`**
-  - Giả lập trọn vẹn buổi phỏng vấn 2 tiếng: 15m STAR + 45m Coding HackerRank + 60m System Design đối thoại trực tiếp.
+
+#### 🎓 Milestone 6 (Week 12): `Phase 4: Full ANZ Mock Simulation`
+- Giả lập trọn vẹn 2 tiếng chuẩn format ANZ Bank:
+  - **Phiên 1 (60 phút)**: 15m Behavioral (STAR) + 45m Coding HackerRank (1 bài Easy + 1 bài biến thể).
+  - **Phiên 2 (60 phút)**: System Design đối thoại trực tiếp 2 chiều về hệ thống Data Platform ngân hàng.
 
 ---
 
