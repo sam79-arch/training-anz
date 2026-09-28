@@ -10,6 +10,7 @@
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
 | `week-02-day-05-streams-backpressure.md` | `Research` | `In Processing` | `research/week-02-day-05-streams-backpressure` | Node.js Streams & Backpressure Architecture (Issue #26) |
+| `week-02-day-06-star-and-retrospective.md` | `Documentation` | `In Processing` | `docs/week-02-day-06-star-retrospective` | Behavioral STAR Story 2 & Week 2 Retrospective (Issue #27) |
 
 ---
 
