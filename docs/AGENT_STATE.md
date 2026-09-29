@@ -44,6 +44,17 @@
    - Kỷ luật 60 phút và Anti-Burnout Protocol: Ngày Thứ 4 là DSA Easy (Reverse Linked List).
 
 
+### [2026-09-29 06:32:39] - Session Handoff
+1. **Current In-Progress Location:** `architecture/week-03/02-btree-index-simulation.js` (Branch: `db/week-03-day-02-btree-indexing`, Commit `1a00cfd`).
+2. **Completed vs. Failing/Pending:**
+   - **Completed:** Giải thích chuyên sâu bản chất B+Tree & Covering Index; khắc phục lỗi hiển thị buffer rỗng của visualizer trong IDE và nhúng trực tiếp Generative UI vào chat; xác nhận hoàn tất push nhánh tính năng và xuất đầy đủ PR Title/Body cho Issue #35; xây dựng lộ trình học 4 bước 60 phút; điều tra đa dự án (cross-project) với `Shine-Extraction` làm rõ bản chất lỗi `Sync Failed` (OPUS API file_name whitelist mismatch & master data validation trên doc 37738-37743).
+   - **Pending:** Chờ User review và merge PR #35 trên GitHub vào nhánh `main`.
+3. **Exact Next Step for Next Agent:** Sau khi PR #35 được merge vào `main`: checkout `main`, chạy `git pull origin main`, cập nhật `docs/plans/_ACTIVE.md` chuyển Day 2 sang `Closed`, sau đó khởi tạo nhánh `feature/week-03-day-03-reverse-linked-list` và lập kế hoạch cho Tuần 3 Day 3: Reverse Linked List (In-place 3-pointer pattern, Issue #36).
+4. **Gotchas & Constraints:**
+   - Tuần 3 tiếp tục áp dụng nghiêm ngặt Anti-Burnout Protocol và Kỷ luật 60 phút (DSA 100% Easy).
+   - Khi mở các file visualizer mới trong IDE, lưu ý tránh lỗi lưu đè buffer rỗng.
+   - Về phía Shine: Document Splitting gửi tên file con khiến OPUS API văng `NOT_FOUND` do whitelist đối soát lúc Notify; phương án tối ưu là map `file_name` về tên file cha trong `extracted_content`.
+
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 
 - **2026-09-29:** `WEEK_03_DAY_01_COMPLETED` - Hoàn thành Valid Parentheses (Stack LIFO, 8/8 TCs, PR #40 merged, close #34).
