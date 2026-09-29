@@ -85,7 +85,7 @@
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 2 (Severity-1 Production Incident)](notes/week-02/day-06-behavioral-star-story-2.md) & [Week 2 Retrospective](notes/week-02/day-06-week-2-retrospective.md)
 
 ### Tuần 3: Stack, Linked List (100% Easy) & RDBMS Deep Dive (Đang thực hiện)
-- [x] Day 1 (Thứ 2): [Valid Parentheses (Stack LIFO & Guard Clauses)](coding/week-03/01-valid-parentheses.md)
+- [ ] Day 1 (Thứ 2): [Valid Parentheses (Stack LIFO & Guard Clauses)](coding/week-03/01-valid-parentheses.md)
 - [ ] Day 2 (Thứ 3): Database Deep Dive 1: B+Tree Index Architecture, Covering Index & `EXPLAIN ANALYZE` (Cấm LeetCode)
 - [ ] Day 3 (Thứ 4): [Reverse Linked List (In-place 3 Pointers)](coding/week-03/02-reverse-linked-list.md)
 - [ ] Day 4 (Thứ 5): Database Concurrency: ACID Isolation Levels & Pessimistic/Optimistic Locking (Cấm LeetCode)

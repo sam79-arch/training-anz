@@ -9,8 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `week-02-day-05-streams-backpressure.md` | `Research` | `In Processing` | `research/week-02-day-05-streams-backpressure` | Node.js Streams & Backpressure Architecture (Issue #26) |
-| `week-02-day-06-star-and-retrospective.md` | `Documentation` | `In Processing` | `docs/week-02-day-06-star-retrospective` | Behavioral STAR Story 2 & Week 2 Retrospective (Issue #27) |
+| *(None currently)* | — | `In Processing` | — | WIP plans in current session |
 
 ---
 
@@ -18,7 +17,7 @@
 
 | Plan File | Task Type | Status | Target Branch | Description |
 |---|---|---|---|---|
-| *(None currently)* | — | `Open` | — | Backlog plans ready to be picked up |
+| `week-03-day-02-btree-indexing.md` | `DBMS Execution` | `Open` | `main` | Database Internals: B+Tree Index Architecture & Covering Index (Issue #35) |
 
 ---
 
@@ -53,6 +52,9 @@
 | `week-02-day-02-three-sum.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #29 / Commit `ddff43c` |
 | `week-02-day-03-container-with-most-water.md` | `New Request` | `Closed` | 2026-09-24 | `main` | PR #30 / Commit `7b18a10` |
 | `week-02-day-04-longest-substring.md` | `New Request` | `Closed` | 2026-09-25 | `main` | PR #31 / Commit `fa4b275` |
+| `week-02-day-05-streams-backpressure.md` | `Research` | `Closed` | 2026-09-25 | `main` | PR #32 / Commit `252a4de` |
+| `week-02-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-28 | `main` | PR #33 / Commit `ea4e8e7` |
+| `week-03-day-01-valid-parentheses.md` | `New Request` | `Closed` | 2026-09-29 | `main` | PR #40 / Commit `2368859` |
 
 ---
 
@@ -60,4 +62,3 @@
 
 - **Statuses**: `Open` (Ready), `In Processing` (WIP), `Pending` (Blocked/Hold), `Cancelled` (Discarded), `Closed` (Done).
 - **Task Types**: `Bug Fixing`, `Data Handling`, `Consulting`, `Modification`, `Customization`, `New Request`, `Support`, `Maintenance`, `Meta Data`, `DBMS Execution`, `Documentation`, `Reporting`, `Troubleshooting`, `Testing`, `Training`, `Research`.
-
