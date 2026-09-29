@@ -5,20 +5,20 @@
 - **Task Type**: `DBMS Execution` → **Database Internals: B+Tree Index Architecture & Covering Index**
 - **Status**: `In Processing`
 - **Task:** Mô phỏng B+Tree Storage Engine, Doubly Linked List ở tầng Leaf cho Range Queries, đo lường phạt Bookmark Lookup, và tối ưu hóa Covering Index (Index-Only Scan) bằng mệnh đề `INCLUDE` (Issue #35, Milestone #6).
-- **Phase:** Phase 2: Implementation & Code Review (Đã hoàn tất 100% mã nguồn, 6/6 test cases pass, 94/94 regression pass, tài liệu lý thuyết & visualizer sẵn sàng).
-- **Handoff:** `WEEK_03_DAY_02_PHASE_2_REVIEW_READY`.
+- **Phase:** Phase 3: Git & Push (Đã hoàn tất commit `1a00cfd` và push thành công lên `origin/db/week-03-day-02-btree-indexing`).
+- **Handoff:** `WEEK_03_DAY_02_PUSHED_WAITING_PR_MERGE`.
 - **Branch:** `db/week-03-day-02-btree-indexing`.
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
 1. **Location:** `architecture/week-03/02-btree-index-simulation.js`, `architecture/week-03/02-btree-index-simulation.test.js`, `notes/week-03/day-02-btree-indexing.md`, `docs/visualizers/w3-02-btree-index.html`, `package.json`, `README.md`, `docs/plans/week-03-day-02-btree-indexing.md`, `docs/plans/_ACTIVE.md`, `docs/AGENT_STATE.md`.
 2. **Completed vs pending:**
-   - **Completed:** 100% Phase 2 Implementation. Bộ test native `npm run test:w3-02` pass 6/6; toàn bộ 94/94 tests trong `npm test` pass 100%. Generative UI Stepper Dark Theme sẵn sàng. Cẩm nang lý thuyết chuyên sâu và kịch bản 6 bước tiếng Anh hoàn thiện.
-   - **Pending:** Chờ User review DIFF Preview và xác nhận Second "OK" để tiến hành Git Commit & Push (Phase 3).
-3. **Exact next step:** Khi nhận Second "OK", thực hiện Phase 3: Git Commit `db(index): implement b-plus tree simulation and covering index architecture (close #35)` và push lên `origin/db/week-03-day-02-btree-indexing`.
+   - **Completed:** 100% Phase 1 (Plan), Phase 2 (Implementation & Test 6/6 pass, full regression 94/94 pass, khôi phục IDE buffer overwrite), Phase 3 (Commit `1a00cfd` & push lên remote). Đã cung cấp PR Title & Markdown Body.
+   - **Pending:** Chờ User review và merge PR trên GitHub vào nhánh `main`.
+3. **Exact next step:** Sau khi PR được merge vào `main`: checkout `main`, kéo mã nguồn (`git pull origin main`), cập nhật `docs/plans/_ACTIVE.md` chuyển Day 2 sang `Closed`, và tạo kế hoạch cho Tuần 3 Day 3: Reverse Linked List (Issue #36).
 4. **Gotchas & Constraints:**
-   - Tối ưu hóa phân rã trang cho tuần tự (Sequential append) để giữ độ cao B+Tree $h \le 3$ với fanout 8.
-   - Thứ 3 và Thứ 5 là System Design & Database Internals, tuyệt đối cấm giải LeetCode.
+   - Cảnh báo bẫy IDE Buffer Auto-Save: Nếu mở sẵn file trong IDE, cần Reload/Revert file để tránh ghi đè file rỗng 0-byte xuống đĩa.
+   - Tuần 3 là 100% Easy cho DSA; Thứ 4 là Reverse Linked List (In-place 3-pointer pattern).
    - Zero external dependencies.
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
@@ -32,6 +32,17 @@
 4. **Gotchas & Constraints:**
    - Giảm 93.17% Page I/O khi chuyển từ Secondary Index sang Covering Index (`Heap Fetches: 0`).
    - Anti-Burnout Protocol: Thứ 3 cấm giải LeetCode.
+
+### [2026-09-29 03:20:43] - Session Handoff
+1. **Current In-Progress Location:** `architecture/week-03/02-btree-index-simulation.js` (Branch: `db/week-03-day-02-btree-indexing`, Commit `1a00cfd`).
+2. **Completed vs. Failing/Pending:**
+   - **Completed:** Khắc phục triệt để sự cố IDE Auto-save overwrite, khôi phục nguyên vẹn 4 file trên đĩa; toàn bộ 94/94 unit tests pass 100%; hoàn tất Phase 3 Git Commit (`1a00cfd`) và push lên remote `origin/db/week-03-day-02-btree-indexing`; xuất chuẩn PR Title & PR Body message.
+   - **Pending:** Chờ User review PR và merge vào `main` trên GitHub.
+3. **Exact Next Step for Next Agent:** Sau khi PR được merge vào `main`, checkout `main`, `git pull origin main`, cập nhật `docs/plans/_ACTIVE.md` chuyển Day 2 sang `Closed`, sau đó khởi tạo nhánh và kế hoạch cho Tuần 3 Day 3: Reverse Linked List (Issue #36).
+4. **Gotchas & Constraints:**
+   - Khi chuyển sang bài học mới, kiểm tra các tab IDE để tránh ghi đè bộ đệm rỗng.
+   - Kỷ luật 60 phút và Anti-Burnout Protocol: Ngày Thứ 4 là DSA Easy (Reverse Linked List).
+
 
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 
