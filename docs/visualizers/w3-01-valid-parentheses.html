@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mô Phỏng Ngăn Xếp (Stack LIFO): Valid Parentheses</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-sky {
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+    }
+    .cell-glow-emerald {
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.6);
+    }
+    .cell-glow-rose {
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.6);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.6);
+    }
+    @keyframes stackPop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: translateY(-10px) scale(1.1); opacity: 0.8; }
+      100% { transform: translateY(-20px) scale(0.8); opacity: 0; }
+    }
+    @keyframes stackPush {
+      0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased p-4 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-5 shadow-2xl max-w-2xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🥞</span> Mô Phỏng Ngăn Xếp LIFO: Valid Parentheses
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">LeetCode #20 (Easy) • Stack LIFO, Map Lookup & Guard Clauses</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm font-mono">
+        Bước 1 / 6
+      </span>
+    </div>
+
+    <!-- Preset Selector -->
+    <div class="flex flex-wrap items-center justify-between bg-[#0f172a] border border-slate-700 rounded-xl px-3 py-2 text-xs gap-2">
+      <span class="text-slate-300 font-semibold">Chọn kịch bản test:</span>
+      <div class="flex flex-wrap gap-1.5" id="preset-buttons">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Input String Display with Current Pointer -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Chuỗi đầu vào <code class="text-sky-300 font-mono">s</code>:</span>
+        <span id="scenario-tag" class="font-mono text-[11px] bg-slate-800 px-2 py-0.5 rounded text-sky-300 border border-slate-700">
+          Valid Nested
+        </span>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 py-2 overflow-x-auto min-h-[68px]" id="string-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="flex items-center justify-center gap-4 text-xs font-semibold pt-1 border-t border-slate-800 text-slate-300">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-sky-400 inline-block"></span>
+          <span>Ký tự hiện tại (i)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-emerald-400 inline-block"></span>
+          <span>Ngoặc mở (Push)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-amber-400 inline-block"></span>
+          <span>Ngoặc đóng (Pop)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stack Visualizer & Status -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <!-- Stack Box (Vertical LIFO) -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2 flex flex-col">
+        <div class="flex justify-between items-center text-xs text-slate-300 font-medium">
+          <span class="font-bold flex items-center gap-1 text-white">
+            <span>📥</span> Ngăn Xếp (Stack)
+          </span>
+          <span id="stack-count-badge" class="font-mono text-[11px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 border border-slate-700">
+            Kích thước: 0
+          </span>
+        </div>
+
+        <!-- Vertical Stack Container -->
+        <div class="flex-1 min-h-[140px] bg-slate-950/70 border-2 border-dashed border-slate-700 rounded-lg p-2 flex flex-col-reverse items-center justify-start gap-1.5 overflow-y-auto" id="stack-container">
+          <!-- Stack items rendered by JS (reversed to show bottom at bottom) -->
+        </div>
+
+        <div class="text-[11px] text-center text-slate-400 italic">
+          Đáy ngăn xếp (First In) ⬇️ • ⬆️ Đỉnh ngăn xếp (Top / Last In)
+        </div>
+      </div>
+
+      <!-- Logic Evaluation Box -->
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-2 flex flex-col justify-between">
+        <div class="space-y-1.5">
+          <div class="text-xs font-bold text-white flex items-center gap-1">
+            <span>🔍</span> Thao Tác Hiện Tại:
+          </div>
+          <div id="operation-badge" class="text-xs font-mono font-bold px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-sky-300">
+            Khởi tạo
+          </div>
+
+          <div class="text-xs text-slate-300 pt-1">
+            <span class="text-slate-400">Đối chiếu ánh xạ:</span>
+            <div class="font-mono text-[11px] bg-slate-900 border border-slate-800 rounded p-1.5 mt-1 space-y-0.5" id="mapping-display">
+              <div>) ➔ ( | } ➔ { | ] ➔ [</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step Explanation -->
+        <div class="p-2.5 rounded-lg text-xs leading-relaxed border" id="explanation-box">
+          <!-- Explanation text rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex items-center justify-between border-t border-slate-700 pt-3">
+      <div class="flex items-center gap-2">
+        <button onclick="prevStep()" id="prev-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition disabled:opacity-40 disabled:cursor-not-allowed">
+          ◀ Quay lại
+        </button>
+        <button onclick="toggleAutoPlay()" id="play-btn" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white transition flex items-center gap-1 shadow-md">
+          <span id="play-icon">▶</span>
+          <span id="play-text">Tự động chạy</span>
+        </button>
+        <button onclick="nextStep()" id="next-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 transition disabled:opacity-40 disabled:cursor-not-allowed">
+          Bước tiếp ▶
+        </button>
+      </div>
+
+      <button onclick="resetCurrentScenario()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 hover:text-white transition">
+        🔄 Làm lại
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const MATCHING = {
+      ')': '(',
+      '}': '{',
+      ']': '['
+    };
+
+    const PRESETS = [
+      {
+        name: '{[]}',
+        desc: 'Hợp lệ lồng nhau (Valid Nested)',
+        s: '{[]}',
+        steps: [
+          {
+            i: -1,
+            char: null,
+            stack: [],
+            op: 'GUARD CHECK',
+            status: 'neutral',
+            msg: '🛡️ Kiểm tra Guard Clause: Độ dài chuỗi s.length = 4 (số chẵn), hợp lệ. Bắt đầu khởi tạo Stack rỗng.'
+          },
+          {
+            i: 0,
+            char: '{',
+            stack: ['{'],
+            op: 'PUSH "{"',
+            status: 'push',
+            msg: 'Gặp ngoặc mở "{" tại vị trí 0. Đẩy "{" vào đỉnh Stack.'
+          },
+          {
+            i: 1,
+            char: '[',
+            stack: ['{', '['],
+            op: 'PUSH "["',
+            status: 'push',
+            msg: 'Gặp ngoặc mở "[" tại vị trí 1. Đẩy "[" vào đỉnh Stack. Đỉnh hiện tại là "[".'
+          },
+          {
+            i: 2,
+            char: ']',
+            stack: ['{'],
+            popped: '[',
+            op: 'POP & MATCH',
+            status: 'pop-success',
+            msg: 'Gặp ngoặc đóng "]" tại vị trí 2. Lấy đỉnh Stack ra: "[" khớp chính xác với ánh xạ của "]".'
+          },
+          {
+            i: 3,
+            char: '}',
+            stack: [],
+            popped: '{',
+            op: 'POP & MATCH',
+            status: 'pop-success',
+            msg: 'Gặp ngoặc đóng "}" tại vị trí 3. Lấy đỉnh Stack ra: "{" khớp chính xác với ánh xạ của "}".'
+          },
+          {
+            i: 4,
+            char: null,
+            stack: [],
+            op: 'VALID RESULT',
+            status: 'success',
+            msg: '✅ Hoàn tất duyệt chuỗi! Stack rỗng hoàn toàn (stack.length === 0). Chuỗi HOÀN TOÀN HỢP LỆ (return true).'
+          }
+        ]
+      },
+      {
+        name: '([)]',
+        desc: 'Sai thứ tự lồng (Crossed)',
+        s: '([)]',
+        steps: [
+          {
+            i: -1,
+            char: null,
+            stack: [],
+            op: 'GUARD CHECK',
+            status: 'neutral',
+            msg: '🛡️ Kiểm tra Guard Clause: Độ dài chuỗi s.length = 4 (số chẵn). Bắt đầu duyệt với Stack rỗng.'
+          },
+          {
+            i: 0,
+            char: '(',
+            stack: ['('],
+            op: 'PUSH "("',
+            status: 'push',
+            msg: 'Gặp ngoặc mở "(" tại index 0. Đẩy vào Stack.'
+          },
+          {
+            i: 1,
+            char: '[',
+            stack: ['(', '['],
+            op: 'PUSH "["',
+            status: 'push',
+            msg: 'Gặp ngoặc mở "[" tại index 1. Đẩy vào Stack. Đỉnh Stack là "[".'
+          },
+          {
+            i: 2,
+            char: ')',
+            stack: ['('],
+            popped: '[',
+            op: 'MISMATCH ERROR',
+            status: 'error',
+            msg: '❌ Gặp ngoặc đóng ")" tại index 2. Đỉnh Stack lấy ra là "[", không khớp với ánh xạ "("! Lập tức trả về false.'
+          }
+        ]
+      },
+      {
+        name: '(]',
+        desc: 'Sai loại ngoặc (Mismatch)',
+        s: '(]',
+        steps: [
+          {
+            i: -1,
+            char: null,
+            stack: [],
+            op: 'GUARD CHECK',
+            status: 'neutral',
+            msg: '🛡️ Kiểm tra Guard Clause: Độ dài chuỗi s.length = 2 (chẵn). Tiếp tục kiểm tra.'
+          },
+          {
+            i: 0,
+            char: '(',
+            stack: ['('],
+            op: 'PUSH "("',
+            status: 'push',
+            msg: 'Gặp ngoặc mở "(". Đẩy vào Stack.'
+          },
+          {
+            i: 1,
+            char: ']',
+            stack: [],
+            popped: '(',
+            op: 'MISMATCH ERROR',
+            status: 'error',
+            msg: '❌ Gặp ngoặc đóng "]". Đỉnh Stack lấy ra là "(", không khớp với "["! Lập tức trả về false.'
+          }
+        ]
+      },
+      {
+        name: '((((',
+        desc: 'Sót ngoặc mở (Unclosed)',
+        s: '((((',
+        steps: [
+          {
+            i: -1,
+            char: null,
+            stack: [],
+            op: 'GUARD CHECK',
+            status: 'neutral',
+            msg: '🛡️ Độ dài chuỗi s.length = 4 (chẵn). Bắt đầu duyệt.'
+          },
+          {
+            i: 0,
+            char: '(',
+            stack: ['('],
+            op: 'PUSH',
+            status: 'push',
+            msg: 'Đẩy "(" thứ 1 vào Stack.'
+          },
+          {
+            i: 1,
+            char: '(',
+            stack: ['(', '('],
+            op: 'PUSH',
+            status: 'push',
+            msg: 'Đẩy "(" thứ 2 vào Stack.'
+          },
+          {
+            i: 2,
+            char: '(',
+            stack: ['(', '(', '('],
+            op: 'PUSH',
+            status: 'push',
+            msg: 'Đẩy "(" thứ 3 vào Stack.'
+          },
+          {
+            i: 3,
+            char: '(',
+            stack: ['(', '(', '(', '('],
+            op: 'PUSH',
+            status: 'push',
+            msg: 'Đẩy "(" thứ 4 vào Stack.'
+          },
+          {
+            i: 4,
+            char: null,
+            stack: ['(', '(', '(', '('],
+            op: 'UNCLOSED ERROR',
+            status: 'error',
+            msg: '❌ Đã duyệt hết chuỗi nhưng Stack vẫn còn 4 phần tử (stack.length !== 0)! Trả về false.'
+          }
+        ]
+      },
+      {
+        name: '{[]',
+        desc: 'Độ dài lẻ (Odd Early Exit)',
+        s: '{[]',
+        steps: [
+          {
+            i: -1,
+            char: null,
+            stack: [],
+            op: 'GUARD CLAUSE EARLY EXIT',
+            status: 'error',
+            msg: '🛡️ EARLY EXIT TRONG O(1): Chuỗi có độ dài s.length = 3 (số lẻ). Không thể tạo thành các cặp ngoặc hoàn chỉnh! Trả về false ngay lập tức mà không cần duyệt.'
+          }
+        ]
+      }
+    ];
+
+    let currentPresetIdx = 0;
+    let currentStepIdx = 0;
+    let autoPlayTimer = null;
+
+    function renderPresetButtons() {
+      const container = document.getElementById('preset-buttons');
+      container.innerHTML = PRESETS.map((p, idx) => `
+        <button onclick="switchPreset(${idx})" id="preset-btn-${idx}" 
+          class="px-2.5 py-1 rounded font-mono font-bold transition text-xs ${idx === currentPresetIdx ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}">
+          "${p.name}"
+        </button>
+      `).join('');
+    }
+
+    function switchPreset(idx) {
+      pauseAutoPlay();
+      currentPresetIdx = idx;
+      currentStepIdx = 0;
+      renderPresetButtons();
+      renderStep();
+    }
+
+    function renderStep() {
+      const preset = PRESETS[currentPresetIdx];
+      const step = preset.steps[currentStepIdx];
+      const totalSteps = preset.steps.length;
+
+      // Update badge
+      document.getElementById('step-badge').textContent = `Bước ${currentStepIdx + 1} / ${totalSteps}`;
+      document.getElementById('scenario-tag').textContent = preset.desc;
+
+      // Render character string
+      const strContainer = document.getElementById('string-container');
+      strContainer.innerHTML = preset.s.split('').map((ch, idx) => {
+        const isCurrent = idx === step.i;
+        const isPast = idx < step.i;
+        const isClosing = MATCHING[ch] !== undefined;
+
+        let borderClass = 'border-slate-700 bg-slate-900 text-slate-300';
+        let glowClass = '';
+
+        if (isCurrent) {
+          borderClass = isClosing ? 'border-amber-400 bg-amber-500/20 text-amber-300 scale-110' : 'border-sky-400 bg-sky-500/20 text-sky-300 scale-110';
+          glowClass = isClosing ? 'cell-glow-amber' : 'cell-glow-sky';
+        } else if (isPast) {
+          borderClass = 'border-slate-600 bg-slate-800/60 text-slate-400';
+        }
+
+        return `
+          <div class="relative flex flex-col items-center">
+            <div class="w-10 h-11 flex items-center justify-center font-mono text-lg font-bold rounded-lg border-2 transition-all duration-300 ${borderClass} ${glowClass}">
+              ${ch}
+            </div>
+            <span class="text-[10px] font-mono mt-1 text-slate-400">[${idx}]</span>
+            ${isCurrent ? '<div class="absolute -top-3 w-2 h-2 rounded-full bg-sky-400 animate-bounce"></div>' : ''}
+          </div>
+        `;
+      }).join('');
+
+      // Render Stack items
+      const stackContainer = document.getElementById('stack-container');
+      document.getElementById('stack-count-badge').textContent = `Kích thước: ${step.stack.length}`;
+
+      if (step.stack.length === 0) {
+        stackContainer.innerHTML = `
+          <div class="text-xs text-slate-500 my-auto text-center italic">
+            Ngăn xếp rỗng (Empty Stack)
+          </div>
+        `;
+      } else {
+        stackContainer.innerHTML = step.stack.map((ch, idx) => {
+          const isTop = idx === step.stack.length - 1;
+          return `
+            <div class="w-11/12 py-1.5 px-3 rounded-lg border-2 font-mono text-center font-bold text-base transition-all duration-300 flex items-center justify-between
+              ${isTop ? 'bg-sky-500/20 border-sky-400 text-sky-200 cell-glow-sky' : 'bg-slate-800 border-slate-700 text-slate-300'}">
+              <span class="text-xs font-mono text-slate-400">[${idx}]</span>
+              <span class="text-lg">${ch}</span>
+              <span class="text-[10px] font-mono ${isTop ? 'text-sky-300 font-bold' : 'text-slate-500'}">
+                ${isTop ? 'TOP' : ''}
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Render operation badge
+      const opBadge = document.getElementById('operation-badge');
+      opBadge.textContent = step.op;
+
+      // Render explanation box
+      const expBox = document.getElementById('explanation-box');
+      if (step.status === 'push') {
+        expBox.className = 'p-2.5 rounded-lg text-xs leading-relaxed border bg-sky-950/40 border-sky-800 text-sky-200';
+      } else if (step.status === 'pop-success') {
+        expBox.className = 'p-2.5 rounded-lg text-xs leading-relaxed border bg-emerald-950/40 border-emerald-800 text-emerald-200';
+      } else if (step.status === 'error') {
+        expBox.className = 'p-2.5 rounded-lg text-xs leading-relaxed border bg-rose-950/50 border-rose-800 text-rose-200';
+      } else if (step.status === 'success') {
+        expBox.className = 'p-2.5 rounded-lg text-xs leading-relaxed border bg-emerald-950/50 border-emerald-700 text-emerald-100 font-semibold';
+      } else {
+        expBox.className = 'p-2.5 rounded-lg text-xs leading-relaxed border bg-slate-900 border-slate-700 text-slate-300';
+      }
+      expBox.innerHTML = step.msg;
+
+      // Update button states
+      document.getElementById('prev-btn').disabled = currentStepIdx === 0;
+      document.getElementById('next-btn').disabled = currentStepIdx === totalSteps - 1;
+    }
+
+    function prevStep() {
+      pauseAutoPlay();
+      if (currentStepIdx > 0) {
+        currentStepIdx--;
+        renderStep();
+      }
+    }
+
+    function nextStep() {
+      const totalSteps = PRESETS[currentPresetIdx].steps.length;
+      if (currentStepIdx < totalSteps - 1) {
+        currentStepIdx++;
+        renderStep();
+      } else {
+        pauseAutoPlay();
+      }
+    }
+
+    function resetCurrentScenario() {
+      pauseAutoPlay();
+      currentStepIdx = 0;
+      renderStep();
+    }
+
+    function toggleAutoPlay() {
+      if (autoPlayTimer) {
+        pauseAutoPlay();
+      } else {
+        startAutoPlay();
+      }
+    }
+
+    function startAutoPlay() {
+      const totalSteps = PRESETS[currentPresetIdx].steps.length;
+      if (currentStepIdx >= totalSteps - 1) {
+        currentStepIdx = 0;
+        renderStep();
+      }
+      document.getElementById('play-icon').textContent = '⏸';
+      document.getElementById('play-text').textContent = 'Tạm dừng';
+      autoPlayTimer = setInterval(() => {
+        const steps = PRESETS[currentPresetIdx].steps.length;
+        if (currentStepIdx < steps - 1) {
+          currentStepIdx++;
+          renderStep();
+        } else {
+          pauseAutoPlay();
+        }
+      }, 1500);
+    }
+
+    function pauseAutoPlay() {
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+      document.getElementById('play-icon').textContent = '▶';
+      document.getElementById('play-text').textContent = 'Tự động chạy';
+    }
+
+    // Initialize
+    renderPresetButtons();
+    renderStep();
+  </script>
+</body>
+</html>

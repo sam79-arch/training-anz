@@ -76,7 +76,7 @@
 - [x] Day 5 (Thứ 6): [Two Sum & Contains Duplicate (Hashing Space-Time Tradeoff)](coding/week-01/04-two-sum-hash.md) & [Cẩm nang Hash Table & V8 Internals](notes/week-01/day-05-hash-table-patterns.md)
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 1 (Technical Disagreement)](notes/week-01/day-06-behavioral-star-story-1.md) & [Pilot Week Retrospective](notes/week-01/day-06-pilot-retrospective.md)
 
-### Tuần 2: Advanced Hashing, Two Pointers Medium & Node.js Streams
+### Tuần 2: Advanced Hashing, Two Pointers Medium & Node.js Streams (Hoàn tất 100%)
 - [x] Day 1 (Thứ 2): [Valid Anagram & Group Anagrams (Frequency Hashing)](coding/week-02/01-valid-anagram.md) & [Cẩm nang Frequency Hashing](notes/week-02/day-01-frequency-hashing.md)
 - [x] Day 2 (Thứ 3): [3Sum — Triplet Sum to Zero (Two Pointers Medium)](coding/week-02/02-three-sum.md) & [Cẩm nang Two Pointers & Duplicate Skipping](notes/week-02/day-02-three-sum-patterns.md)
 - [x] Day 3 (Thứ 4): [Container With Most Water (Two Pointers Area Maximization)](coding/week-02/03-container-with-most-water.md) & [Cẩm nang Inward Collision](notes/week-02/day-03-container-patterns.md)
@@ -84,12 +84,20 @@
 - [x] Day 5 (Thứ 6): [Node.js Streams & Backpressure Architecture](architecture/week-02/05-streams-backpressure.md) & [Cẩm nang Streams & Backpressure](notes/week-02/day-05-streams-patterns.md)
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 2 (Severity-1 Production Incident)](notes/week-02/day-06-behavioral-star-story-2.md) & [Week 2 Retrospective](notes/week-02/day-06-week-2-retrospective.md)
 
+### Tuần 3: Stack, Linked List (100% Easy) & RDBMS Deep Dive (Đang thực hiện)
+- [x] Day 1 (Thứ 2): [Valid Parentheses (Stack LIFO & Guard Clauses)](coding/week-03/01-valid-parentheses.md)
+- [ ] Day 2 (Thứ 3): Database Deep Dive 1: B+Tree Index Architecture, Covering Index & `EXPLAIN ANALYZE` (Cấm LeetCode)
+- [ ] Day 3 (Thứ 4): [Reverse Linked List (In-place 3 Pointers)](coding/week-03/02-reverse-linked-list.md)
+- [ ] Day 4 (Thứ 5): Database Concurrency: ACID Isolation Levels & Pessimistic/Optimistic Locking (Cấm LeetCode)
+- [ ] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md)
+- [ ] Day 6 (Thứ 7): Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective
+
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
-- **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL & 15 bài DSA cốt lõi.
-- **Phase 2 (Weeks 5 - 8):** Data Platform System Design (Redis, Kafka, Transactional Outbox, Idempotency).
-- **Phase 3 (Weeks 9 - 11):** Kịch bản thực tế ngân hàng & Rèn phản xạ STAR tiếng Anh.
-- **Phase 4 (Week 12):** Mock Interview 2 tiếng chuẩn format ANZ.
+- **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL (B+Tree, ACID, Pooling, Sharding) & DSA Nền tảng (Two Pointers, Hashing, Stack, Linked List).
+- **Phase 2 (Weeks 5 - 8):** Data Platform System Design (Redis Caching, TTL Jitter, Redlock, Kafka Partitioning, Transactional Outbox, Idempotency).
+- **Phase 3 (Weeks 9 - 11):** Kịch bản thực tế ngân hàng (Real-time Ledger, Rate Limiting, Circuit Breaker) & Live Coding 45m màn hình thô.
+- **Phase 4 (Week 12):** Mock Interview 2 tiếng chuẩn format ANZ Bank.
 
 ---
 
