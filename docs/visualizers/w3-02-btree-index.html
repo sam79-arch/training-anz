@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .cell-glow-sky {
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+    }
+    .cell-glow-emerald {
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.6);
+    }
+    .cell-glow-amber {
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.6);
+    }
+    .cell-glow-rose {
+      box-shadow: 0 0 16px rgba(244, 63, 94, 0.6);
+    }
+    .pulse-fast {
+      animation: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+  </style>
+</head>
+<body class="bg-transparent text-slate-100 antialiased p-2 font-sans selection:bg-blue-500/30">
+  <div class="bg-[#1e293b] text-slate-100 border-2 border-slate-600 rounded-2xl p-4 shadow-2xl max-w-2xl mx-auto space-y-4">
+    
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <span>🌳</span> B+Tree Index & Covering Index Architecture
+        </h2>
+        <p class="text-xs text-slate-300 mt-0.5">ANZ Data Platform - Phân tích chi phí I/O & Triệt tiêu Bookmark Lookup</p>
+      </div>
+      <span id="step-badge" class="px-3 py-1 text-xs font-bold rounded-full bg-blue-500/20 text-blue-300 border border-blue-400/40 shadow-sm">
+        Bước 1 / 6
+      </span>
+    </div>
+
+    <!-- Mode Selector -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-2.5 space-y-2">
+      <div class="flex items-center justify-between text-xs">
+        <span class="text-slate-300 font-semibold">Chọn Kế Hoạch Thực Thi (Execution Plan):</span>
+        <span id="scan-badge" class="font-mono text-[11px] px-2.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+          INDEX ONLY SCAN
+        </span>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-xs">
+        <button onclick="switchMode(0)" id="mode-btn-0" class="py-1.5 px-2 rounded-lg font-bold transition bg-emerald-600 text-white shadow text-center">
+          ⚡ Covering Index
+        </button>
+        <button onclick="switchMode(1)" id="mode-btn-1" class="py-1.5 px-2 rounded-lg font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 text-center">
+          ⚠️ Secondary Index
+        </button>
+        <button onclick="switchMode(2)" id="mode-btn-2" class="py-1.5 px-2 rounded-lg font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 text-center">
+          ❌ Sequential Scan
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Architecture Visualizer Diagram -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 space-y-3">
+      <div class="flex justify-between items-center text-xs text-slate-300 font-medium px-1">
+        <span>Cấu trúc vật lý B+Tree và Table Heap:</span>
+        <span id="current-action-label" class="text-sky-300 font-mono text-[11px] font-bold">
+          Traversing Root Page
+        </span>
+      </div>
+
+      <!-- Tree Diagram Container -->
+      <div class="space-y-2 text-xs font-mono">
+        <!-- Level 2: Root Page -->
+        <div class="flex justify-center">
+          <div id="node-root" class="w-48 bg-slate-800 border-2 border-slate-600 rounded-lg p-2 text-center transition-all duration-300">
+            <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Root Page (Level 2)</div>
+            <div class="text-xs font-bold text-sky-300 mt-0.5">Key: [ 200 ]</div>
+            <div class="text-[10px] text-slate-400">Pointers: [&lt;200 | &ge;200]</div>
+          </div>
+        </div>
+
+        <!-- Connection Branch Indicators -->
+        <div class="flex justify-around px-8 text-slate-500 text-xs select-none">
+          <span>↙</span>
+          <span>↘</span>
+        </div>
+
+        <!-- Level 1: Internal Pages -->
+        <div class="grid grid-cols-2 gap-4 px-2">
+          <div id="node-internal-0" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-2 text-center transition-all duration-300">
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Internal Page 1</div>
+            <div class="text-xs font-bold text-sky-300 mt-0.5">Key: [ 100 ]</div>
+            <div class="text-[10px] text-slate-400">Pointers: [&lt;100 | &ge;100]</div>
+          </div>
+          <div id="node-internal-1" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-2 text-center transition-all duration-300">
+            <div class="text-[10px] text-slate-400 font-bold uppercase">Internal Page 2</div>
+            <div class="text-xs font-bold text-sky-300 mt-0.5">Key: [ 300 ]</div>
+            <div class="text-[10px] text-slate-400">Pointers: [&lt;300 | &ge;300]</div>
+          </div>
+        </div>
+
+        <!-- Connection Arrows to Leaves -->
+        <div class="flex justify-around px-4 text-slate-500 text-xs select-none">
+          <span>↓</span>
+          <span>↓</span>
+          <span>↓</span>
+          <span>↓</span>
+        </div>
+
+        <!-- Level 0: Leaf Pages (Doubly Linked List) -->
+        <div class="grid grid-cols-4 gap-1.5">
+          <div id="node-leaf-0" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-1.5 text-center transition-all duration-300">
+            <div class="text-[9px] text-slate-400 font-bold">Leaf 0</div>
+            <div class="text-[11px] font-bold text-emerald-400 mt-0.5">[1..99]</div>
+            <div class="text-[9px] text-slate-400">↔ next</div>
+          </div>
+          <div id="node-leaf-1" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-1.5 text-center transition-all duration-300">
+            <div class="text-[9px] text-slate-400 font-bold">Leaf 1</div>
+            <div class="text-[11px] font-bold text-emerald-400 mt-0.5">[100..199]</div>
+            <div class="text-[9px] text-slate-400">↔ next</div>
+          </div>
+          <div id="node-leaf-2" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-1.5 text-center transition-all duration-300">
+            <div class="text-[9px] text-slate-400 font-bold">Leaf 2</div>
+            <div class="text-[11px] font-bold text-emerald-400 mt-0.5">[200..299]</div>
+            <div class="text-[9px] text-slate-400">↔ next</div>
+          </div>
+          <div id="node-leaf-3" class="bg-slate-800 border-2 border-slate-600 rounded-lg p-1.5 text-center transition-all duration-300">
+            <div class="text-[9px] text-slate-400 font-bold">Leaf 3</div>
+            <div class="text-[11px] font-bold text-emerald-400 mt-0.5">[300..399]</div>
+            <div class="text-[9px] text-slate-400">↔ next</div>
+          </div>
+        </div>
+
+        <!-- Table Heap Level (For Bookmark Lookup / Seq Scan) -->
+        <div id="node-heap" class="mt-3 bg-slate-900 border-2 border-dashed border-slate-700 rounded-xl p-2.5 transition-all duration-300">
+          <div class="flex justify-between items-center text-[11px] mb-1">
+            <span class="text-amber-300 font-bold">📦 Table Heap Storage (Random I/O Target)</span>
+            <span id="heap-status-text" class="text-[10px] text-slate-400">Heap Fetches: 0 (Bypassed)</span>
+          </div>
+          <div class="grid grid-cols-6 gap-1 text-[10px] text-center">
+            <div id="heap-p0" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 0</div>
+            <div id="heap-p1" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 1</div>
+            <div id="heap-p2" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 2</div>
+            <div id="heap-p3" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 3</div>
+            <div id="heap-p4" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 4</div>
+            <div id="heap-p5" class="bg-slate-800 border border-slate-700 rounded p-1 text-slate-400">Page 5..N</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Performance Metrics Card -->
+    <div class="grid grid-cols-4 gap-2 text-center text-xs font-mono">
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-2">
+        <div class="text-slate-400 text-[10px]">Index Pages</div>
+        <div id="metric-index-io" class="text-base font-bold text-sky-400 mt-0.5">0</div>
+      </div>
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-2">
+        <div class="text-slate-400 text-[10px]">Heap Fetches</div>
+        <div id="metric-heap-io" class="text-base font-bold text-amber-400 mt-0.5">0</div>
+      </div>
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-2">
+        <div class="text-slate-400 text-[10px]">Total Page I/O</div>
+        <div id="metric-total-io" class="text-base font-bold text-rose-400 mt-0.5">0</div>
+      </div>
+      <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-2">
+        <div class="text-slate-400 text-[10px]">I/O Reduction</div>
+        <div id="metric-reduction" class="text-base font-bold text-emerald-400 mt-0.5">0%</div>
+      </div>
+    </div>
+
+    <!-- Narrative Explanation Card -->
+    <div class="bg-[#0f172a] border border-slate-700 rounded-xl p-3 text-xs space-y-1.5">
+      <div class="flex items-center gap-1.5 font-bold text-slate-200">
+        <span class="text-amber-400">💡</span>
+        <span id="explanation-title">Mô Tả Bước Thực Thi:</span>
+      </div>
+      <p id="explanation-desc" class="text-slate-300 leading-relaxed font-sans">
+        Chọn kế hoạch và nhấn 'Bước Tiếp' để quan sát đường đi của câu lệnh truy vấn qua các tầng B+Tree và đo lường số lượng Page I/O.
+      </p>
+    </div>
+
+    <!-- Controller Buttons -->
+    <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-700">
+      <button onclick="prevStep()" id="prev-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 transition disabled:opacity-40 disabled:cursor-not-allowed">
+        ← Bước Trước
+      </button>
+
+      <div class="flex gap-2">
+        <button onclick="toggleAutoPlay()" id="play-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-lg transition">
+          ▶ Tự Động
+        </button>
+        <button onclick="resetSimulation()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-600 transition">
+          ↺ Làm Lại
+        </button>
+      </div>
+
+      <button onclick="nextStep()" id="next-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg transition disabled:opacity-40 disabled:cursor-not-allowed">
+        Bước Tiếp →
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    let currentMode = 0; // 0: Covering, 1: Secondary, 2: SeqScan
+    let currentStep = 0;
+    let autoPlayTimer = null;
+
+    // Simulation steps for each mode
+    const scenarios = [
+      // Mode 0: Covering Index (Index Only Scan)
+      {
+        name: "Index Only Scan",
+        badgeClass: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+        steps: [
+          {
+            title: "Khởi tạo truy vấn",
+            desc: "Truy vấn: SELECT id, amount FROM txns WHERE id BETWEEN 100 AND 199. Chỉ mục: (id) INCLUDE (amount).",
+            action: "Query Planner: Chosen Index Only Scan",
+            activeNodes: [],
+            heapPages: [],
+            indexIo: 0, heapIo: 0, totalIo: 0, reduction: "93.17%"
+          },
+          {
+            title: "Duyệt Root Page (Level 2)",
+            desc: "Duyệt Root Page tại RAM buffer. So sánh khóa tìm kiếm (100 < 200) -> Điều hướng rẽ nhánh trái sang Internal Page 1.",
+            action: "Root Page Hit (Shared Hit: 1)",
+            activeNodes: ["node-root"],
+            heapPages: [],
+            indexIo: 1, heapIo: 0, totalIo: 1, reduction: "93.17%"
+          },
+          {
+            title: "Duyệt Internal Page (Level 1)",
+            desc: "Duyệt Internal Page 1. Khóa 100 >= 100 -> Rẽ nhánh con trỏ sang Leaf Page 1.",
+            action: "Internal Page 1 Hit (Shared Hit: 2)",
+            activeNodes: ["node-internal-0"],
+            heapPages: [],
+            indexIo: 2, heapIo: 0, totalIo: 2, reduction: "93.17%"
+          },
+          {
+            title: "Đọc Leaf Page 1 (Level 0)",
+            desc: "Đạt tầng lá. Đọc các bản ghi [100..199]. Vì cột 'amount' đã nằm trong payload của Leaf Page (nhờ INCLUDE), toàn bộ dữ liệu được trích xuất ngay!",
+            action: "Leaf Page 1 Read (Shared Hit: 3)",
+            activeNodes: ["node-leaf-1"],
+            heapPages: [],
+            indexIo: 3, heapIo: 0, totalIo: 3, reduction: "93.17%"
+          },
+          {
+            title: "Kiểm tra Table Heap (Bỏ qua 100%)",
+            desc: "Visibility Map xác nhận dữ liệu hợp lệ. Zero Heap Fetches! Bỏ qua hoàn toàn chi phí đọc ngẫu nhiên vào Table Heap.",
+            action: "Zero Heap Fetches (Heap Pages Read: 0)",
+            activeNodes: ["node-leaf-1"],
+            heapPages: [],
+            indexIo: 3, heapIo: 0, totalIo: 3, reduction: "93.17%"
+          },
+          {
+            title: "Hoàn tất truy vấn (Sub-10ms)",
+            desc: "100 bản ghi được trả về chỉ sau 3 Index Page I/O. Tiết kiệm 93.17% I/O đĩa và CPU buffer churn so với Secondary Index có Bookmark Lookup!",
+            action: "Query Succeeded: 0 Heap Fetches",
+            activeNodes: ["node-leaf-1"],
+            heapPages: [],
+            indexIo: 3, heapIo: 0, totalIo: 3, reduction: "93.17%"
+          }
+        ]
+      },
+      // Mode 1: Secondary Index (Index Scan with Bookmark Lookup)
+      {
+        name: "Index Scan with Bookmark Lookup",
+        badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+        steps: [
+          {
+            title: "Khởi tạo truy vấn",
+            desc: "Truy vấn: SELECT id, amount FROM txns WHERE id BETWEEN 100 AND 199. Chỉ mục: (id) (Không có amount).",
+            action: "Query Planner: Chosen Index Scan with Bookmark Lookup",
+            activeNodes: [],
+            heapPages: [],
+            indexIo: 0, heapIo: 0, totalIo: 0, reduction: "0%"
+          },
+          {
+            title: "Duyệt Root & Internal Pages",
+            desc: "Đọc Root Page và Internal Page 1 để xác định vị trí của khóa 100 trong B+Tree.",
+            action: "Traversing Root & Internal Pages",
+            activeNodes: ["node-root", "node-internal-0"],
+            heapPages: [],
+            indexIo: 2, heapIo: 0, totalIo: 2, reduction: "0%"
+          },
+          {
+            title: "Đọc Leaf Page 1 lấy Tuple Pointers",
+            desc: "Đọc Leaf Page 1. Chỉ mục chỉ chứa 'id' và con trỏ ctid {pageId, slotId}. Cột 'amount' bị thiếu!",
+            action: "Leaf Page 1 Scanned (Missing amount)",
+            activeNodes: ["node-leaf-1"],
+            heapPages: [],
+            indexIo: 3, heapIo: 0, totalIo: 3, reduction: "0%"
+          },
+          {
+            title: "Bắt đầu Bookmark Lookup (Random Heap I/O)",
+            desc: "Database dùng danh sách con trỏ ctid để nhảy ngẫu nhiên vào các Heap Pages (Page 1, 2) nhằm lấy giá trị 'amount'.",
+            action: "Random Heap Fetch on Page 1 & 2",
+            activeNodes: ["node-leaf-1"],
+            heapPages: ["heap-p1", "heap-p2"],
+            indexIo: 3, heapIo: 48, totalIo: 51, reduction: "0%"
+          },
+          {
+            title: "Tiếp tục Random Heap Fetches",
+            desc: "Các giao dịch nằm rải rác trên các Heap Pages (Page 3, 4, 5). Mỗi lượt fetch gây áp lực lớn lên Buffer Pool shared_buffers.",
+            action: "100 Random Heap Fetches in Progress",
+            activeNodes: ["node-leaf-1"],
+            heapPages: ["heap-p1", "heap-p2", "heap-p3", "heap-p4"],
+            indexIo: 3, heapIo: 100, totalIo: 103, reduction: "0%"
+          },
+          {
+            title: "Hoàn tất truy vấn với chi phí I/O cao",
+            desc: "Trả về 100 bản ghi nhưng tốn tới 103 Page I/O (3 Index + 100 Random Heap Fetches). Độ trễ p99 tăng vọt dưới tải cao!",
+            action: "Query Complete: High Heap I/O Penalty",
+            activeNodes: ["node-leaf-1"],
+            heapPages: ["heap-p1", "heap-p2", "heap-p3", "heap-p4"],
+            indexIo: 3, heapIo: 100, totalIo: 103, reduction: "0%"
+          }
+        ]
+      },
+      // Mode 2: Sequential Scan (No Index)
+      {
+        name: "Seq Scan (Full Table Scan)",
+        badgeClass: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+        steps: [
+          {
+            title: "Khởi tạo truy vấn",
+            desc: "Truy vấn: SELECT id, amount FROM txns WHERE id BETWEEN 100 AND 199. Bảng không có chỉ mục.",
+            action: "Query Planner: Fallback to Sequential Scan",
+            activeNodes: [],
+            heapPages: [],
+            indexIo: 0, heapIo: 0, totalIo: 0, reduction: "Baseline"
+          },
+          {
+            title: "Bỏ qua B+Tree (Không tồn tại)",
+            desc: "Database không thể sử dụng B+Tree. Bắt buộc phải đọc tuần tự từ trang đầu tiên của Table Heap.",
+            action: "Bypassing B+Tree (Direct Disk I/O)",
+            activeNodes: [],
+            heapPages: ["heap-p0"],
+            indexIo: 0, heapIo: 8, totalIo: 8, reduction: "Baseline"
+          },
+          {
+            title: "Quét tuần tự Heap Pages 1 & 2",
+            desc: "Đọc toàn bộ các dòng trong Page 1 và Page 2 để kiểm tra điều kiện WHERE id BETWEEN 100 AND 199.",
+            action: "Reading Heap Pages 1..2",
+            activeNodes: [],
+            heapPages: ["heap-p0", "heap-p1", "heap-p2"],
+            indexIo: 0, heapIo: 20, totalIo: 20, reduction: "Baseline"
+          },
+          {
+            title: "Quét tuần tự Heap Pages 3 & 4",
+            desc: "Đọc tiếp Page 3 và Page 4. Toàn bộ các dòng không khớp điều kiện vẫn buộc phải nạp vào RAM.",
+            action: "Reading Heap Pages 3..4",
+            activeNodes: [],
+            heapPages: ["heap-p0", "heap-p1", "heap-p2", "heap-p3", "heap-p4"],
+            indexIo: 0, heapIo: 35, totalIo: 35, reduction: "Baseline"
+          },
+          {
+            title: "Quét toàn bộ Heap Pages còn lại",
+            desc: "Đọc 100% các trang bảng (40 Heap Pages). Gây nghẽn băng thông đĩa I/O và đẩy các dữ liệu quan trọng khác ra khỏi Cache.",
+            action: "Full Table Scan (100% Heap Pages)",
+            activeNodes: [],
+            heapPages: ["heap-p0", "heap-p1", "heap-p2", "heap-p3", "heap-p4", "heap-p5"],
+            indexIo: 0, heapIo: 40, totalIo: 40, reduction: "Baseline"
+          },
+          {
+            title: "Hoàn tất truy vấn với chi phí cực lớn",
+            desc: "Quét 2,000 dòng trên 40 trang bảng để lọc ra 100 dòng. Độ trễ cao, không thể mở rộng (unscalable) cho bảng triệu dòng!",
+            action: "Seq Scan Complete (O(N) Pages I/O)",
+            activeNodes: [],
+            heapPages: ["heap-p0", "heap-p1", "heap-p2", "heap-p3", "heap-p4", "heap-p5"],
+            indexIo: 0, heapIo: 40, totalIo: 40, reduction: "Baseline"
+          }
+        ]
+      }
+    ];
+
+    function updateUI() {
+      const scenario = scenarios[currentMode];
+      const step = scenario.steps[currentStep];
+
+      // Badges
+      document.getElementById('step-badge').textContent = `Bước ${currentStep + 1} / ${scenario.steps.length}`;
+      const scanBadge = document.getElementById('scan-badge');
+      scanBadge.textContent = scenario.name.toUpperCase();
+      scanBadge.className = `font-mono text-[11px] px-2.5 py-0.5 rounded font-bold border ${scenario.badgeClass}`;
+
+      document.getElementById('current-action-label').textContent = step.action;
+      document.getElementById('explanation-title').textContent = step.title;
+      document.getElementById('explanation-desc').textContent = step.desc;
+
+      // Metrics
+      document.getElementById('metric-index-io').textContent = step.indexIo;
+      document.getElementById('metric-heap-io').textContent = step.heapIo;
+      document.getElementById('metric-total-io').textContent = step.totalIo;
+      document.getElementById('metric-reduction').textContent = step.reduction;
+
+      // Reset Node Visuals
+      const allTreeNodes = ["node-root", "node-internal-0", "node-internal-1", "node-leaf-0", "node-leaf-1", "node-leaf-2", "node-leaf-3"];
+      allTreeNodes.forEach(id => {
+        const el = document.getElementById(id);
+        el.className = el.className.replace(/border-sky-400|border-emerald-400|border-amber-400|cell-glow-sky|cell-glow-emerald|pulse-fast/g, '');
+        el.classList.add('border-slate-600');
+      });
+
+      // Highlight Active Tree Nodes
+      step.activeNodes.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove('border-slate-600');
+          if (id.includes('leaf')) {
+            el.classList.add('border-emerald-400', 'cell-glow-emerald', 'pulse-fast');
+          } else {
+            el.classList.add('border-sky-400', 'cell-glow-sky');
+          }
+        }
+      });
+
+      // Reset Heap Pages
+      const allHeapPages = ["heap-p0", "heap-p1", "heap-p2", "heap-p3", "heap-p4", "heap-p5"];
+      allHeapPages.forEach(id => {
+        const el = document.getElementById(id);
+        el.className = "bg-slate-800 border border-slate-700 rounded p-1 text-slate-400 transition-all";
+      });
+
+      // Highlight Active Heap Pages
+      step.heapPages.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.className = "bg-amber-950/80 border-2 border-amber-400 rounded p-1 text-amber-300 font-bold cell-glow-amber pulse-fast";
+        }
+      });
+
+      const heapStatusText = document.getElementById('heap-status-text');
+      if (step.heapIo === 0) {
+        heapStatusText.textContent = "Heap Fetches: 0 (100% Bypassed via Covering Index)";
+        heapStatusText.className = "text-[10px] text-emerald-400 font-bold";
+      } else {
+        heapStatusText.textContent = `Heap Fetches: ${step.heapIo} pages read`;
+        heapStatusText.className = "text-[10px] text-amber-400 font-bold";
+      }
+
+      // Buttons
+      document.getElementById('prev-btn').disabled = currentStep === 0;
+      document.getElementById('next-btn').disabled = currentStep === scenario.steps.length - 1;
+    }
+
+    function switchMode(modeIdx) {
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
+      currentMode = modeIdx;
+      currentStep = 0;
+
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById(`mode-btn-${i}`);
+        if (i === modeIdx) {
+          btn.className = "py-1.5 px-2 rounded-lg font-bold transition bg-emerald-600 text-white shadow text-center";
+        } else {
+          btn.className = "py-1.5 px-2 rounded-lg font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 text-center";
+        }
+      }
+      updateUI();
+    }
+
+    function nextStep() {
+      const scenario = scenarios[currentMode];
+      if (currentStep < scenario.steps.length - 1) {
+        currentStep++;
+        updateUI();
+      } else if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        document.getElementById('play-btn').textContent = "▶ Tự Động";
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateUI();
+      }
+    }
+
+    function resetSimulation() {
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
+      document.getElementById('play-btn').textContent = "▶ Tự Động";
+      currentStep = 0;
+      updateUI();
+    }
+
+    function toggleAutoPlay() {
+      const playBtn = document.getElementById('play-btn');
+      if (autoPlayTimer) {
+        clearInterval(autoPlayTimer);
+        autoPlayTimer = null;
+        playBtn.textContent = "▶ Tự Động";
+      } else {
+        playBtn.textContent = "⏸ Tạm Dừng";
+        autoPlayTimer = setInterval(() => {
+          const scenario = scenarios[currentMode];
+          if (currentStep < scenario.steps.length - 1) {
+            nextStep();
+          } else {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = null;
+            playBtn.textContent = "▶ Tự Động";
+          }
+        }, 1800);
+      }
+    }
+
+    // Initialize UI
+    updateUI();
+  </script>
+</body>
+</html>
