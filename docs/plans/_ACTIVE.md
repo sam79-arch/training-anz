@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| *(None currently)* | — | `In Processing` | — | WIP plans in current session |
+| `week-03-day-03-reverse-linked-list.md` | `New Request` | `In Processing` | `feature/week-03-day-03-reverse-linked-list` | Reverse Linked List (In-place 3-pointer pattern, Issue #36) |
 
 ---
 
@@ -17,7 +17,7 @@
 
 | Plan File | Task Type | Status | Target Branch | Description |
 |---|---|---|---|---|
-| `week-03-day-02-btree-indexing.md` | `DBMS Execution` | `Open` | `main` | Database Internals: B+Tree Index Architecture & Covering Index (Issue #35) |
+| *(None currently)* | — | `Open` | — | Backlog plans ready for allocation |
 
 ---
 
@@ -55,6 +55,7 @@
 | `week-02-day-05-streams-backpressure.md` | `Research` | `Closed` | 2026-09-25 | `main` | PR #32 / Commit `252a4de` |
 | `week-02-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-28 | `main` | PR #33 / Commit `ea4e8e7` |
 | `week-03-day-01-valid-parentheses.md` | `New Request` | `Closed` | 2026-09-29 | `main` | PR #40 / Commit `2368859` |
+| `week-03-day-02-btree-indexing.md` | `DBMS Execution` | `Closed` | 2026-09-29 | `main` | PR #41 / Commit `1a00cfd` |
 
 ---
 
