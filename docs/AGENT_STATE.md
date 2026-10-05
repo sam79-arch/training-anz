@@ -2,39 +2,40 @@
 
 ## 🚦 TRẠNG THÁI HIỆN TẠI (Current State)
 
-- **Task Type**: `Modification` → **Roadmap Optimization (Weeks 3–12)**
+- **Task Type**: `New Request` → **Complete Remaining Days of Week 3 (Day 4, 5, 6)**
 - **Status**: `In Processing`
-- **Task:** Tối ưu hóa lộ trình học Tuần 3-12: Giảm tải nhận thức, chuẩn 3-File Output format, bổ sung Friday Recall 15m (Spaced Repetition), tái phân bổ LeetCode Medium tuân thủ Hard Cap 1 Medium/tuần và Early-Week Gate.
-- **Phase:** Phase 2: Implementation & Code Review (Đã hoàn thành các thay đổi trên AGENTS.md, ROADMAP.md, README.md, docs/plans/_ACTIVE.md, docs/plans/roadmap-optimization-w3-w12.md, chờ User duyệt Second "OK" để Git Commit & Push).
-- **Handoff:** `ROADMAP_OPTIMIZATION_PENDING_SECOND_OK`.
-- **Branch:** `mod/roadmap-optimization-w3-w12`.
+- **Task:** Hoàn tất 100% các ngày còn thiếu của Tuần 3: Database Concurrency ACID & Locking (Day 4), Linked List Cycle Floyd's Algorithm & Visualizer (Day 5), Behavioral STAR Story 3 & Retrospective (Day 6).
+- **Phase:** Phase 2: Implementation & Code Review (Đã hoàn thành 100% implementation, 15/15 test suites pass 115/115 test cases, chờ User duyệt Second "OK" để Git Commit & Push).
+- **Handoff:** `WEEK_03_COMPLETION_PENDING_SECOND_OK`.
+- **Branch:** `feat/week-03-complete-remaining-days`.
 
 ## 🎯 4-POINT MANDATORY HANDOFF CHECKLIST
 
-1. **Location:** `AGENTS.md`, `ROADMAP.md`, `README.md`, `docs/plans/_ACTIVE.md`, `docs/plans/roadmap-optimization-w3-w12.md`, `docs/AGENT_STATE.md`.
+1. **Location:** `architecture/week-03/04-acid-concurrency.*`, `coding/week-03/03-linked-list-cycle.*`, `docs/visualizers/w3-05-linked-list-cycle.html`, `notes/week-03/day-06-star-and-retrospective.md`, `package.json`, `README.md`, `docs/plans/week-03-complete-remaining-days.md`, `docs/plans/_ACTIVE.md`, `docs/AGENT_STATE.md`.
 2. **Completed vs pending:**
-   - **Completed:** Phase 1 (Plan approved with "OK"), Phase 2 (Đã cập nhật quy tắc 3-File Output và tiêu chí Selective Visualizer vào AGENTS.md; cập nhật Friday Recall 15m vào AGENTS.md, ROADMAP.md, README.md; tái cấu trúc Milestones 2, 3, 4 trong ROADMAP.md bảo đảm Hard Cap 1 Medium/tuần và Early-Week Gate; cập nhật _ACTIVE.md; kiểm tra regression 102/102 tests pass).
+   - **Completed:** 100% Phase 1 (Plan approved with "OK"), 100% Phase 2 (Hoàn thành Day 4 ACID Concurrency Engine & 6/6 tests; Day 5 Floyd's Cycle Detection & 7/7 tests kèm Dark Mode Visualizer; Day 6 STAR Story 3 & Week 3 Scorecard Retro; cập nhật package.json và README.md; 115/115 test cases trong repo pass 100%).
    - **Pending:** Chờ User review DIFF và cấp **Second "OK"** để thực hiện Phase 3 (Git Commit & Push).
-3. **Exact next step:** Khi nhận **Second "OK"**, thực thi commit `mod(roadmap): optimize weeks 4-8 schedule — reduce density, add spaced repetition` và push lên `origin/mod/roadmap-optimization-w3-w12`, sau đó xuất PR Title & Markdown Body.
+3. **Exact next step:** Khi nhận **Second "OK"**, thực thi commit `feat(week-03): complete remaining curriculum for week 3 — db concurrency, floyd cycle, and star story 3` và push lên `origin/feat/week-03-complete-remaining-days`, sau đó xuất PR Title & Markdown Body.
 4. **Gotchas & Constraints:**
-   - Bảo toàn 100% nội dung kiến thức cốt lõi (B+Tree, ACID, Pooling, Sharding, Redis Cache, Kafka, Transactional Outbox, Idempotency).
-   - Tuân thủ nghiêm ngặt Early-Week Gate (Thứ 2 cấm giải LeetCode Medium) và Hard Cap 1 Medium/tuần.
-   - Zero external dependencies; 102/102 native tests pass 100%.
+   - Dòng 1 luôn là Guard Clause: `if (!head || typeof head !== 'object' || !head.next) return false;`.
+   - Floyd's cycle: Invariant $(d+2) - 1 = d+1$ thu hẹp khoảng cách 1 node mỗi vòng, $O(1)$ space.
+   - Database Concurrency: Pessimistic lock `SELECT FOR UPDATE` vs Optimistic lock CAS `version`.
+   - Zero external npm dependencies.
 
 ## 📅 NHẬT KÝ TÍCH LŨY TRONG NGÀY (Daily In-Progress Ledger)
 
-### [2026-10-05 04:00:00] - Session Handoff
-1. **Current In-Progress Location:** `mod/roadmap-optimization-w3-w12`.
+### [2026-10-05 04:25:00] - Session Handoff
+1. **Current In-Progress Location:** `feat/week-03-complete-remaining-days`.
 2. **Completed vs. Failing/Pending:**
-   - **Completed:** Cập nhật AGENTS.md (chuẩn hóa 3 files/bài, selective visualizer, Friday Recall 15m), ROADMAP.md (Milestones 2, 3, 4 tối ưu), README.md (tiến độ & routine 60m), _ACTIVE.md (đóng plan w3-03, mở roadmap optimization).
-   - **Pending:** Chờ User review DIFF và xác nhận Second "OK".
+   - **Completed:** Viết test-first và code hoàn chỉnh Day 4 (ACID Concurrency Engine, 6/6 TCs), Day 5 (Floyd's Cycle, 7/7 TCs, HTML Visualizer), Day 6 (STAR Story 3 & Week 3 Retro), cập nhật package.json (`test:w3-04`, `test:w3-05`), README.md (6/6 ngày hoàn thành), 115/115 regression tests pass.
+   - **Pending:** Chờ User duyệt Second "OK" để tiến hành Git Commit & Push.
 3. **Exact Next Step for Next Agent:** Nhận Second "OK" $\rightarrow$ Git Commit & Push $\rightarrow$ Bàn giao PR Title & PR Body message.
-4. **Gotchas & Constraints:** Đảm bảo không có ghost changes.
+4. **Gotchas & Constraints:** Đảm bảo zero ghost changes.
 
 ## 📜 LỊCH SỬ BÀN GIAO (Rolling Handoff History)
 
+- **2026-10-05:** `ROADMAP_OPTIMIZATION_COMPLETED` - Tối ưu lộ trình Tuần 4–8, chuẩn 3-file output, Friday Recall 15m, PR #44 merged.
 - **2026-09-30:** `WEEK_03_DAY_03_COMPLETED` - Reverse Linked List (In-place 3-pointer, 8/8 TCs, PR #43 merged, close #36).
 - **2026-09-29:** `WEEK_03_DAY_02_COMPLETED` - B+Tree Index simulation, covering index I/O benchmark, PR #41 & PR #42 merged, close #35.
 - **2026-09-29:** `WEEK_03_DAY_01_COMPLETED` - Hoàn thành Valid Parentheses (Stack LIFO, 8/8 TCs, PR #40 merged, close #34).
 - **2026-09-28:** `WEEK_02_DAY_06_READY` - Hoàn thành bù Day 6 STAR Story 2 (Sev-1 Outage, RCA) và Week 2 Retrospective, khép lại 100% Tuần 2 với 80/80 tests pass.
-- **2026-09-25:** `WEEK_02_DAY_05_COMPLETED` - Hoàn thành Node.js Streams & Backpressure Architecture (6/6 TCs, Heap Delta 3.75MB, close #26).

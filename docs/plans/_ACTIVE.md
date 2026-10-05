@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `roadmap-optimization-w3-w12.md` | `Modification` | `In Processing` | `mod/roadmap-optimization-w3-w12` | Tối ưu hóa lộ trình học Tuần 3-12: giảm tải nhận thức, chuẩn 3-file output, Friday Recall 15m |
+| `week-03-complete-remaining-days.md` | `New Request` | `In Processing` | `feat/week-03-complete-remaining-days` | Hoàn tất toàn bộ Tuần 3: DB Concurrency (Day 4), Floyd's Cycle (Day 5), STAR Story 3 & Retro (Day 6) |
 
 ---
 
@@ -57,6 +57,7 @@
 | `week-03-day-01-valid-parentheses.md` | `New Request` | `Closed` | 2026-09-29 | `main` | PR #40 / Commit `2368859` |
 | `week-03-day-02-btree-indexing.md` | `DBMS Execution` | `Closed` | 2026-09-29 | `main` | PR #41 / Commit `1a00cfd` |
 | `week-03-day-03-reverse-linked-list.md` | `New Request` | `Closed` | 2026-09-30 | `main` | PR #43 / Commit `5e934ee` |
+| `roadmap-optimization-w3-w12.md` | `Modification` | `Closed` | 2026-10-05 | `main` | PR #44 / Commit `ac81e71` |
 
 ---
 

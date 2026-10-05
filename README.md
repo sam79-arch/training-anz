@@ -90,13 +90,13 @@
 - [x] Day 5 (Thứ 6): [Node.js Streams & Backpressure Architecture](architecture/week-02/05-streams-backpressure.md) & [Cẩm nang Streams & Backpressure](notes/week-02/day-05-streams-patterns.md)
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 2 (Severity-1 Production Incident)](notes/week-02/day-06-behavioral-star-story-2.md) & [Week 2 Retrospective](notes/week-02/day-06-week-2-retrospective.md)
 
-### Tuần 3: Stack, Linked List (100% Easy) & RDBMS Deep Dive (Đang thực hiện)
+### Tuần 3: Stack, Linked List (100% Easy) & RDBMS Deep Dive (Hoàn tất 100%)
 - [x] Day 1 (Thứ 2): [Valid Parentheses (Stack LIFO & Guard Clauses)](coding/week-03/01-valid-parentheses.md)
 - [x] Day 2 (Thứ 3): [Database Deep Dive 1: B+Tree Index Architecture & Covering Index](notes/week-03/day-02-btree-indexing.md) (Cấm LeetCode)
 - [x] Day 3 (Thứ 4): [Reverse Linked List (In-place 3 Pointers)](coding/week-03/02-reverse-linked-list.md)
-- [ ] Day 4 (Thứ 5): Database Concurrency: ACID Isolation Levels & Pessimistic/Optimistic Locking (Cấm LeetCode)
-- [ ] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md) + 🆕 **Friday Recall Test 15m**
-- [ ] Day 6 (Thứ 7): Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective
+- [x] Day 4 (Thứ 5): [Database Concurrency: ACID Isolation Levels & Pessimistic/Optimistic Locking](architecture/week-03/04-acid-concurrency.md) (Cấm LeetCode)
+- [x] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md) + 🆕 **Friday Recall Test 15m**
+- [x] Day 6 (Thứ 7): [Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective](notes/week-03/day-06-star-and-retrospective.md)
 
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
