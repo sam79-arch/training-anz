@@ -9,7 +9,7 @@
 
 | Plan File | Task Type | Status | Branch | Description |
 |---|---|---|---|---|
-| `week-03-day-03-reverse-linked-list.md` | `New Request` | `In Processing` | `feature/week-03-day-03-reverse-linked-list` | Reverse Linked List (In-place 3-pointer pattern, Issue #36) |
+| `roadmap-optimization-w3-w12.md` | `Modification` | `In Processing` | `mod/roadmap-optimization-w3-w12` | Tối ưu hóa lộ trình học Tuần 3-12: giảm tải nhận thức, chuẩn 3-file output, Friday Recall 15m |
 
 ---
 
@@ -56,6 +56,7 @@
 | `week-02-day-06-star-and-retrospective.md` | `Documentation` | `Closed` | 2026-09-28 | `main` | PR #33 / Commit `ea4e8e7` |
 | `week-03-day-01-valid-parentheses.md` | `New Request` | `Closed` | 2026-09-29 | `main` | PR #40 / Commit `2368859` |
 | `week-03-day-02-btree-indexing.md` | `DBMS Execution` | `Closed` | 2026-09-29 | `main` | PR #41 / Commit `1a00cfd` |
+| `week-03-day-03-reverse-linked-list.md` | `New Request` | `Closed` | 2026-09-30 | `main` | PR #43 / Commit `5e934ee` |
 
 ---
 

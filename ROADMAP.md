@@ -58,18 +58,18 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
 #### 🚀 Milestone 2 (Weeks 3 - 4): `Phase 1B: Stack, Linked List & RDBMS Deep Dive` (ĐANG THỰC HIỆN)
 - **Tuần 3 (Tuần 100% Easy DSA + Database Internals - Giảm tải nhận thức)**:
   - **Day 1 (T2)**: [Valid Parentheses](coding/week-03/01-valid-parentheses.md) (LeetCode #20 - Easy) — Cơ chế Stack LIFO, Map lookup, Guard Clause kiểm tra độ dài lẻ early exit trong $O(1)$.
-  - **Day 2 (T3)**: Database Deep Dive 1 — B+Tree Index Architecture, Clustered vs Non-Clustered Index, Covering Index & `EXPLAIN ANALYZE` (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 2 (T3)**: [Database Deep Dive 1: B+Tree Index Architecture](notes/week-03/day-02-btree-indexing.md) — Clustered vs Non-Clustered Index, Covering Index & `EXPLAIN ANALYZE` (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
   - **Day 3 (T4)**: [Reverse Linked List](coding/week-03/02-reverse-linked-list.md) (LeetCode #206 - Easy) — Thao tác 3 con trỏ trượt `prev`, `curr`, `next` in-place $O(1)$ space (12 dòng code).
   - **Day 4 (T5)**: Database Concurrency — 4 Cấp độ cô lập ACID (Dirty, Non-repeatable, Phantom Read), MVCC & Locking (Pessimistic `SELECT FOR UPDATE` vs Optimistic `version`) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
-  - **Day 5 (T6)**: [Linked List Cycle](coding/week-03/03-linked-list-cycle.md) (LeetCode #141 - Easy) — Thuật toán Rùa & Thỏ (Floyd's Tortoise & Hare) $O(n)$ time, $O(1)$ space.
+  - **Day 5 (T6)**: [Linked List Cycle](coding/week-03/03-linked-list-cycle.md) (LeetCode #141 - Easy) — Thuật toán Rùa & Thỏ (Floyd's Tortoise & Hare) $O(n)$ time, $O(1)$ space. 🆕 **Kèm Friday Recall Test 15m** (gõ lại 1 bài tuần 1 hoặc 2 từ trí nhớ).
   - **Day 6 (T7)**: Behavioral STAR Story 3 — Đàm phán phạm vi với PO dưới áp lực tiến độ (Tight Deadline vs Tech Debt) & Week 3 Retrospective.
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
-- **Tuần 4 (Kết thúc Phase 1B & Database Scaling)**:
-  - **Day 1 (T2)**: Merge Two Sorted Lists (LeetCode #21 - Easy) — Kỹ thuật Dummy Head Node ghép 2 danh sách giao dịch.
-  - **Day 2 (T3)**: Database Connection Pooling trong Node.js — Kiến trúc `pg-pool` / `HikariCP`, tính toán pool sizing, timeout và chống leak connection khi có traffic spike.
-  - **Day 3 (T4)**: Min Stack (LeetCode #155 - **Bài Medium duy nhất của tuần**) — Kỹ thuật 2 stack song song để `getMin()` trong $O(1)$ time.
-  - **Day 4 (T5)**: Database Sharding & Replication Lag — Kiến trúc Master-Slave, giải quyết bài toán Đọc sau khi Ghi (Read-Your-Own-Writes consistency).
-  - **Day 5 (T6)**: Mock HackerRank 45m trên màn hình thô — Ôn tập tổng hợp Stack & Linked List, giải 1 bài Easy trong 20 phút + 6 bước tiếng Anh.
+- **Tuần 4 (Kết thúc Phase 1B & Database Scaling - Áp dụng chuẩn 3-File Output)**:
+  - **Day 1 (T2)**: Merge Two Sorted Lists (LeetCode #21 - Easy) — Kỹ thuật Dummy Head Node ghép 2 danh sách giao dịch (Áp dụng chuẩn 3-file tinh gọn, không tạo visualizer).
+  - **Day 2 (T3)**: Database Connection Pooling trong Node.js — Kiến trúc `pg-pool` / `HikariCP`, tính toán pool sizing, timeout và chống leak connection khi có traffic spike (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: Min Stack (LeetCode #155 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Kỹ thuật 2 stack song song để `getMin()` trong $O(1)$ time.
+  - **Day 4 (T5)**: Database Sharding & Replication Lag — Kiến trúc Master-Slave, giải quyết bài toán Đọc sau khi Ghi (Read-Your-Own-Writes consistency) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: Mock HackerRank 45m trên màn hình thô (ôn tập Stack & Linked List) + 🆕 **Friday Recall Test 15m** (gõ lại 3Sum hoặc Container With Most Water).
   - **Day 6 (T7)**: Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3.
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
@@ -78,27 +78,40 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
 ### 🚀 Giai đoạn 2 (Weeks 5 - 8): Kiến trúc phân tán & Data Platform System Design
 
 #### 📦 Milestone 3 (Weeks 5 - 6): `Phase 2A: Caching Architecture & Redis Deep Dive`
-- **DSA (Thứ 2, 4, 6)**:
-  - Best Time to Buy and Sell Stock (LeetCode #121 - Easy, 1 lượt duyệt $O(n)$, code 10 dòng).
-  - Maximum Subarray / Kadane's Algorithm (LeetCode #53 - Medium cơ bản, code đúng 7 dòng).
-  - Ôn tập biến thể mảng 1 chiều, bẫy khởi tạo `nums[0]` thay vì `0` khi mảng toàn số âm.
-- **System Design & Backend (Thứ 3, 5 - Trọng tâm 50% phỏng vấn ANZ)**:
-  - Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind.
-  - Xử lý **Cache Stampede / Avalanche** bằng kỹ thuật ngẫu nhiên hóa thời gian sống (**TTL Jitter**).
-  - Xử lý **Cache Penetration** bằng Bloom Filter hoặc Null Object có TTL ngắn.
-  - **Distributed Lock** với Redis (`SET resource_name my_random_value NX PX 30000`) & thuật toán Redlock kiểm soát race condition trừ tiền tài khoản.
-- **Behavioral (Thứ 7)**: STAR Story 3 follow-up & Deep dive kịch bản xử lý lỗi cache phân tán.
+- **Tuần 5 (Redis Caching Core & Binary Search Nền Tảng - Tuần 0-Medium)**:
+  - **Day 1 (T2)**: Best Time to Buy and Sell Stock (LeetCode #121 - Easy) — Duyệt 1 lượt $O(n)$, code 10 dòng, khởi động tuần nhẹ nhàng (Early-Week Gate).
+  - **Day 2 (T3)**: Redis Caching Deep Dive 1 — Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind & Kỹ thuật TTL Jitter chống Cache Stampede / Avalanche (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: 🆕 **Mid-Phase Recall & Consolidation Day** — Gõ lại Longest Substring Without Repeating Characters (Sliding Window) & ôn tập B+Tree Index từ trí nhớ (Không giải LeetCode mới để dành tải nhận thức hấp thụ kiến trúc Redis).
+  - **Day 4 (T5)**: Redis Caching Deep Dive 2 — Cache Penetration (Bloom Filter, Null Object) & Distributed Lock Redlock cơ bản kiểm soát race condition trừ tiền (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: Binary Search Standard Template (LeetCode #704 - Easy) — Template chuẩn tránh tràn số `mid = left + Math.floor((right - left) / 2)` (code 10 dòng) + 🆕 **Friday Recall Test 15m** (gõ lại Move Zeroes hoặc Two Sum).
+  - **Day 6 (T7)**: Behavioral STAR Story follow-up & Deep dive kịch bản xử lý lỗi cache phân tán.
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
+- **Tuần 6 (Redis Advanced & Kadane Maximum Subarray - 1 Medium/Tuần)**:
+  - **Day 1 (T2)**: Search Insert Position (LeetCode #35 - Easy) — Biến thể Binary Search tìm vị trí chèn, củng cố boundary check (Khởi động tuần nhẹ nhàng).
+  - **Day 2 (T3)**: Redis Advanced & High Availability — Redis Sentinel, Redis Cluster Sharding, Failover scenarios & Memory Eviction policies (LRU/LFU) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: Maximum Subarray / Kadane's Algorithm (LeetCode #53 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Thuật toán Kadane $O(n)$ time, $O(1)$ space, bẫy khởi tạo `maxSum = nums[0]`.
+  - **Day 4 (T5)**: Distributed Lock Redlock Deep Dive — Thuật toán Redlock với 5 node Redis độc lập, clock drift analysis và fencing token (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: Binary Search Boundary Drill (First Bad Version style - Easy) + 🆕 **Friday Recall Test 15m** (gõ lại Best Time to Buy Stock hoặc Valid Anagram).
+  - **Day 6 (T7)**: Phase 2A Retrospective (Tổng kết kiến trúc Caching & Redis) + STAR Story review.
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
 #### ⚡ Milestone 4 (Weeks 7 - 8): `Phase 2B: Event-Driven Kafka & Transactional Consistency`
-- **DSA (Thứ 2, 4, 6)**:
-  - Binary Search template chuẩn tránh tràn số: `mid = left + Math.floor((right - left) / 2)`.
-  - Search in Rotated Sorted Array (LeetCode #33 - Medium duy nhất của đợt).
-  - Luyện phản xạ gõ Binary Search trên màn hình thô trong 15 phút.
-- **System Design & Backend (Thứ 3, 5 - Trọng tâm cốt lõi Data Platform ANZ)**:
-  - **Apache Kafka**: Lựa chọn Partition Key theo Customer Account ID để bảo đảm thứ tự giao dịch nghiêm ngặt.
-  - Consumer Group & Rebalance: Tinh chỉnh `max.poll.interval.ms`, heartbeat, xử lý consumer lag.
-  - **Transactional Outbox Pattern**: Tích hợp Debezium CDC đọc DB Outbox table bắn vào Kafka (chống mất sự kiện tài chính).
-  - **Idempotency Key**: Thiết kế API thanh toán chống double-charging khi client retry mạng.
+- **Tuần 7 (Kafka Architecture & Rotated Binary Search - 1 Medium/Tuần)**:
+  - **Day 1 (T2)**: 🆕 **Phase Kick-off Recall Day** — Gõ lại Kadane & Merge Two Sorted Lists từ trí nhớ (20m) + Khởi động tuần nhẹ nhàng.
+  - **Day 2 (T3)**: Apache Kafka Architecture — Phân bổ Partition Key theo Customer Account ID bảo đảm thứ tự nghiêm ngặt, Consumer Group & Rebalance protocol (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: Search in Rotated Sorted Array (LeetCode #33 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Biến thể Binary Search xác định nửa đã sắp xếp (Sorted Half Invariant).
+  - **Day 4 (T5)**: Transactional Outbox Pattern — Tích hợp Debezium CDC đọc PostgreSQL outbox table đẩy vào Kafka, chống mất giao dịch tài chính (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: Linked List Cycle II / Floyd's Cycle Review (Easy/Medium-light, có visualizer Rùa & Thỏ) + 🆕 **Friday Recall Test 15m** (gõ lại Binary Search).
+  - **Day 6 (T7)**: Behavioral STAR Story 4 (Data Pipeline / Event-driven Failure) + Week 7 Review.
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
+- **Tuần 8 (Kafka Reliability, Idempotency & Tổng Kết Phase 2 - Tuần 0-Medium)**:
+  - **Day 1 (T2)**: Mock HackerRank 45m (Binary Search + Array/String mixed Easy) — Rèn luyện phản xạ gõ trên màn hình thô.
+  - **Day 2 (T3)**: Idempotency Key Design — Thiết kế API thanh toán chống double-charging khi client retry mạng, kết hợp Redis TTL & DB Unique Constraint (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: 🆕 **Comprehensive Mid-Phase Recall Day** — Gõ lại 2 thuật toán cốt lõi từ trí nhớ (Phase 1 & Phase 2A) hoàn toàn không xem code mẫu.
+  - **Day 4 (T5)**: Kafka Reliability & Consumer Lag — Tinh chỉnh `max.poll.interval.ms`, Heartbeat thread, Dead Letter Queue (DLQ) & Exactly-Once Semantics (EOS) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: Live Coding Drill 45m trên màn hình thô (ôn tập biến thể mảng/chuỗi) + 🆕 **Friday Recall Test 15m**.
+  - **Day 6 (T7)**: Milestone 4 Retrospective (Khép lại trọn vẹn Phase 2: Caching, Kafka & Consistency).
+  - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
 ---
 
