@@ -41,16 +41,22 @@
 
 ## ⏰ Kỷ Luật 60 Phút Mỗi Sáng (05:00 - 06:00 AM)
 
-- **Thứ 2, 4, 6 – Coding & English Scripting (60m):**
+- **Thứ 2, 4 – Coding & English Scripting (60m):**
   - `10m`: Đọc Problem Scenario & nhận diện Pain Point $O(n^2)$.
-  - `20m`: Tự gõ code JavaScript trên màn hình thô.
+  - `20m`: Tự gõ code JavaScript trên màn hình thô (Chuẩn hóa 3-File Output: `.js`, `.test.js`, `.md`).
   - `15m`: Đọc to kịch bản tiếng Anh Intermediate (B1-B2).
   - `15m`: Dry run bằng miệng với test case & chốt độ phức tạp $O(n)$ / $O(1)$.
+- **Thứ 6 – Coding & Friday Recall Test (60m):**
+  - `10m`: Đọc Scenario & nhận diện pattern bài toán mới.
+  - `15m`: 🆕 **Friday Recall Test (Spaced Repetition)**: Tự gõ lại 1 bài toán cũ từ trí nhớ trên màn hình thô (KHÔNG mở tài liệu).
+  - `20m`: Tự gõ code bài mới trên màn hình thô.
+  - `15m`: Luyện nói kịch bản tiếng Anh & chốt độ phức tạp.
 - **Thứ 3, 5 – System Design & Backend Internals (60m):**
-  - `30m`: Học kiến trúc phân tán (Redis Cache-Aside, Kafka Partitioning, Outbox Pattern) hoặc Node.js Internals (Event Loop 6 pha, Streams & Backpressure, B+Tree Index, ACID).
+  - `30m`: Học kiến trúc phân tán (Redis Cache-Aside, Kafka Partitioning, Outbox Pattern) hoặc Node.js Internals (Event Loop 6 pha, Streams & Backpressure, B+Tree Index, ACID) — **TUYỆT ĐỐI CẤM GIẢI LEETCODE**.
   - `30m`: Phản biện tiếng Anh một câu hỏi kiến trúc.
-- **Thứ Bảy – Behavioral Part (45m):**
-  - Chuẩn bị 1 câu chuyện STAR (Conflict, Sev-1 incident, Tight deadline).
+- **Thứ Bảy – Behavioral Part & Recall (45m):**
+  - `30m`: Chuẩn bị 1 câu chuyện STAR (Conflict, Sev-1 incident, Tight deadline).
+  - `15m`: Gõ lại 1 bài toán cũ từ trí nhớ để củng cố nền tảng.
 - **Chủ Nhật:** Nghỉ ngơi hoàn toàn.
 
 ---
@@ -89,13 +95,13 @@
 - [x] Day 2 (Thứ 3): [Database Deep Dive 1: B+Tree Index Architecture & Covering Index](notes/week-03/day-02-btree-indexing.md) (Cấm LeetCode)
 - [x] Day 3 (Thứ 4): [Reverse Linked List (In-place 3 Pointers)](coding/week-03/02-reverse-linked-list.md)
 - [ ] Day 4 (Thứ 5): Database Concurrency: ACID Isolation Levels & Pessimistic/Optimistic Locking (Cấm LeetCode)
-- [ ] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md)
+- [ ] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md) + 🆕 **Friday Recall Test 15m**
 - [ ] Day 6 (Thứ 7): Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective
 
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
-- **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL (B+Tree, ACID, Pooling, Sharding) & DSA Nền tảng (Two Pointers, Hashing, Stack, Linked List).
-- **Phase 2 (Weeks 5 - 8):** Data Platform System Design (Redis Caching, TTL Jitter, Redlock, Kafka Partitioning, Transactional Outbox, Idempotency).
+- **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL (B+Tree, ACID, Pooling, Sharding) & DSA Nền tảng (Two Pointers, Hashing, Stack, Linked List) — Áp dụng chuẩn 3-file output và Friday Recall.
+- **Phase 2 (Weeks 5 - 8):** Data Platform System Design (Redis Caching, TTL Jitter, Redlock, Kafka Partitioning, Transactional Outbox, Idempotency) & DSA Tinh Gọn (Hard cap 1 Medium/tuần, Mid-Phase Recall Days).
 - **Phase 3 (Weeks 9 - 11):** Kịch bản thực tế ngân hàng (Real-time Ledger, Rate Limiting, Circuit Breaker) & Live Coding 45m màn hình thô.
 - **Phase 4 (Week 12):** Mock Interview 2 tiếng chuẩn format ANZ Bank.
 

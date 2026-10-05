@@ -237,13 +237,28 @@ When triggered, the agent MUST **not** implement any code. It compiles a reusabl
    - Step 4: **Think Out Loud** (narrate logic while coding).
    - Step 5: **Dry Run** (trace line-by-line with an example).
    - Step 6: **Conclusion** (state final Time and Space Complexity).
-5. **Interactive Visualizer Protocol for Complex DSA & Architecture**:
-   - Đối với các bài toán Medium hoặc các chủ đề kiến trúc phân tán / Event Loop trừu tượng, Agent chủ động tạo widget mô phỏng Generative UI tương tác từng bước (State Machine Stepper với Dark Mode tương phản cao, thẻ `bg-[#1e293b]`, viền phát sáng và nút bấm) để hỗ trợ trực quan hóa cơ chế con trỏ/dữ liệu và củng cố tư duy trước khi phỏng vấn.
-   - BẮT BUỘC lưu bản sao vĩnh viễn tại `docs/visualizers/<id>-<tên-bài>.html` và gắn link trong tài liệu `*.md` để commit vào Git và mở offline bất cứ lúc nào.
-6. **Weekly Curriculum Balance & Anti-Burnout Protocol**:
+5. **Interactive Visualizer Protocol for Complex DSA & Architecture (Selective Creation)**:
+   - **Tiêu chí tinh gọn (Từ Tuần 3 Day 4 trở đi)**: Để tránh quá tải nhận thức và duy trì tốc độ học tập bền vững, CHỈ tạo widget Generative UI visualizer cho các bài toán có cơ chế trừu tượng/bẫy tư duy phức tạp thực sự:
+     - ✅ **Tạo Visualizer**: Sliding Window (bẫy lùi chỉ mục `abba`), B+Tree Index (đường dẫn I/O Bookmark Lookup vs Covering Index), Kafka (Partition key routing & Rebalance), Floyd's Cycle Detection (con trỏ rùa & thỏ).
+     - ❌ **Bỏ Visualizer**: Các bài toán tuyến tính, straightforward hoặc cấu trúc dữ liệu cơ bản (Valid Parentheses, Reverse Linked List, Merge Two Lists, Binary Search cơ bản).
+   - Khi tạo: Lưu bản sao vĩnh viễn tại `docs/visualizers/<id>-<tên-bài>.html` và gắn link trong tài liệu `*.md` để commit vào Git và mở offline.
+6. **Streamlined 3-File Output Format (Chuẩn hóa từ Tuần 3 Day 4)**:
+   - Mỗi bài toán DSA chuẩn hóa gọn gàng trong **3 files** (thay vì 5 files phân mảnh):
+     1. `coding/week-XX/NN-<bài>.js`: Giải thuật in-place chuẩn Node.js.
+     2. `coding/week-XX/NN-<bài>.test.js`: Bộ test suite native `assert` test-first.
+     3. `coding/week-XX/NN-<bài>.md`: Cẩm nang tích hợp đầy đủ 6 bước PBL, kịch bản tiếng Anh, phân tích độ phức tạp và phần tổng hợp Pattern Synthesis (không tách riêng file `notes/week-XX/day-XX-*.md` để tránh trùng lặp nội dung).
+7. **Weekly Curriculum Balance, Friday Recall & Anti-Burnout Protocol**:
    - **Xen kẽ nghiêm ngặt**: Thứ 2, 4, 6 = DSA Coding; Thứ 3, 5 = System Design / Database Indexing / Node.js Internals (**TUYỆT ĐỐI CẤM GIẢI LEETCODE**); Thứ 7 = Behavioral STAR Story; Chủ nhật = Nghỉ ngơi.
-   - **Giới hạn nhận thức**: Tối đa 1 bài Medium mỗi tuần. Tuyệt đối không xếp 2 bài Medium liền kề.
-   - **Kỷ luật 60 phút**: Tối ưu nội dung vừa sức trong 60 phút mỗi sáng (05:00 - 06:00 AM) để chống quá tải nhận thức và duy trì lâu dài.
+   - **Hard Cap 1 Medium/Tuần**: Tuyệt đối tối đa 1 bài Medium mỗi tuần, không có ngoại lệ. Không gom cụm các biến thể Medium vào các ngày liên tiếp gây quá tải nhận thức.
+   - **Friday 15-Minute Recall Test (Spaced Repetition)**:
+     - 15 phút đầu phiên sáng Thứ 6 (05:00 - 05:15 AM): Gõ lại 1 bài toán đã học từ các tuần trước trên màn hình thô hoàn toàn từ trí nhớ (KHÔNG mở code mẫu hay tài liệu).
+     - Ghi nhận kết quả vào comment đầu file giải: `// Recall: [YYYY-MM-DD] - PASS/FAIL in Xm`.
+   - **Kỷ luật 60 phút mỗi sáng (05:00 - 06:00 AM)**:
+     - *Thứ 2, 4*: 10m Đọc Scenario & Pain Point $\rightarrow$ 20m Tự gõ code $\rightarrow$ 15m Luyện nói script tiếng Anh $\rightarrow$ 15m Dry run & Complexity.
+     - *Thứ 6*: 10m Scenario bài mới $\rightarrow$ 15m **Friday Recall Test bài cũ** $\rightarrow$ 20m Gõ bài mới $\rightarrow$ 15m English script.
+     - *Thứ 3, 5*: 30m Nghiên cứu kiến trúc $\rightarrow$ 30m Phản biện tiếng Anh.
+     - *Thứ 7*: 30m Soạn STAR Story $\rightarrow$ 15m Gõ lại 1 thuật toán cũ củng cố trí nhớ.
+
 
 
 
