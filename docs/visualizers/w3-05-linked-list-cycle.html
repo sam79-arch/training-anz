@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floyd's Tortoise & Hare Cycle Detection Visualizer | ANZ Interview Prep</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+  <div class="max-w-4xl w-full bg-[#1e293b] border-2 border-slate-600 rounded-2xl shadow-2xl p-6 flex flex-col gap-6">
+    
+    <!-- Header -->
+    <div class="border-b border-slate-700 pb-4 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold text-sky-400 flex items-center gap-2">
+          🐢 Floyd's Tortoise & Hare Visualizer
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">
+          LeetCode #141: Linked List Cycle — $O(n)$ Time, $O(1)$ Auxiliary Space
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Slow (+1)
+        </span>
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span> Fast (+2)
+        </span>
+      </div>
+    </div>
+
+    <!-- Linked List Canvas / Node Display -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center min-h-[220px]">
+      <div class="text-xs text-slate-500 uppercase tracking-widest font-mono mb-6">
+        Linked List Topology (Nodes: 3 -> 2 -> 0 -> -4 -> 2 [Loop Target])
+      </div>
+
+      <div id="node-container" class="flex flex-wrap items-center justify-center gap-4">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Loop Indicator Arrow -->
+      <div class="mt-4 text-xs font-mono text-purple-400 flex items-center gap-1 bg-purple-950/40 px-3 py-1 rounded border border-purple-800/50">
+        <span>Tail [-4] links back to Node [2] (Cycle Length C = 3)</span>
+      </div>
+    </div>
+
+    <!-- Stepper Explanation Box -->
+    <div class="bg-slate-900/80 border border-slate-700/80 rounded-xl p-4 flex flex-col gap-2">
+      <div class="flex justify-between items-center">
+        <span id="step-badge" class="px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+          Step 0 / 3
+        </span>
+        <span id="status-indicator" class="text-xs font-mono text-slate-400">
+          Status: Initializing
+        </span>
+      </div>
+      <p id="explanation-text" class="text-sm text-slate-200 leading-relaxed font-sans">
+        Khởi tạo cả hai con trỏ Slow (Rùa) và Fast (Thỏ) tại node Head [3].
+      </p>
+      <div id="math-formula" class="text-xs font-mono text-emerald-400 bg-slate-950 px-3 py-1.5 rounded border border-slate-800">
+        Δ Khoảng cách thu hẹp: 2 - 1 = 1 node/bước
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+      <div class="flex items-center gap-2">
+        <button id="btn-prev" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 active:bg-slate-900 text-slate-200 rounded-lg text-sm font-semibold border border-slate-600 transition disabled:opacity-40">
+          ◀ Bước Trước
+        </button>
+        <button id="btn-next" class="px-5 py-2 bg-sky-600 hover:bg-sky-500 active:bg-sky-700 text-white rounded-lg text-sm font-semibold shadow-lg shadow-sky-600/30 transition disabled:opacity-40">
+          Bước Tiếp ▶
+        </button>
+        <button id="btn-play" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition">
+          ▶ Tự Động
+        </button>
+      </div>
+      <button id="btn-reset" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-semibold border border-slate-600 transition">
+        ↺ Làm Lại
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    const nodes = [
+      { id: 0, val: 3, isCycleTarget: false },
+      { id: 1, val: 2, isCycleTarget: true },
+      { id: 2, val: 0, isCycleTarget: false },
+      { id: 3, val: -4, isCycleTarget: false }
+    ];
+
+    const steps = [
+      {
+        step: 0,
+        slowIndex: 0,
+        fastIndex: 0,
+        title: "Bắt đầu cuộc đua (Khởi tạo)",
+        explanation: "Cả hai con trỏ Slow (Rùa) và Fast (Thỏ) cùng xuất phát tại Head (Node 0: val=3).",
+        formula: "Khoảng cách ban đầu = 0. Vòng lặp bắt đầu.",
+        matched: false
+      },
+      {
+        step: 1,
+        slowIndex: 1,
+        fastIndex: 2,
+        title: "Bước 1: Rùa nhảy 1, Thỏ nhảy 2",
+        explanation: "Slow di chuyển 1 bước tới Node [2]. Fast di chuyển 2 bước tới Node [0]. Fast chưa bắt kịp Slow.",
+        formula: "Khoảng cách trong chu trình thu hẹp: (3 - 1) = 2 nodes",
+        matched: false
+      },
+      {
+        step: 2,
+        slowIndex: 2,
+        fastIndex: 1,
+        title: "Bước 2: Thỏ lặp qua chu trình",
+        explanation: "Slow tiến 1 bước tới Node [0]. Fast nhảy 2 bước: từ [0] -> [-4] -> vòng về [2]. Thỏ đã ở ngay sau lưng Rùa!",
+        formula: "Khoảng cách trong chu trình thu hẹp tiếp: 2 - 1 = 1 node duy nhất!",
+        matched: false
+      },
+      {
+        step: 3,
+        slowIndex: 3,
+        fastIndex: 3,
+        title: "Bước 3: Va chạm! (Cycle Detected 🎉)",
+        explanation: "Slow tiến 1 bước tới [-4]. Fast nhảy 2 bước từ [2] -> [0] -> [-4]. Hai con trỏ gặp nhau tại cùng một node (slow === fast)! Chu trình khép kín được chứng minh!",
+        formula: "Khoảng cách = 0! Thuật toán trả về TRUE trong đúng 3 bước, O(1) Memory.",
+        matched: true
+      }
+    ];
+
+    let currentStep = 0;
+    let timer = null;
+
+    function render() {
+      const container = document.getElementById('node-container');
+      container.innerHTML = '';
+      const stepData = steps[currentStep];
+
+      nodes.forEach((node, idx) => {
+        const isSlow = stepData.slowIndex === idx;
+        const isFast = stepData.fastIndex === idx;
+        const isCollision = isSlow && isFast && stepData.matched;
+
+        const nodeBox = document.createElement('div');
+        nodeBox.className = 'relative flex flex-col items-center';
+
+        // Badges for pointers
+        let pointerHtml = '<div class="h-6 flex items-center gap-1 mb-1">';
+        if (isCollision) {
+          pointerHtml += '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500 text-white animate-bounce shadow-lg shadow-rose-500/50">🐢+🐇 VA CHẠM!</span>';
+        } else {
+          if (isSlow) {
+            pointerHtml += '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30">Slow 🐢</span>';
+          }
+          if (isFast) {
+            pointerHtml += '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950 shadow-md shadow-amber-400/30">Fast 🐇</span>';
+          }
+        }
+        pointerHtml += '</div>';
+
+        // Node card
+        let borderClass = 'border-slate-700 bg-slate-800';
+        if (isCollision) {
+          borderClass = 'border-rose-500 bg-rose-950/40 shadow-xl shadow-rose-500/40 ring-4 ring-rose-500/30';
+        } else if (isSlow && isFast) {
+          borderClass = 'border-sky-400 bg-sky-950/40 shadow-lg shadow-sky-400/30';
+        } else if (isSlow) {
+          borderClass = 'border-emerald-400 bg-emerald-950/30 shadow-lg shadow-emerald-400/20';
+        } else if (isFast) {
+          borderClass = 'border-amber-400 bg-amber-950/30 shadow-lg shadow-amber-400/20';
+        }
+
+        let loopTargetBadge = node.isCycleTarget 
+          ? '<span class="absolute -top-2 -right-2 text-[9px] bg-purple-600 text-white px-1.5 py-0.2 rounded-full font-mono">Loop Target</span>' 
+          : '';
+
+        nodeBox.innerHTML = `
+          ${pointerHtml}
+          <div class="relative w-16 h-16 rounded-xl border-2 ${borderClass} flex flex-col items-center justify-center font-mono transition-all duration-300">
+            ${loopTargetBadge}
+            <span class="text-lg font-bold text-white">${node.val}</span>
+            <span class="text-[10px] text-slate-400">Node ${idx}</span>
+          </div>
+        `;
+
+        container.appendChild(nodeBox);
+
+        // Arrow between nodes
+        if (idx < nodes.length - 1) {
+          const arrow = document.createElement('div');
+          arrow.className = 'text-slate-600 font-mono text-xl self-center mt-6';
+          arrow.innerText = '→';
+          container.appendChild(arrow);
+        }
+      });
+
+      // Update text
+      document.getElementById('step-badge').innerText = `Step ${stepData.step} / ${steps.length - 1}`;
+      document.getElementById('status-indicator').innerText = stepData.matched ? "Status: Cycle Detected" : "Status: Searching...";
+      document.getElementById('explanation-text').innerText = stepData.explanation;
+      document.getElementById('math-formula').innerText = stepData.formula;
+
+      // Update button states
+      document.getElementById('btn-prev').disabled = (currentStep === 0);
+      document.getElementById('btn-next').disabled = (currentStep === steps.length - 1);
+    }
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        render();
+      }
+    });
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      if (currentStep > 0) {
+        currentStep--;
+        render();
+      }
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      clearInterval(timer);
+      timer = null;
+      document.getElementById('btn-play').innerText = '▶ Tự Động';
+      currentStep = 0;
+      render();
+    });
+
+    document.getElementById('btn-play').addEventListener('click', () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+        document.getElementById('btn-play').innerText = '▶ Tự Động';
+      } else {
+        document.getElementById('btn-play').innerText = '⏸ Tạm Dừng';
+        timer = setInterval(() => {
+          if (currentStep < steps.length - 1) {
+            currentStep++;
+            render();
+          } else {
+            clearInterval(timer);
+            timer = null;
+            document.getElementById('btn-play').innerText = '▶ Tự Động';
+          }
+        }, 1400);
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
