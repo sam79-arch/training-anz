@@ -98,6 +98,14 @@
 - [x] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md) + 🆕 **Friday Recall Test 15m**
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective](notes/week-03/day-06-star-and-retrospective.md)
 
+### Tuần 4: Kết Thúc Phase 1B & Database Scaling (Đang thực hiện)
+- [x] Day 1 (Thứ 2): [Merge Two Sorted Lists (Dummy Head Node & In-place Splicing)](coding/week-04/01-merge-two-sorted-lists.md)
+- [ ] Day 2 (Thứ 3): Database Connection Pooling trong Node.js (Kiến trúc `pg-pool`, sizing math, timeout, leak detection)
+- [ ] Day 3 (Thứ 4): Min Stack (LeetCode #155 - Medium duy nhất tuần)
+- [ ] Day 4 (Thứ 5): Database Sharding & Replication Lag (Read-Your-Own-Writes)
+- [ ] Day 5 (Thứ 6): Mock HackerRank 45m trên màn hình thô + 🆕 **Friday Recall Test 15m**
+- [ ] Day 6 (Thứ 7): Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3
+
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
 - **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL (B+Tree, ACID, Pooling, Sharding) & DSA Nền tảng (Two Pointers, Hashing, Stack, Linked List) — Áp dụng chuẩn 3-file output và Friday Recall.
