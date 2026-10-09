@@ -59,7 +59,9 @@
 | `week-03-day-03-reverse-linked-list.md` | `New Request` | `Closed` | 2026-09-30 | `main` | PR #43 / Commit `5e934ee` |
 | `roadmap-optimization-w3-w12.md` | `Modification` | `Closed` | 2026-10-05 | `main` | PR #44 / Commit `ac81e71` |
 | `week-03-complete-remaining-days.md` | `New Request` | `Closed` | 2026-10-06 | `main` | PR #45 / Commit `ef9ef4d` |
-| `week-04-day-01-merge-two-sorted-lists.md` | `New Request` | `Closed` | 2026-10-06 | `main` | Pending PR |
+| `week-04-day-01-merge-two-sorted-lists.md` | `New Request` | `Closed` | 2026-10-06 | `main` | PR #52 / Commit `ac60661` |
+| `week-04-day-02-and-day-03.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | Merged into Friday Batch |
+| `week-04-complete-through-friday.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | Pending PR |
 
 ---
 
