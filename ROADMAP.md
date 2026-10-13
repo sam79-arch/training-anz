@@ -55,7 +55,7 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
   - Story 1: Bất đồng quan điểm kỹ thuật (Technical Disagreement), dùng benchmark data để tạo đồng thuận.
   - Story 2: Xử lý sự cố nghiêm trọng Production (Sev-1 Outage, K8s Pod OOMKilled, RCA & Zero Data Loss).
 
-#### 🚀 Milestone 2 (Weeks 3 - 4): `Phase 1B: Stack, Linked List & RDBMS Deep Dive` (ĐANG THỰC HIỆN)
+#### ✅ Milestone 2 (Weeks 3 - 4): `Phase 1B: Stack, Linked List & RDBMS Deep Dive` (HOÀN THÀNH 100% - 163/163 Tests Pass)
 - **Tuần 3 (Tuần 100% Easy DSA + Database Internals - Giảm tải nhận thức)**:
   - **Day 1 (T2)**: [Valid Parentheses](coding/week-03/01-valid-parentheses.md) (LeetCode #20 - Easy) — Cơ chế Stack LIFO, Map lookup, Guard Clause kiểm tra độ dài lẻ early exit trong $O(1)$.
   - **Day 2 (T3)**: [Database Deep Dive 1: B+Tree Index Architecture](notes/week-03/day-02-btree-indexing.md) — Clustered vs Non-Clustered Index, Covering Index & `EXPLAIN ANALYZE` (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
@@ -70,7 +70,7 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
   - **Day 3 (T4)**: Min Stack (LeetCode #155 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Kỹ thuật 2 stack song song để `getMin()` trong $O(1)$ time.
   - **Day 4 (T5)**: Database Sharding & Replication Lag — Kiến trúc Master-Slave, giải quyết bài toán Đọc sau khi Ghi (Read-Your-Own-Writes consistency) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
   - **Day 5 (T6)**: Mock HackerRank 45m trên màn hình thô (ôn tập Stack & Linked List) + 🆕 **Friday Recall Test 15m** (gõ lại 3Sum hoặc Container With Most Water).
-  - **Day 6 (T7)**: Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3.
+  - **Day 6 (T7)**: [Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3](notes/week-04/day-06-milestone-2-retrospective-and-star-review.md).
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
 ---
