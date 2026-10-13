@@ -78,14 +78,15 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
 ### 🚀 Giai đoạn 2 (Weeks 5 - 8): Kiến trúc phân tán & Data Platform System Design
 
 #### 📦 Milestone 3 (Weeks 5 - 6): `Phase 2A: Caching Architecture & Redis Deep Dive`
-- **Tuần 5 (Redis Caching Core & Binary Search Nền Tảng - Tuần 0-Medium)**:
-  - **Day 1 (T2)**: Best Time to Buy and Sell Stock (LeetCode #121 - Easy) — Duyệt 1 lượt $O(n)$, code 10 dòng, khởi động tuần nhẹ nhàng (Early-Week Gate).
-  - **Day 2 (T3)**: Redis Caching Deep Dive 1 — Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind & Kỹ thuật TTL Jitter chống Cache Stampede / Avalanche (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
-  - **Day 3 (T4)**: 🆕 **Mid-Phase Recall & Consolidation Day** — Gõ lại Longest Substring Without Repeating Characters (Sliding Window) & ôn tập B+Tree Index từ trí nhớ (Không giải LeetCode mới để dành tải nhận thức hấp thụ kiến trúc Redis).
-  - **Day 4 (T5)**: Redis Caching Deep Dive 2 — Cache Penetration (Bloom Filter, Null Object) & Distributed Lock Redlock cơ bản kiểm soát race condition trừ tiền (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
-  - **Day 5 (T6)**: Binary Search Standard Template (LeetCode #704 - Easy) — Template chuẩn tránh tràn số `mid = left + Math.floor((right - left) / 2)` (code 10 dòng) + 🆕 **Friday Recall Test 15m** (gõ lại Move Zeroes hoặc Two Sum).
-  - **Day 6 (T7)**: Behavioral STAR Story follow-up & Deep dive kịch bản xử lý lỗi cache phân tán.
+- **Tuần 5 (Redis Caching Core & Binary Search Nền Tảng - Tuần 0-Medium - Hoàn tất 100%)**:
+  - **Day 1 (T2)**: [Best Time to Buy and Sell Stock](coding/week-05/01-best-time-to-buy-stock.md) (LeetCode #121 - Easy) — Duyệt 1 lượt $O(n)$, code 10 dòng, khởi động tuần nhẹ nhàng (Early-Week Gate).
+  - **Day 2 (T3)**: [Redis Caching Deep Dive 1: Caching Patterns & TTL Jitter](architecture/week-05/02-redis-caching-patterns.md) — Cache-Aside (Lazy Loading) vs Write-Through / Write-Behind & Kỹ thuật TTL Jitter chống Cache Stampede / Avalanche (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: 🆕 [Mid-Phase Recall & Consolidation Day](coding/week-05/03-mid-phase-recall.md) — Gõ lại Longest Substring Without Repeating Characters (Sliding Window) & ôn tập B+Tree Index từ trí nhớ (Không giải LeetCode mới để dành tải nhận thức hấp thụ kiến trúc Redis).
+  - **Day 4 (T5)**: [Redis Caching Deep Dive 2: Cache Penetration Defense & Distributed Lock](architecture/week-05/04-redis-cache-penetration-and-lock.md) — Cache Penetration (Bloom Filter, Null Object) & Distributed Lock Redlock cơ bản kiểm soát race condition trừ tiền (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: [Binary Search Standard Template & Friday Recall Test 15m](coding/week-05/05-binary-search-and-recall.md) (LeetCode #704 - Easy) — Template chuẩn tránh tràn số `mid = left + Math.floor((right - left) / 2)` (code 10 dòng) + 🆕 **Friday Recall Test 15m** (gõ lại Move Zeroes hoặc Two Sum).
+  - **Day 6 (T7)**: [Behavioral STAR Story 4 & Week 5 Retrospective Scorecard](notes/week-05/day-06-star-story-4-and-week-5-retrospective.md) — Deep dive kịch bản sự cố sập cache phân tán Production giờ cao điểm.
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
+
 - **Tuần 6 (Redis Advanced & Kadane Maximum Subarray - 1 Medium/Tuần)**:
   - **Day 1 (T2)**: Search Insert Position (LeetCode #35 - Easy) — Biến thể Binary Search tìm vị trí chèn, củng cố boundary check (Khởi động tuần nhẹ nhàng).
   - **Day 2 (T3)**: Redis Advanced & High Availability — Redis Sentinel, Redis Cluster Sharding, Failover scenarios & Memory Eviction policies (LRU/LFU) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
