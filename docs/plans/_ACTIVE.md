@@ -61,7 +61,8 @@
 | `week-03-complete-remaining-days.md` | `New Request` | `Closed` | 2026-10-06 | `main` | PR #45 / Commit `ef9ef4d` |
 | `week-04-day-01-merge-two-sorted-lists.md` | `New Request` | `Closed` | 2026-10-06 | `main` | PR #52 / Commit `ac60661` |
 | `week-04-day-02-and-day-03.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | Merged into Friday Batch |
-| `week-04-complete-through-friday.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | Pending PR |
+| `week-04-complete-through-friday.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | PR #53 / Commit `d50012e` |
+| `week-04-day-06-milestone-2-retrospective.md` | `Documentation` | `Closed` | 2026-10-10 | `docs/week-04-day-06-milestone-2-retrospective` | Pending PR |
 
 ---
 

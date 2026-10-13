@@ -98,13 +98,13 @@
 - [x] Day 5 (Thứ 6): [Linked List Cycle (Floyd's Tortoise & Hare)](coding/week-03/03-linked-list-cycle.md) + 🆕 **Friday Recall Test 15m**
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 3 (Tight Deadline vs Tech Debt) & Week 3 Retrospective](notes/week-03/day-06-star-and-retrospective.md)
 
-### Tuần 4: Kết Thúc Phase 1B & Database Scaling (Đang thực hiện)
+### Tuần 4: Kết Thúc Phase 1B & Database Scaling (Hoàn tất 100%)
 - [x] Day 1 (Thứ 2): [Merge Two Sorted Lists (Dummy Head Node & In-place Splicing)](coding/week-04/01-merge-two-sorted-lists.md)
 - [x] Day 2 (Thứ 3): [Database Connection Pooling trong Node.js (Kiến trúc pg-pool, Sizing Math & Leak Detection)](architecture/week-04/02-connection-pooling.md)
 - [x] Day 3 (Thứ 4): [Min Stack (Two Parallel Stacks & O(1) getMin)](coding/week-04/02-min-stack.md)
 - [x] Day 4 (Thứ 5): [Database Scaling: Sharding & Replication Lag (Read-Your-Own-Writes)](architecture/week-04/04-db-sharding-replication.md)
 - [x] Day 5 (Thứ 6): [Mock HackerRank 45m & Friday Recall Test 15m (Palindrome List & Container)](coding/week-04/03-mock-hackerrank-and-recall.md)
-- [ ] Day 6 (Thứ 7): Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3
+- [x] Day 6 (Thứ 7): [Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3](notes/week-04/day-06-milestone-2-retrospective-and-star-review.md)
 
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
