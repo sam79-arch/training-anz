@@ -106,6 +106,15 @@
 - [x] Day 5 (Thứ 6): [Mock HackerRank 45m & Friday Recall Test 15m (Palindrome List & Container)](coding/week-04/03-mock-hackerrank-and-recall.md)
 - [x] Day 6 (Thứ 7): [Tổng kết Milestone 2 (Phase 1B Retrospective) & Review STAR Story 1 - 3](notes/week-04/day-06-milestone-2-retrospective-and-star-review.md)
 
+### Tuần 5: Redis Caching Core & Binary Search Nền Tảng (Hoàn tất 100%)
+- [x] Day 1 (Thứ 2): [Best Time to Buy and Sell Stock (Single-pass Tracking O(n) Time, O(1) Space)](coding/week-05/01-best-time-to-buy-stock.md)
+- [x] Day 2 (Thứ 3): [Redis Caching Patterns & TTL Jitter (Cache-Aside, Write-Through, Write-Behind & Anti-Avalanche)](architecture/week-05/02-redis-caching-patterns.md)
+- [x] Day 3 (Thứ 4): [Mid-Phase Recall & Consolidation Day (Sliding Window & B+Tree Bookmark Lookup vs Covering Index)](coding/week-05/03-mid-phase-recall.md)
+- [x] Day 4 (Thứ 5): [Redis Cache Penetration Defense (Bloom Filter, Null Object) & Distributed Lock (`SET NX PX`)](architecture/week-05/04-redis-cache-penetration-and-lock.md)
+- [x] Day 5 (Thứ 6): [Binary Search Standard Template & Friday Recall Test 15m (Move Zeroes)](coding/week-05/05-binary-search-and-recall.md)
+- [x] Day 6 (Thứ 7): [Behavioral STAR Story 4 (Production Cache Stampede) & Week 5 Retrospective](notes/week-05/day-06-star-story-4-and-week-5-retrospective.md)
+
+
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
 - **Phase 1 (Weeks 1 - 4):** Node.js Internals, Tối ưu CSDL (B+Tree, ACID, Pooling, Sharding) & DSA Nền tảng (Two Pointers, Hashing, Stack, Linked List) — Áp dụng chuẩn 3-file output và Friday Recall.
