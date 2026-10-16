@@ -63,7 +63,7 @@
 | `week-04-day-02-and-day-03.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | Merged into Friday Batch |
 | `week-04-complete-through-friday.md` | `DBMS Execution` | `Closed` | 2026-10-09 | `feat/week-04-complete-through-friday` | PR #53 / Commit `d50012e` |
 | `week-04-day-06-milestone-2-retrospective.md` | `Documentation` | `Closed` | 2026-10-10 | `docs/week-04-day-06-milestone-2-retrospective` | PR #54 / Commit `7fe2d3e` |
-| `week-05-complete-curriculum.md` | `DBMS Execution` | `Closed` | 2026-10-13 | `feat/week-05-complete-curriculum` | Pending PR Merge |
+| `week-05-complete-curriculum.md` | `DBMS Execution` | `Closed` | 2026-10-13 | `feat/week-05-complete-curriculum` | PR #55 / Commit `dfcbe37` |
 
 
 ---
