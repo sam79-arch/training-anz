@@ -114,6 +114,14 @@
 - [x] Day 5 (Thứ 6): [Binary Search Standard Template & Friday Recall Test 15m (Move Zeroes)](coding/week-05/05-binary-search-and-recall.md)
 - [x] Day 6 (Thứ 7): [Behavioral STAR Story 4 (Production Cache Stampede) & Week 5 Retrospective](notes/week-05/day-06-star-story-4-and-week-5-retrospective.md)
 
+### Tuần 6: Redis Advanced & Kadane Maximum Subarray (Hoàn tất 100% - Khép lại Milestone 3)
+- [x] Day 1 (Thứ 2): [Search Insert Position (Binary Search Insertion Invariant O(log n))](coding/week-06/01-search-insert-position.md)
+- [x] Day 2 (Thứ 3): [Redis Advanced & HA: Sentinel Quorum, Cluster Sharding (CRC16 16,384 Slots) & Eviction (LRU/LFU)](architecture/week-06/02-redis-sentinel-cluster-eviction.md)
+- [x] Day 3 (Thứ 4): [Maximum Subarray / Kadane's Algorithm (O(n) Time, O(1) Space & Subarray Index Tracking)](coding/week-06/03-maximum-subarray-kadane.md)
+- [x] Day 4 (Thứ 5): [Distributed Lock Redlock Deep Dive (5-node Quorum, Clock Drift & Fencing Tokens)](architecture/week-06/04-redis-redlock-consensus.md)
+- [x] Day 5 (Thứ 6): [Binary Search Boundary Drill & Friday Recall Test 15m (Best Time to Buy Stock)](coding/week-06/05-binary-search-boundary-and-recall.md)
+- [x] Day 6 (Thứ 7): [Behavioral STAR Story 5 (Redis Cluster Split-Brain) & Milestone 3 Retrospective](notes/week-06/day-06-star-story-5-and-phase-2a-retrospective.md)
+
 
 ### Lộ trình 12 Tuần Chính Thức
 Xem chi tiết đầy đủ tại **[ROADMAP.md](file:///home/samnguyen/projects/training-anz/ROADMAP.md)**:
