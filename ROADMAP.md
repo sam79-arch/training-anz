@@ -87,13 +87,13 @@ Lộ trình được thiết kế chuẩn mực 12 tuần bền vững (kỷ lu�
   - **Day 6 (T7)**: [Behavioral STAR Story 4 & Week 5 Retrospective Scorecard](notes/week-05/day-06-star-story-4-and-week-5-retrospective.md) — Deep dive kịch bản sự cố sập cache phân tán Production giờ cao điểm.
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
-- **Tuần 6 (Redis Advanced & Kadane Maximum Subarray - 1 Medium/Tuần)**:
-  - **Day 1 (T2)**: Search Insert Position (LeetCode #35 - Easy) — Biến thể Binary Search tìm vị trí chèn, củng cố boundary check (Khởi động tuần nhẹ nhàng).
-  - **Day 2 (T3)**: Redis Advanced & High Availability — Redis Sentinel, Redis Cluster Sharding, Failover scenarios & Memory Eviction policies (LRU/LFU) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
-  - **Day 3 (T4)**: Maximum Subarray / Kadane's Algorithm (LeetCode #53 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Thuật toán Kadane $O(n)$ time, $O(1)$ space, bẫy khởi tạo `maxSum = nums[0]`.
-  - **Day 4 (T5)**: Distributed Lock Redlock Deep Dive — Thuật toán Redlock với 5 node Redis độc lập, clock drift analysis và fencing token (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
-  - **Day 5 (T6)**: Binary Search Boundary Drill (First Bad Version style - Easy) + 🆕 **Friday Recall Test 15m** (gõ lại Best Time to Buy Stock hoặc Valid Anagram).
-  - **Day 6 (T7)**: Phase 2A Retrospective (Tổng kết kiến trúc Caching & Redis) + STAR Story review.
+- **Tuần 6 (Redis Advanced & Kadane Maximum Subarray - 1 Medium/Tuần - Hoàn tất 100%)**:
+  - **Day 1 (T2)**: [Search Insert Position](coding/week-06/01-search-insert-position.md) (LeetCode #35 - Easy) — Biến thể Binary Search tìm vị trí chèn, củng cố boundary check (Khởi động tuần nhẹ nhàng).
+  - **Day 2 (T3)**: [Redis Advanced & High Availability](architecture/week-06/02-redis-sentinel-cluster-eviction.md) — Redis Sentinel (Quorum failover), Redis Cluster Sharding (CRC16 16,384 Slots & Hash Tags) & Memory Eviction policies (LRU/LFU) (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 3 (T4)**: [Maximum Subarray / Kadane's Algorithm](coding/week-06/03-maximum-subarray-kadane.md) (LeetCode #53 - **Bài LeetCode Medium DUY NHẤT của tuần**) — Thuật toán Kadane $O(n)$ time, $O(1)$ space, bẫy khởi tạo `maxSum = nums[0]` và truy vết chỉ mục mảng con.
+  - **Day 4 (T5)**: [Distributed Lock Redlock Deep Dive](architecture/week-06/04-redis-redlock-consensus.md) — Thuật toán Redlock với 5 node Redis độc lập, clock drift analysis và fencing token (TUYỆT ĐỐI CẤM GIẢI LEETCODE).
+  - **Day 5 (T6)**: [Binary Search Boundary Drill & Friday Recall Test 15m](coding/week-06/05-binary-search-boundary-and-recall.md) (First Bad Version style - Easy) + 🆕 **Friday Recall Test 15m** (gõ lại Best Time to Buy Stock từ trí nhớ).
+  - **Day 6 (T7)**: [Behavioral STAR Story 5 & Milestone 3 Retrospective](notes/week-06/day-06-star-story-5-and-phase-2a-retrospective.md) — Tổng kết kiến trúc Caching & Redis Phase 2A (30/30 test suites pass 100%).
   - **Chủ Nhật**: Nghỉ ngơi hoàn toàn.
 
 #### ⚡ Milestone 4 (Weeks 7 - 8): `Phase 2B: Event-Driven Kafka & Transactional Consistency`
